@@ -25,10 +25,11 @@
             padding: 8px 12px;
             border: none;
             border-radius: 6px;
-            width: 100%;       /* ocupa todo espaço do form */
-            max-width: 350px;  /* limite para não ficar exagerado em telas grandes */
+            width: 100%;
+            max-width: 350px;
             font-size: 1rem;
         }
+
         .banner {
             position: relative;
             text-align: center;
@@ -84,6 +85,7 @@
             display: flex;
             gap: 15px;
             box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+            position: relative;
         }
 
         .card img {
@@ -108,6 +110,21 @@
             text-decoration: none;
             border-radius: 5px;
             font-size: 0.9rem;
+        }
+
+        /* Estrelinha */
+        .favorite {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #bbb;
+            transition: 0.3s;
+        }
+
+        .favorite.active {
+            color: gold;
         }
 
         footer {
@@ -162,9 +179,7 @@
     <div class="tab" data-tab="vagas">Vagas</div>
 </div>
 
-<section class="feed" id="feed">
-    <!-- Conteúdo dinâmico -->
-</section>
+<section class="feed" id="feed"></section>
 
 <footer>
     <div>
@@ -202,19 +217,43 @@
         ]
     };
 
+    let favoritos = [];
+
     function render(tab) {
         feed.innerHTML = "";
-        data[tab].forEach(item => {
+        let items = data[tab];
+
+        if (tab === "pessoal") {
+            // junta mensagens pessoais + favoritos
+            items = [...data.pessoal, ...favoritos];
+        }
+
+        items.forEach(item => {
             const card = document.createElement("div");
             card.className = "card";
+
+            const isFav = favoritos.some(f => f.title === item.title);
+
             card.innerHTML = `
-          <img src="${item.img}" alt="">
-          <div>
-            <h3>${item.title}</h3>
-            <p>${item.desc}</p>
-            <a href="${item.link}">Saiba mais...</a>
-          </div>
-        `;
+        <span class="favorite ${isFav ? "active" : ""}">★</span>
+        <img src="${item.img}" alt="">
+        <div>
+          <h3>${item.title}</h3>
+          <p>${item.desc}</p>
+          <a href="${item.link}">Saiba mais...</a>
+        </div>
+      `;
+
+            // comportamento do botão de favorito
+            card.querySelector(".favorite").addEventListener("click", () => {
+                if (isFav) {
+                    favoritos = favoritos.filter(f => f.title !== item.title);
+                } else {
+                    favoritos.push(item);
+                }
+                render(tab); // re-renderiza aba atual
+            });
+
             feed.appendChild(card);
         });
     }
