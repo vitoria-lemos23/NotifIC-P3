@@ -1,6 +1,6 @@
 ## 👥 Integrantes do Projeto
 
-| Nome do Integrante      | Função no Projeto       |
+| Discente	              | Função no Projeto       |
 | ----------------------- | ----------------------- |
 | Alan Diogo da Rocha     |                         |
 | Cleversson Lucas        |                         |
