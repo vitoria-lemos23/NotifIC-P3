@@ -21,12 +21,36 @@
             color: #fff;
         }
 
+        header form button {
+            background: #ffcc00;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        header > div:last-child {
+            border: 2px solid #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        header form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
         header form input {
             padding: 8px 12px;
             border: none;
             border-radius: 6px;
             width: 100%;
-            max-width: 350px;
+            min-width: 250px;
+            max-width: 300px; /* Aumentado de 350px para 450px */
             font-size: 1rem;
         }
 
@@ -39,6 +63,7 @@
         .banner img {
             width: 100%;
             height: 500px;
+            opacity: 100%;
             object-fit: cover;
             filter: brightness(0.7);
         }
@@ -50,8 +75,48 @@
             transform: translate(-50%, -50%);
         }
 
+        .banner-text input {
+            margin-top: 25px;  /* controla a distância entre o subtítulo e a barra */
+            padding: 12px 20px;
+            width: 85%;
+            max-width: 400px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            outline: none;
+        }
+
         .banner-text h1 {
             font-size: 2.5rem;
+        }
+
+        .banner-text h1 {
+            margin-bottom: 8px; /* diminui o espaço depois do título */
+        }
+
+        .banner-text p {
+            margin-top: 0; /* remove espaço extra antes do subtítulo */
+            margin-bottom: 0; /* opcional, caso queira colar ainda mais */
+            font-size: 1.0rem;
+            font-style: italic; /* Subtítulo em itálico */
+        }
+
+        .feed-header {
+            padding: 20px 20px 0;
+            text-align: left;
+        }
+
+        .feed-header h2 {
+            margin: 0;
+            font-size: 2rem;
+            color: #333;
+        }
+
+        .feed-header p {
+            margin: 5px 0 0;
+            color: #666;
+            font-style: italic;
         }
 
         .tabs {
@@ -97,6 +162,26 @@
 
         .card h3 {
             margin: 0 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status {
+            font-size: 0.8rem;
+            padding: 2px 6px;
+            border-radius: 5px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .aberta { background: green; }
+        .fechada { background: red; }
+
+        .timer {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #0d8cff;
         }
 
         .card p {
@@ -115,16 +200,16 @@
         /* Estrelinha */
         .favorite {
             position: absolute;
-            top: 10px;
+            bottom: 10px;
             right: 10px;
-            font-size: 20px;
+            font-size: 32px;
             cursor: pointer;
             color: #bbb;
             transition: 0.3s;
         }
 
         .favorite.active {
-            color: gold;
+            color: rebeccapurple;
         }
 
         footer {
@@ -154,29 +239,46 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .modification-notice {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <form>
+    <form style="display: flex; gap: 10px; align-items: center;">
         <input type="text" placeholder="Digite seu número de celular...">
+        <button type="submit" style="background: #ffcc00; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer;">Enviar</button>
     </form>
-    <div>👤 Perfil</div>
+    <div style="border: 2px solid #fff; padding: 6px 12px; border-radius: 6px;">👤 Perfil</div>
 </header>
 
 <section class="banner">
     <img src="https://i.imgur.com/w6eRgOZ.png" alt="Banner">
     <div class="banner-text">
-        <h1>./notif<span style="color:#0d8cff;">IC</span></h1>
+        <h1>./notif<span style="color: deepskyblue;">IC</span></h1>
         <p>“Todos os caminhos levam a você.”</p>
+        <input type="text" id="searchBar" placeholder="Pesquise no site...">
     </div>
 </section>
 
+
+
 <div class="tabs">
-    <div class="tab active" data-tab="pessoal">Pessoal</div>
-    <div class="tab" data-tab="geral">Geral</div>
+    <div class="tab" data-tab="pessoal">Pessoal</div>
+    <div class="tab active" data-tab="geral">Geral</div>
     <div class="tab" data-tab="vagas">Vagas</div>
+</div>
+
+<div class="feed-header">
+    <h2>Feed</h2>
+    <p>Notícias e oportunidades</p>
 </div>
 
 <section class="feed" id="feed"></section>
@@ -203,29 +305,37 @@
 <script>
     const tabs = document.querySelectorAll(".tab");
     const feed = document.getElementById("feed");
+    const searchBar = document.getElementById("searchBar");
+    let currentTab = "geral"; // salva a aba atual
 
-    const data = {
-        pessoal: [
-            {title: "Mensagem pessoal", desc: "Aqui aparecem as mensagens pessoais do aluno.", img: "https://via.placeholder.com/80", link:"#"}
-        ],
-        geral: [
-            {title: "SECOMP 2025", desc: "Preparem-se para a imersão tecnológica mais aguardada do ano!", img: "https://i.imgur.com/z9AQTiy.png", link:"#"},
-            {title: "NEES Inscrições 2025", desc: "Domina React, Vue ou Angular? Participe das inscrições!", img: "https://i.imgur.com/fLpxHmP.jpeg", link:"#"},
-        ],
-        vagas: [
-            {title: "Vaga de Estágio - Dev Frontend", desc: "Oportunidade para alunos com conhecimento em HTML, CSS e JS.", img: "https://i.imgur.com/LNkVlpy.jpeg", link:"#"}
-        ]
-    };
+    const data = [
+        {title: "SECOMP 2025", desc: "Preparem-se para a imersão tecnológica mais aguardada do ano!", img: "https://i.imgur.com/z9AQTiy.png", link:"#", tags:["geral"]},
+        {title: "NEES Inscrições 2025", desc: "Domina React, Vue ou Angular? Participe das inscrições!", img: "https://i.imgur.com/fLpxHmP.jpeg", link:"#", tags:["geral"]},
+        {title: "Vaga de Estágio - Dev Frontend", desc: "Oportunidade para alunos com conhecimento em HTML, CSS e JS.", img: "https://i.imgur.com/LNkVlpy.jpeg", link:"#", tags:["vagas"], status:"aberta", deadline: new Date(Date.now() + 86400000)}, // +1 dia
+        {title: "Grupo de Pesquisa do Professor Ranilson", desc: "Projeto fechado para alunos de pós-graduação.", img: "https://i.imgur.com/LNkVlpy.jpeg", link:"#", tags:["vagas"], status:"fechada"}
+    ];
 
     let favoritos = [];
 
-    function render(tab) {
+    function render(tab, query = "") {
         feed.innerHTML = "";
-        let items = data[tab];
+        let items;
 
         if (tab === "pessoal") {
-            // junta mensagens pessoais + favoritos
-            items = [...data.pessoal, ...favoritos];
+            items = [...favoritos];
+        } else if (tab === "geral") {
+            // MODIFICAÇÃO: Mostrar todos os itens sem filtro
+            items = [...data];
+        } else if (tab === "vagas") {
+            items = data.filter(item => item.tags.includes("vagas"));
+        }
+
+        // 🔍 aplica o filtro de busca
+        if (query) {
+            items = items.filter(item =>
+                item.title.toLowerCase().includes(query) ||
+                item.desc.toLowerCase().includes(query)
+            );
         }
 
         items.forEach(item => {
@@ -234,15 +344,30 @@
 
             const isFav = favoritos.some(f => f.title === item.title);
 
+            let statusHTML = "";
+            let timerHTML = "";
+
+            if (item.tags.includes("vagas")) {
+                if (item.status === "aberta") {
+                    statusHTML = `<span class="status aberta">ABERTA</span>`;
+                    timerHTML = `<div class="timer" data-deadline="${item.deadline}"></div>`;
+                } else {
+                    statusHTML = `<span class="status fechada">FECHADA</span>`;
+                }
+            }
+
             card.innerHTML = `
-        <span class="favorite ${isFav ? "active" : ""}">★</span>
-        <img src="${item.img}" alt="">
-        <div>
-          <h3>${item.title}</h3>
-          <p>${item.desc}</p>
-          <a href="${item.link}">Saiba mais...</a>
-        </div>
-      `;
+                <span class="favorite ${isFav ? "active" : ""}">★</span>
+                <img src="${item.img}" alt="">
+                <div>
+                  <div class="card-header">
+                    <h3>${item.title} ${statusHTML}</h3>
+                    ${timerHTML}
+                  </div>
+                  <p>${item.desc}</p>
+                  <a href="${item.link}">Saiba mais...</a>
+                </div>
+            `;
 
             // comportamento do botão de favorito
             card.querySelector(".favorite").addEventListener("click", () => {
@@ -251,19 +376,44 @@
                 } else {
                     favoritos.push(item);
                 }
-                render(tab); // re-renderiza aba atual
+                render(tab, searchBar.value.toLowerCase()); // mantém filtro ativo
             });
 
             feed.appendChild(card);
         });
+
+        // timers
+        document.querySelectorAll(".timer").forEach(el => {
+            const deadline = new Date(el.dataset.deadline);
+            function updateTimer() {
+                const diff = deadline - new Date();
+                if (diff <= 0) {
+                    el.innerHTML = "Expirado";
+                    return;
+                }
+                const h = Math.floor(diff / 1000 / 3600);
+                const m = Math.floor((diff / 1000 % 3600) / 60);
+                const s = Math.floor(diff / 1000 % 60);
+                el.innerHTML = `Encerra em: ${h}h ${m}m ${s}s`;
+            }
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        });
     }
 
+    // troca de abas
     tabs.forEach(tab => {
         tab.addEventListener("click", () => {
             document.querySelector(".tab.active").classList.remove("active");
             tab.classList.add("active");
-            render(tab.dataset.tab);
+            currentTab = tab.dataset.tab;
+            render(currentTab, searchBar.value.toLowerCase());
         });
+    });
+
+    // busca
+    searchBar.addEventListener("input", () => {
+        render(currentTab, searchBar.value.toLowerCase());
     });
 
     // Inicial
