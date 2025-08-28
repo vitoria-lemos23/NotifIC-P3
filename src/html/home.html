@@ -49,8 +49,8 @@
             padding: 8px 12px;
             border: none;
             border-radius: 6px;
-            width: 1%;
-            min-width: 225px;
+            width: 10%;
+            min-width: 150px;
             max-width: 250px;
             font-size: 1rem;
         }
@@ -287,8 +287,8 @@
 <body>
 
 <header>
-    <form id="loginForm" style="display: flex; gap: 10px; align-items: center;">
-        <input type="text" placeholder="Digite seu número de celular...">
+    <form id="notificacaoForm" style="display: flex; gap: 10px; align-items: center;">
+        <input type="text" placeholder="Digite seu número...">
         <button type="submit" style="background: #ffcc00; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer;">Enviar</button>
     </form>
     <div id="profileButton" style="border: 2px solid #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer;">👤 Login/Cadastro</div>
@@ -339,7 +339,7 @@
     const tabs = document.querySelectorAll(".tab");
     const feed = document.getElementById("feed");
     const searchBar = document.getElementById("searchBar");
-    const loginForm = document.getElementById('loginForm');
+    const notificacaoForm = document.getElementById('notificacaoForm');
     const profileButton = document.getElementById('profileButton');
     let currentTab = "geral";
     let usuarioLogado = false;
@@ -357,7 +357,7 @@
         if (usuarioLogado) {
             profileButton.textContent = '👤 Perfil';
         } else {
-            profileButton.textContent = '👤 Login/Cadastro';
+            profileButton.textContent = '👤 Login';
             favoritos = [];
             render(currentTab, searchBar.value.toLowerCase());
         }
@@ -382,24 +382,29 @@
         });
     }
 
-    loginForm.addEventListener('submit', function(e) {
+    notificacaoForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const numeroCelular = this.querySelector('input').value;
 
         if (numeroCelular) {
-            usuarioLogado = true;
-            atualizarEstadoLogin();
-            alert('Login realizado com sucesso!');
+            alert(`Você receberá notificações via Whatsapp no número: ${numeroCelular}`);
+            this.querySelector('input').value = '';
         }
     });
 
     profileButton.addEventListener('click', function() {
         if (usuarioLogado) {
-            alert('Redirecionando para a página de perfil...');
+            window.location.href = '/perfil';
         } else {
-            loginForm.querySelector('input').focus();
+            window.location.href = '/login';
         }
     });
+
+    function verificarLogin() {
+        // Simulação - na implementação real, isso verifica se há um token de sessão
+        usuarioLogado = Math.random() > 0.5;
+        atualizarEstadoLogin();
+    }
 
     function render(tab, query = "") {
         feed.innerHTML = "";
@@ -499,8 +504,9 @@
         render(currentTab, searchBar.value.toLowerCase());
     });
 
+    // Inicializar
     render("geral");
-    atualizarEstadoLogin();
+    verificarLogin();
 </script>
 
 </body>
