@@ -36,6 +36,7 @@
             border: 2px solid #fff;
             padding: 6px 12px;
             border-radius: 6px;
+            cursor: pointer;
         }
 
         header form {
@@ -48,9 +49,9 @@
             padding: 8px 12px;
             border: none;
             border-radius: 6px;
-            width: 100%;
-            min-width: 250px;
-            max-width: 300px; /* Aumentado de 350px para 450px */
+            width: 1%;
+            min-width: 225px;
+            max-width: 250px;
             font-size: 1rem;
         }
 
@@ -76,7 +77,7 @@
         }
 
         .banner-text input {
-            margin-top: 25px;  /* controla a distância entre o subtítulo e a barra */
+            margin-top: 25px;
             padding: 12px 20px;
             width: 85%;
             max-width: 400px;
@@ -92,14 +93,14 @@
         }
 
         .banner-text h1 {
-            margin-bottom: 8px; /* diminui o espaço depois do título */
+            margin-bottom: 8px;
         }
 
         .banner-text p {
-            margin-top: 0; /* remove espaço extra antes do subtítulo */
-            margin-bottom: 0; /* opcional, caso queira colar ainda mais */
+            margin-top: 0;
+            margin-bottom: 0;
             font-size: 1.0rem;
-            font-style: italic; /* Subtítulo em itálico */
+            font-style: italic;
         }
 
         .feed-header {
@@ -197,7 +198,6 @@
             font-size: 0.9rem;
         }
 
-        /* Estrelinha */
         .favorite {
             position: absolute;
             bottom: 10px;
@@ -240,23 +240,58 @@
             }
         }
 
-        .modification-notice {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
             text-align: center;
-            font-weight: bold;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .modal-content p {
+            margin: 15px 0;
+            color: #666;
+        }
+
+        .modal-button {
+            background: #0d8cff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
 
 <header>
-    <form style="display: flex; gap: 10px; align-items: center;">
+    <form id="loginForm" style="display: flex; gap: 10px; align-items: center;">
         <input type="text" placeholder="Digite seu número de celular...">
         <button type="submit" style="background: #ffcc00; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer;">Enviar</button>
     </form>
-    <div style="border: 2px solid #fff; padding: 6px 12px; border-radius: 6px;">👤 Perfil</div>
+    <div id="profileButton" style="border: 2px solid #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer;">👤 Login/Cadastro</div>
 </header>
 
 <section class="banner">
@@ -267,8 +302,6 @@
         <input type="text" id="searchBar" placeholder="Pesquise no site...">
     </div>
 </section>
-
-
 
 <div class="tabs">
     <div class="tab" data-tab="pessoal">Pessoal</div>
@@ -306,16 +339,67 @@
     const tabs = document.querySelectorAll(".tab");
     const feed = document.getElementById("feed");
     const searchBar = document.getElementById("searchBar");
-    let currentTab = "geral"; // salva a aba atual
+    const loginForm = document.getElementById('loginForm');
+    const profileButton = document.getElementById('profileButton');
+    let currentTab = "geral";
+    let usuarioLogado = false;
 
     const data = [
         {title: "SECOMP 2025", desc: "Preparem-se para a imersão tecnológica mais aguardada do ano!", img: "https://i.imgur.com/z9AQTiy.png", link:"#", tags:["geral"]},
         {title: "NEES Inscrições 2025", desc: "Domina React, Vue ou Angular? Participe das inscrições!", img: "https://i.imgur.com/fLpxHmP.jpeg", link:"#", tags:["geral"]},
-        {title: "Vaga de Estágio - Dev Frontend", desc: "Oportunidade para alunos com conhecimento em HTML, CSS e JS.", img: "https://i.imgur.com/LNkVlpy.jpeg", link:"#", tags:["vagas"], status:"aberta", deadline: new Date(Date.now() + 86400000)}, // +1 dia
+        {title: "Vaga de Estágio - Dev Frontend", desc: "Oportunidade para alunos com conhecimento em HTML, CSS e JS.", img: "https://i.imgur.com/LNkVlpy.jpeg", link:"#", tags:["vagas"], status:"aberta", deadline: new Date(Date.now() + 86400000)},
         {title: "Grupo de Pesquisa do Professor Ranilson", desc: "Projeto fechado para alunos de pós-graduação.", img: "https://i.imgur.com/LNkVlpy.jpeg", link:"#", tags:["vagas"], status:"fechada"}
     ];
 
     let favoritos = [];
+
+    function atualizarEstadoLogin() {
+        if (usuarioLogado) {
+            profileButton.textContent = '👤 Perfil';
+        } else {
+            profileButton.textContent = '👤 Login/Cadastro';
+            favoritos = [];
+            render(currentTab, searchBar.value.toLowerCase());
+        }
+    }
+
+    function mostrarModalLogin() {
+        const modal = document.createElement('div');
+        modal.className = 'modal-backdrop';
+
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>Login Necessário</h3>
+                <p>Você deve fazer login antes de favoritar conteúdos.</p>
+                <button class="modal-button" id="fecharModal">Entendi</button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        modal.querySelector('#fecharModal').addEventListener('click', function() {
+            document.body.removeChild(modal);
+        });
+    }
+
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const numeroCelular = this.querySelector('input').value;
+
+        if (numeroCelular) {
+            usuarioLogado = true;
+            atualizarEstadoLogin();
+            alert('Login realizado com sucesso!');
+        }
+    });
+
+    profileButton.addEventListener('click', function() {
+        if (usuarioLogado) {
+            alert('Redirecionando para a página de perfil...');
+        } else {
+            loginForm.querySelector('input').focus();
+        }
+    });
 
     function render(tab, query = "") {
         feed.innerHTML = "";
@@ -324,13 +408,11 @@
         if (tab === "pessoal") {
             items = [...favoritos];
         } else if (tab === "geral") {
-            // MODIFICAÇÃO: Mostrar todos os itens sem filtro
             items = [...data];
         } else if (tab === "vagas") {
             items = data.filter(item => item.tags.includes("vagas"));
         }
 
-        // 🔍 aplica o filtro de busca
         if (query) {
             items = items.filter(item =>
                 item.title.toLowerCase().includes(query) ||
@@ -369,20 +451,23 @@
                 </div>
             `;
 
-            // comportamento do botão de favorito
             card.querySelector(".favorite").addEventListener("click", () => {
+                if (!usuarioLogado) {
+                    mostrarModalLogin();
+                    return;
+                }
+
                 if (isFav) {
                     favoritos = favoritos.filter(f => f.title !== item.title);
                 } else {
                     favoritos.push(item);
                 }
-                render(tab, searchBar.value.toLowerCase()); // mantém filtro ativo
+                render(tab, searchBar.value.toLowerCase());
             });
 
             feed.appendChild(card);
         });
 
-        // timers
         document.querySelectorAll(".timer").forEach(el => {
             const deadline = new Date(el.dataset.deadline);
             function updateTimer() {
@@ -401,7 +486,6 @@
         });
     }
 
-    // troca de abas
     tabs.forEach(tab => {
         tab.addEventListener("click", () => {
             document.querySelector(".tab.active").classList.remove("active");
@@ -411,13 +495,12 @@
         });
     });
 
-    // busca
     searchBar.addEventListener("input", () => {
         render(currentTab, searchBar.value.toLowerCase());
     });
 
-    // Inicial
     render("geral");
+    atualizarEstadoLogin();
 </script>
 
 </body>
