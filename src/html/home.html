@@ -344,12 +344,17 @@
     let currentTab = "geral";
     let usuarioLogado = false;
 
-    const data = [
-        {title: "SECOMP 2025", desc: "Preparem-se para a imersão tecnológica mais aguardada do ano!", img: "https://i.imgur.com/z9AQTiy.png", link:"#", tags:["geral"]},
-        {title: "NEES Inscrições 2025", desc: "Domina React, Vue ou Angular? Participe das inscrições!", img: "https://i.imgur.com/fLpxHmP.jpeg", link:"#", tags:["geral"]},
-        {title: "Vaga de Estágio - Dev Frontend", desc: "Oportunidade para alunos com conhecimento em HTML, CSS e JS.", img: "https://i.imgur.com/LNkVlpy.jpeg", link:"#", tags:["vagas"], status:"aberta", deadline: new Date(Date.now() + 86400000)},
-        {title: "Grupo de Pesquisa do Professor Ranilson", desc: "Projeto fechado para alunos de pós-graduação.", img: "https://i.imgur.com/LNkVlpy.jpeg", link:"#", tags:["vagas"], status:"fechada"}
-    ];
+    let data = [];
+
+    async function carregarNoticias() {
+        try {
+            const res = await fetch('../json/homeNews.json');
+            data = await res.json();
+            render(currentTab, searchBar.value.toLowerCase());
+        } catch (e) {
+            feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
+        }
+    }
 
     let favoritos = [];
 
@@ -505,7 +510,7 @@
     });
 
     // Inicializar
-    render("geral");
+    carregarNoticias();
     verificarLogin();
 </script>
 
