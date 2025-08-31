@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>./notifIC - Notícia</title>
+    <title>./NotifIC - Notícia</title>
     <link rel="stylesheet" href="../css/news.css">
 </head>
 <body>
@@ -17,13 +17,12 @@
         </div>
     </main>
     <script>
-        // Função para pegar parâmetro da URL
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
         }
 
-        // Carregar notícia do JSON
+
         async function loadNews() {
             const newsId = getQueryParam('id');
             const newsDiv = document.getElementById('news');
