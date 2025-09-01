@@ -3,7 +3,7 @@
         "id": 1,
         "title": "SECOMP 2025",
         "desc": "A Semana de Computação da UFAL está chegando! Serão palestras, minicursos, hackathons e muito networking com profissionais renomados do mercado de tecnologia. Não perca a chance de expandir seus conhecimentos e fazer novas conexões. Fique ligado na programação oficial!",
-        "img": "../img/logo_secomp.png",
+        "img": "../img/banner_secomp.webp",
         "date": "31/08/2025",
         "externalLink": "https://www.instagram.com/secomp.ufal/"
     },
