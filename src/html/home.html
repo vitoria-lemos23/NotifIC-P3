@@ -1,376 +1,133 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>notifIC</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            color: #222;
-        }
+    <link rel="stylesheet" href="../css/home.css" />
+  </head>
 
-        header {
-            background: #0d8cff;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #fff;
-        }
+  <body>
+    <header>
+      <div id="profileButton">
+        <img src="https://i.pravatar.cc/40" alt="Perfil" />
+      </div>
+      <form id="notificacaoForm">
+        <input type="text" placeholder="Digite seu número..." />
+        <button type="submit">Enviar</button>
+      </form>
+    </header>
 
-        header form button {
-            background: #ffcc00;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        header > div:last-child {
-            border: 2px solid #fff;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        header form {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        header form input {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            width: 10%;
-            min-width: 150px;
-            max-width: 250px;
-            font-size: 1rem;
-        }
-
-        .banner {
-            position: relative;
-            text-align: center;
-            color: #fff;
-        }
-
-        .banner img {
-            width: 100%;
-            height: 500px;
-            opacity: 100%;
-            object-fit: cover;
-            filter: brightness(0.7);
-        }
-
-        .banner-text {
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .banner-text input {
-            margin-top: 25px;
-            padding: 12px 20px;
-            width: 85%;
-            max-width: 400px;
-            border-radius: 50px;
-            border: none;
-            font-size: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            outline: none;
-        }
-
-        .banner-text h1 {
-            font-size: 2.5rem;
-        }
-
-        .banner-text h1 {
-            margin-bottom: 8px;
-        }
-
-        .banner-text p {
-            margin-top: 0;
-            margin-bottom: 0;
-            font-size: 1.0rem;
-            font-style: italic;
-        }
-
-        .feed-header {
-            padding: 20px 20px 0;
-            text-align: left;
-        }
-
-        .feed-header h2 {
-            margin: 0;
-            font-size: 2rem;
-            color: #333;
-        }
-
-        .feed-header p {
-            margin: 5px 0 0;
-            color: #666;
-            font-style: italic;
-        }
-
-        .tabs {
-            display: flex;
-            justify-content: space-around;
-            background: #4d63ff;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .tab {
-            padding: 15px;
-            cursor: pointer;
-            flex: 1;
-            text-align: center;
-        }
-
-        .tab.active {
-            background: #303f9f;
-        }
-
-        .feed {
-            padding: 20px;
-        }
-
-        .card {
-            background: #fff;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            padding: 15px;
-            display: flex;
-            gap: 15px;
-            box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        .card img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-
-        .card h3 {
-            margin: 0 0 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status {
-            font-size: 0.8rem;
-            padding: 2px 6px;
-            border-radius: 5px;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .aberta { background: green; }
-        .fechada { background: red; }
-
-        .timer {
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #0d8cff;
-        }
-
-        .card p {
-            margin: 0 0 10px;
-        }
-
-        .card a {
-            background: #0d8cff;
-            color: #fff;
-            padding: 8px 12px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 0.9rem;
-        }
-
-        .favorite {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 32px;
-            cursor: pointer;
-            color: #bbb;
-            transition: 0.3s;
-        }
-
-        .favorite.active {
-            color: rebeccapurple;
-        }
-
-        footer {
-            background: #333;
-            color: #eee;
-            padding: 40px 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-        }
-
-        footer h4 {
-            margin-top: 0;
-        }
-
-        footer a {
-            color: #eee;
-            text-decoration: none;
-        }
-
-        @media (max-width: 768px) {
-            .card {
-                flex-direction: column;
-                align-items: center;
-            }
-            footer {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 400px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
-
-        .modal-content h3 {
-            margin-top: 0;
-            color: #333;
-        }
-
-        .modal-content p {
-            margin: 15px 0;
-            color: #666;
-        }
-
-        .modal-button {
-            background: #0d8cff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            margin-top: 15px;
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <form id="notificacaoForm" style="display: flex; gap: 10px; align-items: center;">
-        <input type="text" placeholder="Digite seu número...">
-        <button type="submit" style="background: #ffcc00; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer;">Enviar</button>
-    </form>
-    <div id="profileButton" style="border: 2px solid #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer;">👤 Login/Cadastro</div>
-</header>
-
-<section class="banner">
-    <img src="../img/banner_ic.png" alt="Banner">
-    <div class="banner-text">
-        <h1>./notif<span style="color: deepskyblue;">IC</span></h1>
+    <section class="banner">
+      <img src="../img/banner_ic.png" alt="Banner" />
+      <div class="banner-text">
+        <h1>./notif<span style="color: deepskyblue">IC</span></h1>
         <p>“Todos os caminhos levam a você.”</p>
-        <input type="text" id="searchBar" placeholder="Pesquise no site...">
+        <input type="text" id="searchBar" placeholder="Pesquise no site..." />
+      </div>
+    </section>
+
+    <aside class="side-menu" id="sideMenu">
+      <header>
+        <button class="close-btn" onclick="toggleMenu()">←</button>
+        <span class="menu-title"
+          >./notif<span style="color: deepskyblue">IC</span></span
+        >
+      </header>
+
+      <nav>
+        <a href="#">Início</a>
+        <a href="#">Favoritos</a>
+        <a href="#">Notificações</a>
+        <a href="#">Configurações</a>
+        <a href="#">Sair</a>
+      </nav>
+
+      <footer>© 2025 ./notifIC</footer>
+    </aside>
+
+    <div
+      class="side-menu-backdrop"
+      id="sideMenuBackdrop"
+      onclick="toggleMenu()"
+    ></div>
+
+    <div class="tabs">
+      <div class="tab" data-tab="pessoal">Pessoal</div>
+      <div class="tab active" data-tab="geral">Geral</div>
+      <div class="tab" data-tab="vagas">Vagas</div>
     </div>
-</section>
 
-<div class="tabs">
-    <div class="tab" data-tab="pessoal">Pessoal</div>
-    <div class="tab active" data-tab="geral">Geral</div>
-    <div class="tab" data-tab="vagas">Vagas</div>
-</div>
+    <div class="feed-header">
+      <h2>Feed</h2>
+      <p>Notícias e oportunidades</p>
+    </div>
 
-<div class="feed-header">
-    <h2>Feed</h2>
-    <p>Notícias e oportunidades</p>
-</div>
+    <section class="feed" id="feed"></section>
 
-<section class="feed" id="feed"></section>
-
-<footer>
-    <div>
+    <footer>
+      <div>
         <h4>Contato</h4>
-        <p>Instituto de Computação - UFAL<br>
-            (82) 3214-0000<br>
-            notific@ic.ufal.br</p>
-    </div>
-    <div>
+        <p>
+          Instituto de Computação - UFAL<br />
+          (82) 3214-0000<br />
+          notific@ic.ufal.br
+        </p>
+      </div>
+      <div>
         <h4>Links Rápidos</h4>
-        <p><a href="page_feed.html">Anuncie no site</a><br>
-            <a href="#">Contate-nos</a><br>
-            <a href="#">Reportar problema</a></p>
-    </div>
-    <div>
+        <p>
+          <a href="page_feed.html">Anuncie no site</a><br />
+          <a href="#">Contate-nos</a><br />
+          <a href="#">Reportar problema</a>
+        </p>
+      </div>
+      <div>
         <h4>./notific</h4>
-        <p>Plataforma de divulgação de oportunidades e notícias para o Instituto de Computação da UFAL.</p>
-    </div>
-</footer>
+        <p>
+          Plataforma de divulgação de oportunidades e notícias para o Instituto
+          de Computação da UFAL.
+        </p>
+      </div>
+    </footer>
 
-<script>
-    const tabs = document.querySelectorAll(".tab");
-    const feed = document.getElementById("feed");
-    const searchBar = document.getElementById("searchBar");
-    const notificacaoForm = document.getElementById('notificacaoForm');
-    const profileButton = document.getElementById('profileButton');
-    let currentTab = "geral";
-    let usuarioLogado = false;
+    <script>
+      const tabs = document.querySelectorAll(".tab");
+      const feed = document.getElementById("feed");
+      const searchBar = document.getElementById("searchBar");
+      const notificacaoForm = document.getElementById("notificacaoForm");
+      const profileButton = document.getElementById("profileButton");
+      let currentTab = "geral";
+      let usuarioLogado = true;
 
-    let data = [];
+      let data = [];
 
-    async function loadNews() {
+      async function loadNews() {
         try {
-            const res = await fetch('../json/homeNews.json');
-            data = await res.json();
-            render(currentTab, searchBar.value.toLowerCase());
+          const res = await fetch("../json/homeNews.json");
+          data = await res.json();
+          render(currentTab, searchBar.value.toLowerCase());
         } catch (e) {
-            feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
+          feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
         }
-    }
+      }
 
-    let favoritos = [];
+      let favoritos = [];
 
-    function atualizarEstadoLogin() {
+      function atualizarEstadoLogin() {
         if (usuarioLogado) {
-            profileButton.textContent = '👤 Perfil';
+          // Não mexe na imagem, apenas garante o menu certo
+          document.querySelector("#sideMenu h3").textContent = "Perfil";
         } else {
-            profileButton.textContent = '👤 Login';
-            favoritos = [];
-            render(currentTab, searchBar.value.toLowerCase());
+          document.querySelector("#sideMenu h3").textContent = "Login";
+          favoritos = [];
+          render(currentTab, searchBar.value.toLowerCase());
         }
-    }
+      }
 
-    function mostrarModalLogin() {
-        const modal = document.createElement('div');
-        modal.className = 'modal-backdrop';
+      function mostrarModalLogin() {
+        const modal = document.createElement("div");
+        modal.className = "modal-backdrop";
 
         modal.innerHTML = `
             <div class="modal-content">
@@ -382,73 +139,80 @@
 
         document.body.appendChild(modal);
 
-        modal.querySelector('#fecharModal').addEventListener('click', function() {
+        modal
+          .querySelector("#fecharModal")
+          .addEventListener("click", function () {
             document.body.removeChild(modal);
-        });
-    }
+          });
+      }
 
-    notificacaoForm.addEventListener('submit', function(e) {
+      notificacaoForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        const numeroCelular = this.querySelector('input').value;
+        const numeroCelular = this.querySelector("input").value;
 
         if (numeroCelular) {
-            alert(`Você receberá notificações via Whatsapp no número: ${numeroCelular}`);
-            this.querySelector('input').value = '';
+          alert(
+            `Você receberá notificações via Whatsapp no número: ${numeroCelular}`
+          );
+          this.querySelector("input").value = "";
         }
-    });
+      });
 
-    profileButton.addEventListener('click', function() {
-        if (usuarioLogado) {
-            window.location.href = '/perfil';
-        } else {
-            window.location.href = '/login';
-        }
-    });
+      profileButton.addEventListener("click", () => {
+        sideMenu.classList.add("active");
+        sideMenuBackdrop.classList.add("active");
+      });
 
-    function verificarLogin() {
+      sideMenuBackdrop.addEventListener("click", () => {
+        sideMenu.classList.remove("active");
+        sideMenuBackdrop.classList.remove("active");
+      });
+
+      function verificarLogin() {
         // Simulação - na implementação real, isso verifica se há um token de sessão
         usuarioLogado = Math.random() > 0.5;
         atualizarEstadoLogin();
-    }
+      }
 
-    function render(tab, query = "") {
+      function render(tab, query = "") {
         feed.innerHTML = "";
         let items;
 
         if (tab === "pessoal") {
-            items = [...favoritos];
+          items = [...favoritos];
         } else if (tab === "geral") {
-            items = [...data];
+          items = [...data];
         } else if (tab === "vagas") {
-            items = data.filter(item => item.tags.includes("vagas"));
+          items = data.filter((item) => item.tags.includes("vagas"));
         }
 
         if (query) {
-            items = items.filter(item =>
-                item.title.toLowerCase().includes(query) ||
-                item.desc.toLowerCase().includes(query)
-            );
+          items = items.filter(
+            (item) =>
+              item.title.toLowerCase().includes(query) ||
+              item.desc.toLowerCase().includes(query)
+          );
         }
 
-        items.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "card";
+        items.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "card";
 
-            const isFav = favoritos.some(f => f.title === item.title);
+          const isFav = favoritos.some((f) => f.title === item.title);
 
-            let statusHTML = "";
-            let timerHTML = "";
+          let statusHTML = "";
+          let timerHTML = "";
 
-            if (item.tags.includes("vagas")) {
-                if (item.status === "aberta") {
-                    statusHTML = `<span class="status aberta">ABERTA</span>`;
-                    timerHTML = `<div class="timer" data-deadline="${item.deadline}"></div>`;
-                } else {
-                    statusHTML = `<span class="status fechada">FECHADA</span>`;
-                }
+          if (item.tags.includes("vagas")) {
+            if (item.status === "aberta") {
+              statusHTML = `<span class="status aberta">ABERTA</span>`;
+              timerHTML = `<div class="timer" data-deadline="${item.deadline}"></div>`;
+            } else {
+              statusHTML = `<span class="status fechada">FECHADA</span>`;
             }
+          }
 
-            card.innerHTML = `
+          card.innerHTML = `
                 <span class="favorite ${isFav ? "active" : ""}">★</span>
                 <img src="${item.img}" alt="">
                 <div>
@@ -461,58 +225,67 @@
                 </div>
             `;
 
-            card.querySelector(".favorite").addEventListener("click", () => {
-                if (!usuarioLogado) {
-                    mostrarModalLogin();
-                    return;
-                }
-
-                if (isFav) {
-                    favoritos = favoritos.filter(f => f.title !== item.title);
-                } else {
-                    favoritos.push(item);
-                }
-                render(tab, searchBar.value.toLowerCase());
-            });
-
-            feed.appendChild(card);
-        });
-
-        document.querySelectorAll(".timer").forEach(el => {
-            const deadline = new Date(el.dataset.deadline);
-            function updateTimer() {
-                const diff = deadline - new Date();
-                if (diff <= 0) {
-                    el.innerHTML = "Expirado";
-                    return;
-                }
-                const h = Math.floor(diff / 1000 / 3600);
-                const m = Math.floor((diff / 1000 % 3600) / 60);
-                const s = Math.floor(diff / 1000 % 60);
-                el.innerHTML = `Encerra em: ${h}h ${m}m ${s}s`;
+          card.querySelector(".favorite").addEventListener("click", () => {
+            if (!usuarioLogado) {
+              mostrarModalLogin();
+              return;
             }
-            updateTimer();
-            setInterval(updateTimer, 1000);
-        });
-    }
 
-    tabs.forEach(tab => {
+            if (isFav) {
+              favoritos = favoritos.filter((f) => f.title !== item.title);
+            } else {
+              favoritos.push(item);
+            }
+            render(tab, searchBar.value.toLowerCase());
+          });
+
+          feed.appendChild(card);
+        });
+
+        document.querySelectorAll(".timer").forEach((el) => {
+          const deadline = new Date(el.dataset.deadline);
+          function updateTimer() {
+            const diff = deadline - new Date();
+            if (diff <= 0) {
+              el.innerHTML = "Expirado";
+              return;
+            }
+            const h = Math.floor(diff / 1000 / 3600);
+            const m = Math.floor(((diff / 1000) % 3600) / 60);
+            const s = Math.floor((diff / 1000) % 60);
+            el.innerHTML = `Encerra em: ${h}h ${m}m ${s}s`;
+          }
+          updateTimer();
+          setInterval(updateTimer, 1000);
+        });
+      }
+
+      tabs.forEach((tab) => {
         tab.addEventListener("click", () => {
-            document.querySelector(".tab.active").classList.remove("active");
-            tab.classList.add("active");
-            currentTab = tab.dataset.tab;
-            render(currentTab, searchBar.value.toLowerCase());
+          document.querySelector(".tab.active").classList.remove("active");
+          tab.classList.add("active");
+          currentTab = tab.dataset.tab;
+          render(currentTab, searchBar.value.toLowerCase());
         });
-    });
+      });
 
-    searchBar.addEventListener("input", () => {
+      searchBar.addEventListener("input", () => {
         render(currentTab, searchBar.value.toLowerCase());
-    });
+      });
 
-    // Inicializar
-    loadNews();
-    verificarLogin();
-</script>
+      function toggleMenu() {
+        sideMenu.classList.toggle("active");
+        sideMenuBackdrop.classList.toggle("active");
 
-</body>
+        // Impede a rolagem do corpo quando o menu está aberto
+        document.body.style.overflow = sideMenu.classList.contains("active")
+          ? "hidden"
+          : "";
+      }
+
+      // Inicializar
+      loadNews();
+      verificarLogin();
+    </script>
+  </body>
 </html>

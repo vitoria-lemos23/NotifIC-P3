@@ -1,0 +1,408 @@
+/* home.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    color: #222;
+}
+
+header {
+    background: #0d8cff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+}
+
+header > div:last-child {
+    border: 2px solid #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+
+.banner {
+    position: relative;
+    text-align: center;
+    color: #fff;
+}
+
+.banner img {
+    width: 100%;
+    height: 60vh;
+    min-height: 300px;
+    opacity: 100%;
+    object-fit: cover;
+    filter: brightness(0.7);
+}
+
+.banner-text {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.banner-text input {
+    margin-top: 25px;
+    padding: 12px 20px;
+    width: 85%;
+    max-width: 400px;
+    border-radius: 50px;
+    border: none;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    outline: none;
+}
+
+.banner-text h1 {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+
+.banner-text p {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-style: italic;
+}
+
+/* Avatar circular no canto esquerdo */
+#profileButton {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+#profileButton img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover;
+}
+
+#notificacaoForm {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+#notificacaoForm input {
+    padding: 10px 8px;
+    border: none;
+    border-radius: 6px;
+    min-width: 150px;
+    max-width: 250px;
+    font-size: 1rem;
+}
+
+#notificacaoForm button {
+    background: #ffcc00;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* Drawer lateral */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    max-width: 80%;
+    height: 100%;
+    background: #fff;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    transition: left 0.3s ease;
+    z-index: 1100;
+}
+
+.side-menu nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.side-menu nav a {
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #333;
+    font-size: 1rem;
+    border-bottom: 1.5px solid #eee;
+    transition: background 0.2s ease;
+}
+
+.side-menu nav a:hover {
+    background: #e6f3ff;
+}
+
+.side-menu footer {
+    padding: 15px 20px;
+    background: #0d8cff;
+    color: #fff;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.menu-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-left: 10px;
+}
+
+.side-menu header {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background: #0d8cff;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #fff;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.side-menu.active {
+    left: 0;
+}
+
+/* Fundo escuro atrás do menu */
+.side-menu-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 1000;
+}
+
+.side-menu-backdrop.active {
+    display: block;
+}
+
+.side-menu h3 {
+    margin-top: 0;
+    color: #0d8cff;
+}
+
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.side-menu ul li {
+    margin: 15px 0;
+}
+
+.side-menu ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.feed-header {
+    padding: 20px 20px 0;
+    text-align: left;
+}
+
+.feed-header h2 {
+    margin: 0;
+    font-size: 2rem;
+    color: #333;
+}
+
+.feed-header p {
+    margin: 5px 0 0;
+    color: #666;
+    font-style: italic;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    background: #4d63ff;
+    color: #fff;
+    font-weight: bold;
+}
+
+.tab {
+    padding: 15px;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+}
+
+.tab.active {
+    background: #303f9f;
+}
+
+.feed {
+    padding: 20px;
+}
+
+.card {
+    background: #fff;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.card h3 {
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status {
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.aberta {
+    background: green;
+}
+
+.fechada {
+    background: red;
+}
+
+.timer {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #0d8cff;
+}
+
+.card p {
+    margin: 0 0 10px;
+}
+
+.card a {
+    background: #0d8cff;
+    color: #fff;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.favorite {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 32px;
+    cursor: pointer;
+    color: #bbb;
+    transition: 0.3s;
+}
+
+.favorite.active {
+    color: rebeccapurple;
+}
+
+footer {
+    background: #333;
+    color: #eee;
+    padding: 40px 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+footer h4 {
+    margin-top: 0;
+}
+
+footer a {
+    color: #eee;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .card {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    footer {
+        grid-template-columns: 1fr;
+    }
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.modal-content p {
+    margin: 15px 0;
+    color: #666;
+}
+
+.modal-button {
+    background: #0d8cff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 15px;
+}
