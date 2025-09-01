@@ -159,13 +159,14 @@
       });
 
       profileButton.addEventListener("click", () => {
-        sideMenu.classList.add("active");
-        sideMenuBackdrop.classList.add("active");
-      });
-
-      sideMenuBackdrop.addEventListener("click", () => {
-        sideMenu.classList.remove("active");
-        sideMenuBackdrop.classList.remove("active");
+        if (usuarioLogado) {
+          // Se estiver logado, abre o menu lateral
+          sideMenu.classList.add("active");
+          sideMenuBackdrop.classList.add("active");
+        } else {
+          // Se não estiver logado, redireciona para a página de login
+          window.location.href = "login.html"; // Altere para o caminho correto da sua página de login
+        }
       });
 
       function verificarLogin() {
