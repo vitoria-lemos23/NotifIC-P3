@@ -36,8 +36,8 @@
       </header>
 
       <nav>
-        <a href="#">Início</a>
-        <a href="#">Favoritos</a>
+        <a href="login.html">Login</a>
+        <a href="#">Cadastro</a>
         <a href="#">Notificações</a>
         <a href="page_feed.html">Cadastrar Notícia</a>
         <a href="#">Sair</a>
@@ -60,8 +60,14 @@
 
     <div class="feed-header">
       <h2>Feed</h2>
-      <p>Notícias e oportunidades</p>
+        <button id="filterBtn" title="Filtrar">
+          <span class="filter-icon">≡</span>
+        </button>
     </div>
+    <p class="feed-subtitle">Notícias e oportunidades</p>
+
+    <!-- Dropdown de filtros -->
+    <div id="filterMenu" class="filter-menu"></div>
 
     <section class="feed" id="feed"></section>
 
@@ -97,6 +103,9 @@
       const searchBar = document.getElementById("searchBar");
       const notificacaoForm = document.getElementById("notificacaoForm");
       const profileButton = document.getElementById("profileButton");
+      const filterBtn = document.getElementById("filterBtn");
+      const filterMenu = document.getElementById("filterMenu");
+      let activeTags = [];
       let currentTab = "geral";
       let usuarioLogado = true;
 
@@ -110,16 +119,17 @@
         } catch (e) {
           feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
         }
+        renderFilterMenu();
       }
 
       let favoritos = [];
 
       function atualizarEstadoLogin() {
+        const menuTitle = document.querySelector("#sideMenu .menu-title");
         if (usuarioLogado) {
-          // Não mexe na imagem, apenas garante o menu certo
-          document.querySelector("#sideMenu h3").textContent = "Perfil";
+          menuTitle.textContent = "Perfil";
         } else {
-          document.querySelector("#sideMenu h3").textContent = "Login";
+          menuTitle.textContent = "Login";
           favoritos = [];
           render(currentTab, searchBar.value.toLowerCase());
         }
@@ -169,12 +179,53 @@
         }
       });
 
+      filterBtn.addEventListener("click", () => {
+        renderFilterMenu(); // garante que as tags sejam renderizadas
+        filterMenu.classList.toggle("active");
+      });
+
+      // Gerar lista de tags únicas
+      function getAllTags() {
+        const allTags = new Set();
+        data.forEach((item) => item.tags?.forEach((t) => allTags.add(t)));
+        return [...allTags];
+      }
+
+      function renderFilterMenu() {
+        filterMenu.innerHTML = getAllTags()
+          .map(
+            (tag) => `
+        <span class="filter-tag ${
+          activeTags.includes(tag) ? "active" : ""
+        }" data-tag="${tag}">
+          ${tag}
+        </span>
+      `
+          )
+          .join("");
+
+        filterMenu.querySelectorAll(".filter-tag").forEach((el) => {
+          el.addEventListener("click", () => {
+            const tag = el.dataset.tag;
+            if (activeTags.includes(tag)) {
+              activeTags = activeTags.filter((t) => t !== tag);
+              el.classList.remove("active");
+            } else {
+              activeTags.push(tag);
+              el.classList.add("active");
+            }
+            render(currentTab, searchBar.value.toLowerCase());
+          });
+        });
+      }
+
       function verificarLogin() {
         // Simulação - na implementação real, isso verifica se há um token de sessão
         usuarioLogado = Math.random() > 0.5;
         atualizarEstadoLogin();
       }
 
+      // Ajustar o render
       function render(tab, query = "") {
         feed.innerHTML = "";
         let items;
@@ -187,11 +238,20 @@
           items = data.filter((item) => item.tags.includes("vagas"));
         }
 
+        // filtro por busca
         if (query) {
           items = items.filter(
             (item) =>
               item.title.toLowerCase().includes(query) ||
               item.desc.toLowerCase().includes(query)
+          );
+        }
+
+        // filtro por tags
+        if (activeTags.length) {
+          items = items.filter(
+            (item) =>
+              item.tags && activeTags.every((tag) => item.tags.includes(tag))
           );
         }
 
@@ -213,18 +273,25 @@
             }
           }
 
+          let tagsHTML = "";
+          if (item.tags && item.tags.length) {
+            tagsHTML = `<div class="tags">${item.tags
+              .map((tag) => `<span class="tag">${tag}</span>`)
+              .join(" ")}</div>`;
+          }
+
           card.innerHTML = `
-                <span class="favorite ${isFav ? "active" : ""}">★</span>
-                <img src="${item.img}" alt="">
-                <div>
-                  <div class="card-header">
-                    <h3>${item.title} ${statusHTML}</h3>
-                    ${timerHTML}
-                  </div>
-                  <p>${item.desc}</p>
-                  <a href="${item.link}">Saiba mais...</a>
-                </div>
-            `;
+  <span class="favorite ${isFav ? "active" : ""}">★</span>
+  <img src="${item.img}" alt="">
+  <div>
+    <div class="card-header">
+      <h3>${item.title} ${statusHTML} ${tagsHTML}</h3>
+      ${timerHTML}
+    </div>
+    <p>${item.desc}</p>
+    <a href="${item.link}">Saiba mais...</a>
+  </div>
+`;
 
           card.querySelector(".favorite").addEventListener("click", () => {
             if (!usuarioLogado) {
