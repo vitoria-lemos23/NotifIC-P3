@@ -10,7 +10,13 @@
   <body>
     <header>
       <div id="profileButton">
-        <img src="https://i.pravatar.cc/40" alt="Perfil" />
+        <!-- Ícone padrão (não logado) -->
+        <span class="profile-icon" style="font-size: 24px">👤</span>
+        <!-- Imagem de perfil (logado) -->
+        <img
+          src="https://i.pravatar.cc/40"
+          alt="Perfil"
+        />
       </div>
       <form id="notificacaoForm">
         <input type="text" placeholder="Digite seu número..." />
@@ -180,6 +186,7 @@
             usuarioLogado ? "LOGADO" : "DESLOGADO"
           }`
         );
+        atualizarEstadoLogin();
         fecharMenus();
       }
 
@@ -212,14 +219,33 @@
       let favoritos = [];
 
       function atualizarEstadoLogin() {
+        const profileButton = document.getElementById("profileButton");
         const menuTitle = document.querySelector("#sideMenu .menu-title");
+
+        console.log("Atualizando estado de login:", usuarioLogado);
+        console.log("Elemento profileButton:", profileButton);
+
         if (usuarioLogado) {
+          // Usuário logado - mostra avatar circular com borda esférica
+          profileButton.classList.add("logged");
+          profileButton.classList.remove("not-logged");
           menuTitle.textContent = "Perfil";
+          console.log("Classe added: logged");
         } else {
+          // Usuário não logado - mostra ícone com borda quadrada
+          profileButton.classList.remove("logged");
+          profileButton.classList.add("not-logged");
           menuTitle.textContent = "Login";
           favoritos = [];
           render(currentTab, searchBar.value.toLowerCase());
+          console.log("Classe added: not-logged");
         }
+
+        // Debug: verificar quais elementos estão visíveis
+        const img = profileButton.querySelector("img");
+        const icon = profileButton.querySelector(".profile-icon");
+        console.log("Imagem display:", window.getComputedStyle(img).display);
+        console.log("Ícone display:", window.getComputedStyle(icon).display);
       }
 
       function mostrarModalLogin() {
@@ -249,7 +275,7 @@
 
         if (numeroCelular) {
           alert(
-            `Você receberá notificações via Whatsapp no número: ${numeroCelular}`
+            `Você receberá notificações via Email: ${numeroCelular}`
           );
           this.querySelector("input").value = "";
         }

@@ -84,17 +84,65 @@ header > div:last-child {
   font-style: italic;
 }
 
-/* Avatar circular no canto esquerdo */
+/* Ícone de perfil - estados diferentes */
 #profileButton {
-  margin-right: auto; /* fica colado à esquerda */
+    margin-right: auto;
+    cursor: pointer;
+    border: 2px solid #fff;
+    padding: 4px; /* Reduzi o padding para dar mais espaço à imagem */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px; /* Aumentei levemente */
+    height: 48px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
 }
+
+/* Quando NÃO logado - borda quadrada */
+#profileButton:not(.logged) {
+    border-radius: 6px;
+}
+
+/* Quando LOGADO - borda esférica */
+#profileButton.logged {
+    border-radius: 50%;
+}
+
+/* Imagem de perfil - tamanho aumentado */
 #profileButton img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid white;
-  object-fit: cover;
+    width: 40px;  /* Aumentei o tamanho */
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: none;
 }
+
+/* Ícone de perfil - tamanho aumentado */
+#profileButton .profile-icon {
+    font-size: 40px; /* Aumentei o tamanho */
+    color: white;
+}
+
+/* Quando LOGADO - mostra imagem, esconde ícone */
+#profileButton.logged img {
+    display: block;
+}
+
+#profileButton.logged .profile-icon {
+    display: none;
+}
+
+/* Quando NÃO LOGADO - mostra ícone, esconde imagem */
+#profileButton:not(.logged) img {
+    display: none;
+}
+
+#profileButton:not(.logged) .profile-icon {
+    display: block;
+}
+
+/* Notificação */
 
 #notificacaoForm {
   gap: 10px;
@@ -300,70 +348,69 @@ header > div:last-child {
 
 /* Menu de Admin - Estilo Integrado */
 #adminMenu {
-    display: none;
-    position: absolute;
-    top: 100%; /* Abaixo do botão de admin */
-    right: 20px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 15px;
-    z-index: 1001;
-    min-width: 200px;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 5px;
+  display: none;
+  position: absolute;
+  top: 100%; /* Abaixo do botão de admin */
+  right: 20px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  z-index: 1001;
+  min-width: 200px;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 5px;
 }
 
 #adminBtn {
-    background: none;
-    border: none;
-    font-size: 1.6rem;
-    cursor: pointer;
-    padding: 5px;
-    transition: transform 0.2s;
-    color: #333; /* Cor do ícone */
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
+  color: #333; /* Cor do ícone */
 }
 
 #adminBtn:hover {
-    transform: scale(1.1);
-    color: #0d8cff; /* Cor ao passar o mouse */
+  transform: scale(1.1);
+  color: #0d8cff; /* Cor ao passar o mouse */
 }
 
-
 #adminMenu.active {
-    display: flex;
+  display: flex;
 }
 
 #adminMenu button {
-    background: #0d8cff;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.2s;
+  background: #0d8cff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
 }
 
 #adminMenu button:hover {
-    background: #0066cc;
+  background: #0066cc;
 }
 
 #adminMenu h3 {
-    margin: 0 0 10px 0;
-    color: #333;
-    font-size: 1.1rem;
-    border-bottom: 2px solid #0d8cff;
-    padding-bottom: 5px;
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #0d8cff;
+  padding-bottom: 5px;
 }
 
 /* Container para posicionamento relativo */
 .feed-actions {
-    position: relative;
-    display: flex;
-    gap: 10px;
+  position: relative;
+  display: flex;
+  gap: 10px;
 }
 
 .filter-menu.active {
