@@ -1,0 +1,30 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title>notifIC - ícone</title>
+  <desc>Quadrado arredondado escuro com borda azul, contendo um ponto e uma barra inclinada com gradiente azul.</desc>
+
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E6FDC"></stop>
+      <stop offset="1" stop-color="#43A1FF"></stop>
+    </linearGradient>
+    <!-- Ajuste de cores rápido via CSS vars, se quiser -->
+    <style>
+      :root{
+        --bg:#0E1624;     /* fundo do card */
+        --stroke:#2A86F0; /* borda */
+      }
+    </style>
+  </defs>
+
+  <!-- Card -->
+  <rect x="8" y="8" width="240" height="240" rx="28" fill="var(--bg)" stroke="var(--stroke)" stroke-width="2"></rect>
+
+  <!-- Ponto -->
+  <circle cx="74" cy="178" r="14" fill="url(#g)"></circle>
+
+  <!-- Barra inclinada -->
+  <!-- Um retângulo arredondado girado cerca de 18° -->
+  <g transform="translate(0,0) rotate(18 128 128)">
+    <rect x="116" y="84" width="24" height="112" rx="12" fill="url(#g)"></rect>
+  </g>
+</svg>
