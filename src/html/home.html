@@ -61,14 +61,20 @@
 
     <div class="feed-header">
       <h2>Feed</h2>
+      <div class="feed-actions">
         <button id="filterBtn" title="Filtrar">
           <span class="filter-icon">≡</span>
         </button>
+        <button id="adminBtn" title="Admin" style="display: none">⚙️</button>
+      </div>
     </div>
     <p class="feed-subtitle">Notícias e oportunidades</p>
 
     <!-- Dropdown de filtros -->
     <div id="filterMenu" class="filter-menu"></div>
+
+    <!-- Menu de Admin -->
+    <div id="adminMenu" class="filter-menu"></div>
 
     <section class="feed" id="feed"></section>
 
@@ -111,6 +117,86 @@
       let usuarioLogado = true;
 
       let data = [];
+
+      let isAdmin = true; // simulação: mude para false para esconder o botão
+
+      const adminBtn = document.getElementById("adminBtn");
+      const adminMenu = document.getElementById("adminMenu");
+
+      // Mostrar/ocultar botão admin
+      if (isAdmin) {
+        adminBtn.style.display = "inline-block";
+      }
+
+      // Menu de admin
+      adminBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        // Fecha outros menus abertos
+        filterMenu.classList.remove("active");
+
+        // Alterna o menu admin
+        adminMenu.classList.toggle("active");
+
+        // Preenche o conteúdo do menu admin
+        if (adminMenu.classList.contains("active")) {
+          adminMenu.innerHTML = `
+            <h3>Opções Admin</h3>
+            <button onclick="mostrarModalLogin()">Tela de requerimento de Login</button>
+            <button onclick="alternarEstadoLogin()">Alternar Login</button>
+            <button onclick="mostrarPendentes()">Ver Pendentes</button>
+            <button onclick="fecharMenus()">Fechar</button>
+        `;
+
+          // Posiciona o menu próximo ao botão admin
+          const adminBtnRect = adminBtn.getBoundingClientRect();
+          adminMenu.style.top = `${adminBtnRect.bottom + window.scrollY}px`;
+          adminMenu.style.right = `${window.innerWidth - adminBtnRect.right}px`;
+        }
+      });
+
+      // Fechar menus ao clicar fora
+      document.addEventListener("click", (e) => {
+        if (!adminMenu.contains(e.target) && e.target !== adminBtn) {
+          adminMenu.classList.remove("active");
+        }
+        if (!filterMenu.contains(e.target) && e.target !== filterBtn) {
+          filterMenu.classList.remove("active");
+        }
+      });
+
+      // Função para fechar todos os menus
+      function fecharMenus() {
+        adminMenu.classList.remove("active");
+        filterMenu.classList.remove("active");
+      }
+
+      // Função para alternar estado de login
+      function alternarEstadoLogin() {
+        usuarioLogado = !usuarioLogado;
+        atualizarEstadoLogin();
+        alert(
+          `Estado de login alterado para: ${
+            usuarioLogado ? "LOGADO" : "DESLOGADO"
+          }`
+        );
+        fecharMenus();
+      }
+
+      function mostrarPendentes() {
+        const modal = document.createElement("div");
+        modal.className = "modal-backdrop";
+        modal.innerHTML = `
+        <div class="modal-content">
+            <h3>Submissões Pendentes</h3>
+            <p>Notícia 1 <button>Aceitar</button> <button>Rejeitar</button></p>
+            <p>Notícia 2 <button>Aceitar</button> <button>Rejeitar</button></p>
+            <button class="modal-button" onclick="document.body.removeChild(this.parentElement.parentElement)">Fechar</button>
+        </div>
+    `;
+        document.body.appendChild(modal);
+        fecharMenus();
+      }
 
       async function loadNews() {
         try {
@@ -181,7 +267,11 @@
       });
 
       filterBtn.addEventListener("click", () => {
-        renderFilterMenu(); // garante que as tags sejam renderizadas
+        // Fecha o menu admin se estiver aberto
+        adminMenu.classList.remove("active");
+
+        // Abre o menu de filtro
+        renderFilterMenu();
         filterMenu.classList.toggle("active");
       });
 
