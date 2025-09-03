@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/auth.css" />
-    <title>Login - Notific</title>
     <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+    <title>Recuperação de Senha- Notific</title>
   </head>
   <body>
     <div class="auth-container">
@@ -14,8 +14,8 @@
         <p>Seu sistema de notificações eficiente</p>
       </div>
       <div class="auth-form">
-        <h2>Acesse sua Conta</h2>
-        <form action="/login" method="POST">
+        <h2>Recuperar Senha</h2>
+        <form action="/password-recovery" method="POST">
           <label for="email">Email</label>
           <input
             type="email"
@@ -25,20 +25,11 @@
             required
           />
 
-          <label for="password">Senha</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Digite sua senha"
-            required
-          />
-
           <div class="links">
-            <a href="registrar.html">Criar Conta</a>
-            <a href="recuperacaoSenha.html">Esqueci minha senha</a>
+            <a href="login.html">Login</a>
+            <a href="home.html">Tela inicial</a>
           </div>
-          <button type="submit">Entrar</button>
+          <button type="submit">Recuperar Senha</button>
         </form>
       </div>
     </div>

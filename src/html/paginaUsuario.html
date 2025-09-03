@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Usuário</title>
+    <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+    <link rel="stylesheet" href="../css/perfil.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+        <header>
+      <div id="profileButton">
+                <img src="https://i.pravatar.cc/40" alt="Perfil" /> 
+      </div>
+    </header>
+   
+    <aside class="side-menu" id="sideMenu">
+      <header>
+        <button class="close-btn" onclick="toggleMenu()">←</button>
+        <span class="menu-title"
+          >./notif<span style="color: deepskyblue">IC</span></span>
+        <nav class="navbar">
+        </a>
+        <h1>./notif<span class="logo-ic">IC</span></h1>
+        <a href="home.html">
+        <img src="../img/home_icon.png" alt="Home" class="home-icon">
+        </a>
+
+    </nav>
+      </header>
+
+      <nav>
+        <a href="login.html">Login</a>
+        <a href="#">Cadastro</a>
+        <a href="#">Notificações</a>
+        <a href="page_feed.html">Cadastrar Notícia</a>
+        <a href="paginaUsuario.html">Perfil</a>
+        <a href="#">Sair</a>
+      </nav>
+
+      <footer>© 2025 ./notifIC</footer>
+    </aside>
+
+        <div
+      class="side-menu-backdrop"
+      id="sideMenuBackdrop"
+      onclick="toggleMenu()"
+    ></div>
+
+    <main class="profile-container">
+        <div class="profile-content">
+            <div class="section-container profile-info-section">
+                <h2>Minhas Informações</h2>
+                <div class="profile-details">
+                    <div class="profile-avatar">
+                        <img id="profile-picture" src="https://via.placeholder.com/150/f0eafb/8e6fe5?text=Foto" alt="Foto de Perfil">
+                        <div class="avatar-actions">
+                            <button id="change-photo-btn">Mudar foto de perfil</button>
+                          <input type="file" id="photo-upload" accept="image/*" style="display: none;">
+                            <button id="choose-photo-btn">
+                                <i class="fas fa-upload"></i> Escolher foto
+                            </button>
+                        </div>
+                    </div>
+                    <div class="user-info-fields">
+                        <div class="info-group">
+                    <form>
+                            <label for="username">Nome de usuário</label>
+                            <input type="text" name="username" placeholder="Nome"/>
+                        </div>
+                        <div class="info-group">
+                            <label for="email">Email cadastrado</label>
+                            <input type="email" email="email" placeholder="Email:"/>
+                        </div>
+                        <div class="info-group">
+                            <label for="course">Curso</label>
+                            <input type="text" id="course" placeholder="Curso:"/>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-container notification-section">
+                <h2>Preferência de notificações</h2>
+                <div class="preferences-list">
+                    <div class="preference-item">
+                        <span>Eventos</span>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="preference-item">
+                        <span>Projetos</span>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="preference-item">
+                        <span>Vagas</span>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+        <script>
+      // Função para abrir e fechar o menu
+      function toggleMenu() {
+        const sideMenu = document.getElementById("sideMenu");
+        const backdrop = document.getElementById("sideMenuBackdrop");
+        sideMenu.classList.toggle("active");
+        backdrop.classList.toggle("active");
+        // Impede a rolagem do corpo quando o menu está aberto
+        document.body.style.overflow = sideMenu.classList.contains("active") ? "hidden" : "";
+      }
+
+      // Adicionar evento de clique ao botão de perfil
+      document.getElementById("profileButton").addEventListener("click", toggleMenu);
+    </script>
+</body>
+</html>

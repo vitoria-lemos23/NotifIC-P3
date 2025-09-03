@@ -1,3 +1,5 @@
+/* ESTILOS DO LOGIN*/
+
 * {
   margin: 0;
   padding: 0;
@@ -14,7 +16,7 @@ body {
   height: 100vh;
 }
 
-.login-container {
+.auth-container {
   background-color: #0f172a;
   padding: 20px;
   width: 100%;
@@ -40,23 +42,23 @@ body {
   margin-top: 5px;
 }
 
-.login-form {
+.auth-form {
   display: grid;
   gap: 15px;
   text-align: left;
 }
 
-.login-form h2 {
+.auth-form h2 {
   margin-bottom: 10px;
   text-align: center;
 }
 
-.login-form label {
+.auth-form label {
   margin-bottom: 5px;
   font-size: 0.95rem;
 }
 
-.login-form input {
+.auth-form input {
   width: 100%;
   padding: 12px;
   margin-bottom: 10px;
@@ -67,23 +69,23 @@ body {
   outline: none;
 }
 
-.login-form .links {
+.auth-form .links {
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
 }
 
-.login-form .links a {
+.auth-form .links a {
   color: #1d60a0;
   font-size: 0.9rem;
   text-decoration: none;
 }
 
-.login-form .links a:hover {
+.auth-form .links a:hover {
   text-decoration: underline;
 }
 
-.login-form button {
+.auth-form button {
   background-color: #1d60a0;
   width: 100%;
   color: #fff;
@@ -94,19 +96,19 @@ body {
   font-weight: bold;
   font-size: 1.1em;
 }
-.login-form button:hover {
+.auth-form button:hover {
   background-color: #174d7a;
 }
 
 @media (max-width: 600px) {
-  .login-container {
+  .auth-container {
     padding: 15px;
   }
 
   .logo img {
     width: 60%;
   }
-  .login-form button {
+  .auth-form button {
     font-size: 1em;
   }
 }

@@ -1,408 +1,618 @@
 /* home.css */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    color: #222;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #222;
 }
 
 header {
-    background: #0d8cff;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #fff;
+  background: #0d8cff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
 }
 
 header > div:last-child {
-    border: 2px solid #fff;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
+  border: 2px solid #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
+.tags {
+  margin: 5px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
 
+.tag {
+  background: #a5a5a5;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
 
 .banner {
-    position: relative;
-    text-align: center;
-    color: #fff;
+  position: relative;
+  text-align: center;
+  color: #fff;
 }
 
 .banner img {
-    width: 100%;
-    height: 60vh;
-    min-height: 300px;
-    opacity: 100%;
-    object-fit: cover;
-    filter: brightness(0.7);
+  width: 100%;
+  height: 60vh;
+  min-height: 300px;
+  opacity: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
 }
 
 .banner-text {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .banner-text input {
-    margin-top: 25px;
-    padding: 12px 20px;
-    width: 85%;
-    max-width: 400px;
-    border-radius: 50px;
-    border: none;
-    font-size: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    outline: none;
+  margin-top: 25px;
+  padding: 12px 20px;
+  width: 85%;
+  max-width: 400px;
+  border-radius: 50px;
+  border: none;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  outline: none;
 }
 
 .banner-text h1 {
-    font-size: 2.5rem;
-    margin-bottom: 8px;
+  font-size: 2.5rem;
+  margin-bottom: 8px;
 }
 
 .banner-text p {
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: 1rem;
-    font-style: italic;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-style: italic;
 }
 
-/* Avatar circular no canto esquerdo */
+/* Ícone de perfil - estados diferentes */
 #profileButton {
+    margin-right: auto;
+    cursor: pointer;
+    border: 2px solid #fff;
+    padding: 4px; /* Reduzi o padding para dar mais espaço à imagem */
     display: flex;
     align-items: center;
-    cursor: pointer;
+    justify-content: center;
+    width: 48px; /* Aumentei levemente */
+    height: 48px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
-#profileButton img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid white;
-    object-fit: cover;
+/* Quando NÃO logado - borda quadrada */
+#profileButton:not(.logged) {
+    border-radius: 6px;
 }
+
+/* Quando LOGADO - borda esférica */
+#profileButton.logged {
+    border-radius: 50%;
+}
+
+/* Imagem de perfil - tamanho aumentado */
+#profileButton img {
+    width: 40px;  /* Aumentei o tamanho */
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: none;
+}
+
+/* Ícone de perfil - tamanho aumentado */
+#profileButton .profile-icon {
+    font-size: 40px; /* Aumentei o tamanho */
+    color: white;
+}
+
+/* Quando LOGADO - mostra imagem, esconde ícone */
+#profileButton.logged img {
+    display: block;
+}
+
+#profileButton.logged .profile-icon {
+    display: none;
+}
+
+/* Quando NÃO LOGADO - mostra ícone, esconde imagem */
+#profileButton:not(.logged) img {
+    display: none;
+}
+
+#profileButton:not(.logged) .profile-icon {
+    display: block;
+}
+
+/* Notificação */
 
 #notificacaoForm {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
+  gap: 10px;
+  margin-left: auto;
 }
 
 #notificacaoForm input {
-    padding: 10px 8px;
-    border: none;
-    border-radius: 6px;
-    min-width: 150px;
-    max-width: 250px;
-    font-size: 1rem;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 6px;
+  min-width: 150px;
+  max-width: 250px;
+  font-size: 1rem;
 }
 
 #notificacaoForm button {
-    background: #ffcc00;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    white-space: nowrap;
+  background: #ffcc00;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 /* Drawer lateral */
 .side-menu {
-    position: fixed;
-    top: 0;
-    left: -300px;
-    width: 300px;
-    max-width: 80%;
-    height: 100%;
-    background: #fff;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    transition: left 0.3s ease;
-    z-index: 1100;
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  max-width: 80%;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  transition: left 0.3s ease;
+  z-index: 1100;
 }
 
 .side-menu nav {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .side-menu nav a {
-    padding: 15px 20px;
-    text-decoration: none;
-    color: #333;
-    font-size: 1rem;
-    border-bottom: 1.5px solid #eee;
-    transition: background 0.2s ease;
+  padding: 15px 20px;
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  border-bottom: 1.5px solid #eee;
+  transition: background 0.2s ease;
 }
 
 .side-menu nav a:hover {
-    background: #e6f3ff;
+  background: #e6f3ff;
 }
 
 .side-menu footer {
-    padding: 15px 20px;
-    background: #0d8cff;
-    color: #fff;
-    text-align: center;
-    font-size: 0.9rem;
+  padding: 15px 20px;
+  background: #0d8cff;
+  color: #fff;
+  text-align: center;
+  font-size: 0.9rem;
 }
 
 .menu-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ffffff;
-    margin-left: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-left: 10px;
 }
 
 .side-menu header {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    background: #0d8cff;
-    color: #fff;
-    font-size: 1.2rem;
-    font-weight: bold;
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background: #0d8cff;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .close-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #fff;
-    cursor: pointer;
-    margin-right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 10px;
 }
 
 .side-menu.active {
-    left: 0;
+  left: 0;
 }
 
 /* Fundo escuro atrás do menu */
 .side-menu-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: none;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 1000;
 }
 
 .side-menu-backdrop.active {
-    display: block;
+  display: block;
 }
 
 .side-menu h3 {
-    margin-top: 0;
-    color: #0d8cff;
+  margin-top: 0;
+  color: #0d8cff;
 }
 
 .side-menu ul {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 .side-menu ul li {
-    margin: 15px 0;
+  margin: 15px 0;
 }
 
 .side-menu ul li a {
-    text-decoration: none;
-    color: #333;
-    font-size: 1.1rem;
+  text-decoration: none;
+  color: #333;
+  font-size: 1.1rem;
 }
 
 .feed-header {
-    padding: 20px 20px 0;
-    text-align: left;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between; /* título à esquerda, botão à direita */
+  align-items: center;
 }
 
 .feed-header h2 {
-    margin: 0;
-    font-size: 2rem;
-    color: #333;
+  margin: 0;
+  font-size: 2rem;
+  color: #333;
 }
 
-.feed-header p {
-    margin: 5px 0 0;
-    color: #666;
-    font-style: italic;
+.feed-subtitle {
+  margin: 0 20px 10px;
+  color: #666;
+  font-style: italic;
+}
+
+.feed-subtitle {
+  margin: 0 20px 10px;
+  color: #666;
+  font-style: italic;
+}
+
+.feed-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-menu::before {
+  content: "Filtro:"; /* o título */
+  display: block;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.filter-menu {
+  display: none;
+  position: fixed; /* fica preso à tela, não ao layout */
+  top: 50%; /* centraliza verticalmente */
+  left: 50%; /* centraliza horizontalmente */
+  transform: translate(-50%, -50%); /* ajusta para o centro exato */
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1200;
+  max-width: 300px;
+  width: 90%; /* responsivo no mobile */
+}
+
+#filterBtn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 6px;
+  transition: transform 0.2s;
+}
+
+#filterBtn:hover {
+  transform: scale(1.1);
+}
+
+/* Menu de Admin - Estilo Integrado */
+#adminMenu {
+  display: none;
+  position: absolute;
+  top: 100%; /* Abaixo do botão de admin */
+  right: 20px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  z-index: 1001;
+  min-width: 200px;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+#adminBtn {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
+  color: #333; /* Cor do ícone */
+}
+
+#adminBtn:hover {
+  transform: scale(1.1);
+  color: #0d8cff; /* Cor ao passar o mouse */
+}
+
+#adminMenu.active {
+  display: flex;
+}
+
+#adminMenu button {
+  background: #0d8cff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+#adminMenu button:hover {
+  background: #0066cc;
+}
+
+#adminMenu h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #0d8cff;
+  padding-bottom: 5px;
+}
+
+/* Container para posicionamento relativo */
+.feed-actions {
+  position: relative;
+  display: flex;
+  gap: 10px;
+}
+
+.filter-menu.active {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-menu label {
+  display: block;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+/* Tag de filtro clicável */
+.filter-tag {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  background: #eee;
+  color: #333;
+  transition: 0.2s;
+}
+
+.filter-tag:hover {
+  background: #d6ecff;
+  color: #0d8cff;
+}
+
+.filter-tag.active {
+  background: #0d8cff;
+  color: #fff;
+  font-weight: bold;
 }
 
 .tabs {
-    display: flex;
-    justify-content: space-around;
-    background: #4d63ff;
-    color: #fff;
-    font-weight: bold;
+  display: flex;
+  justify-content: space-around;
+  background: #4d63ff;
+  color: #fff;
+  font-weight: bold;
 }
 
 .tab {
-    padding: 15px;
-    cursor: pointer;
-    flex: 1;
-    text-align: center;
+  padding: 15px;
+  cursor: pointer;
+  flex: 1;
+  text-align: center;
 }
 
 .tab.active {
-    background: #303f9f;
+  background: #303f9f;
 }
 
 .feed {
-    padding: 20px;
+  padding: 20px;
 }
 
 .card {
-    background: #fff;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    padding: 15px;
-    display: flex;
-    gap: 15px;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
+  background: #fff;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  gap: 15px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .card img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    border-radius: 8px;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
 }
 
 .card h3 {
-    margin: 0 0 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .status {
-    font-size: 0.8rem;
-    padding: 2px 6px;
-    border-radius: 5px;
-    color: #fff;
-    font-weight: bold;
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: bold;
 }
 
 .aberta {
-    background: green;
+  background: green;
 }
 
 .fechada {
-    background: red;
+  background: red;
 }
 
 .timer {
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: #0d8cff;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #0d8cff;
 }
 
 .card p {
-    margin: 0 0 10px;
+  margin: 0 0 10px;
 }
 
 .card a {
-    background: #0d8cff;
-    color: #fff;
-    padding: 8px 12px;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 0.9rem;
+  background: #0d8cff;
+  color: #fff;
+  padding: 8px 12px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
 }
 
 .favorite {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    font-size: 32px;
-    cursor: pointer;
-    color: #bbb;
-    transition: 0.3s;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 32px;
+  cursor: pointer;
+  color: #bbb;
+  transition: 0.3s;
 }
 
 .favorite.active {
-    color: rebeccapurple;
+  color: rebeccapurple;
 }
 
 footer {
-    background: #333;
-    color: #eee;
-    padding: 40px 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
+  background: #333;
+  color: #eee;
+  padding: 40px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
 }
 
 footer h4 {
-    margin-top: 0;
+  color: rgb(255, 217, 0);
+  margin-top: 0;
 }
 
 footer a {
-    color: #eee;
-    text-decoration: none;
+  color: #eee;
+  text-decoration: none;
 }
 
 @media (max-width: 768px) {
-    .card {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    footer {
-        grid-template-columns: 1fr;
-    }
+  .card {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  footer {
+    grid-template-columns: 1fr;
+  }
 }
 
 .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-    max-width: 400px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .modal-content h3 {
-    margin-top: 0;
-    color: #333;
+  margin-top: 0;
+  color: #333;
 }
 
 .modal-content p {
-    margin: 15px 0;
-    color: #666;
+  margin: 15px 0;
+  color: #666;
 }
 
 .modal-button {
-    background: #0d8cff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    margin-top: 15px;
+  background: #0d8cff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 15px;
 }
