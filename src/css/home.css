@@ -7,7 +7,7 @@ body {
 }
 
 header {
-  background: #0d8cff;
+  background: #304b8a;
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;
@@ -159,7 +159,7 @@ header > div:last-child {
 }
 
 #notificacaoForm button {
-  background: #ffcc00;
+  background: #ff9100;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -206,7 +206,7 @@ header > div:last-child {
 
 .side-menu footer {
   padding: 15px 20px;
-  background: #0d8cff;
+  background: #0f172a;
   color: #fff;
   text-align: center;
   font-size: 0.9rem;
@@ -223,7 +223,7 @@ header > div:last-child {
   display: flex;
   align-items: center;
   padding: 15px 20px;
-  background: #0d8cff;
+  background: #304b8a;
   color: #fff;
   font-size: 1.2rem;
   font-weight: bold;
@@ -554,7 +554,7 @@ footer {
 }
 
 footer h4 {
-  color: rgb(255, 217, 0);
+  color: #ff9100;
   margin-top: 0;
 }
 
