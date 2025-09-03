@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/auth.css" />
-    <title>Login - Notific</title>
     <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+    <title>Criar Conta - Notific</title>
   </head>
   <body>
     <div class="auth-container">
@@ -14,14 +14,32 @@
         <p>Seu sistema de notificações eficiente</p>
       </div>
       <div class="auth-form">
-        <h2>Acesse sua Conta</h2>
-        <form action="/login" method="POST">
+        <h2>Criar Conta</h2>
+        <form action="/registro" method="POST">
+          <label for="nome">Nome Completo</label>
+          <input
+            type="text"
+            id="nome"
+            name="nome"
+            placeholder="Digite seu nome completo"
+            required
+          />
+
           <label for="email">Email</label>
           <input
             type="email"
             id="email"
             name="email"
             placeholder="Digite seu email"
+            required
+          />
+
+          <label for="matricula">Matrícula</label>
+          <input
+            type="text"
+            id="matricula"
+            name="matricula"
+            placeholder="Digite sua matrícula"
             required
           />
 
@@ -34,11 +52,20 @@
             required
           />
 
+          <label for="confirm-password">Confirme sua Senha</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+            placeholder="Confirme sua senha"
+            required
+          />
+
           <div class="links">
-            <a href="registrar.html">Criar Conta</a>
+            <a href="login.html">Já tenho conta</a>
             <a href="recuperacaoSenha.html">Esqueci minha senha</a>
           </div>
-          <button type="submit">Entrar</button>
+          <button type="submit">Criar Conta</button>
         </form>
       </div>
     </div>
