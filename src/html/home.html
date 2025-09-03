@@ -13,10 +13,7 @@
         <!-- Ícone padrão (não logado) -->
         <span class="profile-icon" style="font-size: 24px">👤</span>
         <!-- Imagem de perfil (logado) -->
-        <img
-          src="https://i.pravatar.cc/40"
-          alt="Perfil"
-        />
+        <img src="https://i.pravatar.cc/40" alt="Perfil" />
       </div>
       <form id="notificacaoForm">
         <input type="text" placeholder="Digite seu número..." />
@@ -274,9 +271,7 @@
         const numeroCelular = this.querySelector("input").value;
 
         if (numeroCelular) {
-          alert(
-            `Você receberá notificações via Email: ${numeroCelular}`
-          );
+          alert(`Você receberá notificações via Email: ${numeroCelular}`);
           this.querySelector("input").value = "";
         }
       });
@@ -292,7 +287,9 @@
         }
       });
 
-      filterBtn.addEventListener("click", () => {
+      filterBtn.addEventListener("click", (e) => {
+        e.stopPropagation(); // Impede que o evento se propague
+
         // Fecha o menu admin se estiver aberto
         adminMenu.classList.remove("active");
 
