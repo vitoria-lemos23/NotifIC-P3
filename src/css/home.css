@@ -34,7 +34,7 @@ header > div:last-child {
   color: #ffffff;
   font-size: 0.75rem;
   font-weight: bold;
-  padding: 2px 6px; 
+  padding: 2px 6px;
   border-radius: 4px;
 }
 
@@ -260,9 +260,8 @@ header > div:last-child {
   gap: 10px;
 }
 
-
 .filter-menu::before {
-  content: "Filtro:";  /* o título */
+  content: "Filtro:"; /* o título */
   display: block;
   text-align: center;
   font-size: 1rem;
@@ -272,18 +271,18 @@ header > div:last-child {
 
 .filter-menu {
   display: none;
-  position: fixed;       /* fica preso à tela, não ao layout */
-  top: 50%;              /* centraliza verticalmente */
-  left: 50%;             /* centraliza horizontalmente */
+  position: fixed; /* fica preso à tela, não ao layout */
+  top: 50%; /* centraliza verticalmente */
+  left: 50%; /* centraliza horizontalmente */
   transform: translate(-50%, -50%); /* ajusta para o centro exato */
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   padding: 20px;
   z-index: 1200;
   max-width: 300px;
-  width: 90%;            /* responsivo no mobile */
+  width: 90%; /* responsivo no mobile */
 }
 
 #filterBtn {
@@ -297,6 +296,74 @@ header > div:last-child {
 
 #filterBtn:hover {
   transform: scale(1.1);
+}
+
+/* Menu de Admin - Estilo Integrado */
+#adminMenu {
+    display: none;
+    position: absolute;
+    top: 100%; /* Abaixo do botão de admin */
+    right: 20px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    z-index: 1001;
+    min-width: 200px;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+#adminBtn {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s;
+    color: #333; /* Cor do ícone */
+}
+
+#adminBtn:hover {
+    transform: scale(1.1);
+    color: #0d8cff; /* Cor ao passar o mouse */
+}
+
+
+#adminMenu.active {
+    display: flex;
+}
+
+#adminMenu button {
+    background: #0d8cff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+#adminMenu button:hover {
+    background: #0066cc;
+}
+
+#adminMenu h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #0d8cff;
+    padding-bottom: 5px;
+}
+
+/* Container para posicionamento relativo */
+.feed-actions {
+    position: relative;
+    display: flex;
+    gap: 10px;
 }
 
 .filter-menu.active {
