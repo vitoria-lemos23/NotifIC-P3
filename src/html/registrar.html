@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/auth.css" />
+    <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+    <title>Criar Conta - Notific</title>
+  </head>
+  <body>
+    <div class="auth-container">
+      <div class="logo">
+        <img src="../img/notific.svg" alt="Logo Notific" class="logo-img" />
+        <p>Seu sistema de notificações eficiente</p>
+      </div>
+      <div class="auth-form">
+        <h2>Criar Conta</h2>
+        <form action="/registro" method="POST">
+          <label for="nome">Nome Completo</label>
+          <input
+            type="text"
+            id="nome"
+            name="nome"
+            placeholder="Digite seu nome completo"
+            required
+          />
+
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Digite seu email"
+            required
+          />
+
+          <label for="matricula">Matrícula</label>
+          <input
+            type="text"
+            id="matricula"
+            name="matricula"
+            placeholder="Digite sua matrícula"
+            required
+          />
+
+          <label for="password">Senha</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Digite sua senha"
+            required
+          />
+
+          <label for="confirm-password">Confirme sua Senha</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+            placeholder="Confirme sua senha"
+            required
+          />
+
+          <div class="links">
+            <a href="login.html">Já tenho conta</a>
+            <a href="recuperacaoSenha.html">Esqueci minha senha</a>
+          </div>
+          <button type="submit">Criar Conta</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
