@@ -37,6 +37,12 @@
     <label for="email">Email</label>
     <input type="email" id="email" placeholder="voce@email.com">
 
+    <label for="descricao">Descrição do evento (Markdown permitido)</label>
+    <textarea id="descricao" placeholder="Escreva a descrição do evento..."></textarea>
+
+    <h3>Pré-visualização:</h3>
+    <div id="preview" class="preview"></div>
+
     <div class="form-row">
       <div>
         <label for="data-inicio">Data de início</label>
@@ -47,7 +53,6 @@
         <input type="date" id="data-fim">
       </div>
     </div>
-
     <div class="form-row">
       <div>
         <label for="local">Local</label>
@@ -59,8 +64,22 @@
       </div>
     </div>
 
+
     <button type="submit">Enviar Anúncio</button>
   </div>
+
+  <!-- Biblioteca para Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script>
+    const descricao = document.getElementById('descricao');
+    const preview = document.getElementById('preview');
+
+    descricao.addEventListener('input', () => {
+      preview.innerHTML = marked.parse(descricao.value);
+    });
+  </script>
+
 </body>
 
 </html>
