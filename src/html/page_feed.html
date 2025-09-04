@@ -14,7 +14,7 @@
   <!-- Navbar -->
   <nav class="navbar">
     </a>
-    <h1>./notif<span class="logo-ic">IC</span></h1>
+    <img src="../img/notific.svg" alt="logo do notific" class="logo-ic">
     <a href="home.html">
       <img src="../img/home_icon.png" alt="Home" class="home-icon">
     </a>
@@ -72,14 +72,11 @@
   <!-- Biblioteca para Markdown -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-  <script>
-    const descricao = document.getElementById('descricao');
-    const preview = document.getElementById('preview');
+  <!-- Biblioteca para Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-    descricao.addEventListener('input', () => {
-      preview.innerHTML = marked.parse(descricao.value);
-    });
-  </script>
+  <!-- Script externo -->
+<script src="../javascript/preview.js"></script>
 
 </body>
 

@@ -10,22 +10,15 @@
      display: flex;
      justify-content: space-between;
      align-items: center;
-     background: #0d8cff;
-     padding: 10px 20px;
+     background: #1d60a0;
+     padding: 20px 10px;
      color: white;
  }
 
- .navbar .logo {
-     font-weight: bold;
-     font-size: 18px;
-     background: white;
-     color: #0A5EFF;
-     padding: 6px 12px;
-     border-radius: 6px;
- }
+
 
  .logo-ic {
-     color: deepskyblue;
+     height: 60px;
  }
 
  .home-icon {
@@ -48,20 +41,20 @@
      max-width: 800px;
      background: white;
      margin: 40px auto;
-     padding: 30px;
+     padding: 50px;
      border-radius: 10px;
      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
  }
 
  textarea {
-    width: 100%;
-    height: 150px;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    resize: vertical;
-    margin-bottom: 18px;
+     width: 100%;
+     height: 150px;
+     padding: 10px;
+     font-size: 20px;
+     border: 1px solid #ddd;
+     border-radius: 6px;
+     resize: vertical;
+     margin-bottom: 18px;
  }
 
  .preview {
@@ -71,13 +64,13 @@
      background: #f8f8f8;
      min-height: 100px;
      margin-bottom: 20px;
-    overflow-wrap: break-word;
+     overflow-wrap: break-word;
  }
 
 
  h2 {
      margin-bottom: 10px;
-     font-size: 22px;
+     font-size: 35px;
      color: #222;
  }
 
@@ -88,7 +81,7 @@
 
  label {
      display: block;
-     font-size: 14px;
+     font-size: 20px;
      margin-bottom: 6px;
      color: #333;
  }
@@ -103,7 +96,7 @@
      margin-bottom: 18px;
      border: 1px solid #ddd;
      border-radius: 6px;
-     font-size: 14px;
+     font-size: 20px;
  }
 
  .form-row {
@@ -118,10 +111,10 @@
  button {
      display: block;
      width: 200px;
-     padding: 14px;
+     padding: 20px;
      background: #0A5EFF;
      color: white;
-     font-size: 16px;
+     font-size: 20px;
      border: none;
      border-radius: 8px;
      cursor: pointer;
