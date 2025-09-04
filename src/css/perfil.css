@@ -308,10 +308,15 @@ input:checked + .slider:before {
     justify-content: flex-start;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 0;      /* Garante que não tenha margem superior */
+    border-top: 0;      /* Remove qualquer borda superior */
 }
 
+
 #profileButton {
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 #profileButton img {
@@ -320,4 +325,8 @@ input:checked + .slider:before {
     width: 40px;
     height: 40px;
     object-fit: cover;
+}
+
+.home-icon {
+    margin-left: auto;
 }
