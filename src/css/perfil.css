@@ -1,36 +1,12 @@
 body {
-    font-family: sans-serif;
+    font-family:Arial, sans-serif;
     background-color: #f0f2f5;
     margin: 0;
     padding: 0;
     color: #333;
 }
 
-.top-bar {
-    background-color: #007bff;
-    color: white;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.user-info, .main-nav {
-    display: flex;
-    align-items: center;
-}
-
-.user-info i, .main-nav a {
-    font-size: 24px;
-    color: white;
-    margin-right: 15px;
-}
-
-.main-nav .home-icon i {
-    font-size: 28px;
-}
-
+/* Container principal */
 .profile-container {
     padding: 30px;
 }
@@ -55,6 +31,7 @@ body {
     color: #666;
 }
 
+/* Informações do perfil */
 .profile-info-section {
     border-bottom: 1px solid #e0e0e0;
     padding-bottom: 40px;
@@ -128,6 +105,7 @@ body {
     border: 1px solid #e0e0e0;
 }
 
+/* Preferências de notificações */
 .notification-section {
     margin-top: 40px;
 }
@@ -150,7 +128,7 @@ body {
     margin-bottom: 0;
 }
 
-/* Switch Styles */
+/* Switch */
 .switch {
     position: relative;
     display: inline-block;
@@ -205,105 +183,129 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
-/* Adicionado para o menu lateral deslizante */
+
+/* Drawer lateral */
 .side-menu {
-    position: fixed;
-    top: 0;
-    left: -300px; /* Esconde o menu para a esquerda */
-    width: 280px;
-    height: 100%;
-    background: #fff;
-    z-index: 1000;
-    transition: left 0.3s ease-in-out;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-/* Estado ativo: o menu desliza para a tela */
-.side-menu.active {
-    left: 0;
-}
-
-/* Estilo do cabeçalho do menu lateral */
-.side-menu header {
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.side-menu .close-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    margin-right: 15px;
-    color: #666;
-}
-
-.side-menu .menu-title {
-    font-size: 22px;
-    font-weight: bold;
-    color: #333;
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  max-width: 80%;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  transition: left 0.3s ease;
+  z-index: 1100;
 }
 
 .side-menu nav {
-    flex-grow: 1;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .side-menu nav a {
-    text-decoration: none;
-    color: #555;
-    font-size: 16px;
-    padding: 10px;
-    border-radius: 5px;
-    transition: background-color 0.2s;
+  padding: 15px 20px;
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  border-bottom: 1.5px solid #eee;
+  transition: background 0.2s ease;
 }
 
 .side-menu nav a:hover {
-    background-color: #f0f2f5;
+  background: #e6f3ff;
 }
 
 .side-menu footer {
-    padding: 15px;
-    text-align: center;
-    font-size: 12px;
-    color: #aaa;
-    border-top: 1px solid #e0e0e0;
+  padding: 15px 20px;
+  background: #080b18;
+  color: #fff;
+  text-align: center;
+  font-size: 0.9rem;
 }
 
-/* Estilo do fundo escuro */
+.menu-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-left: 10px;
+}
+
+.side-menu header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background: #304b8a;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.side-menu.active {
+  left: 0;
+}
+
+/* Fundo escuro atrás do menu */
 .side-menu-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease-in-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 1000;
 }
 
-/* Estado ativo: o fundo escuro aparece */
 .side-menu-backdrop.active {
-    opacity: 1;
-    visibility: visible;
+  display: block;
 }
 
-/* Estilo para a barra de cabeçalho com o botão de perfil */
-header {
-    background-color: #007bff; /* Use a cor que você já tem */
+.side-menu h3 {
+  margin-top: 0;
+  color: #0d8cff;
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.side-menu ul li {
+  margin: 15px 0;
+}
+
+.side-menu ul li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.feed-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between; /* título à esquerda, botão à direita */
+  align-items: center;
+}
+
+/* Header principal (barra azul) */
+.main-header {
+    background-color: #304b8a;
     padding: 15px 30px;
     display: flex;
-    justify-content: flex-start; /* Alinha o botão de perfil à esquerda*/
+    justify-content: flex-start;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -319,12 +321,3 @@ header {
     height: 40px;
     object-fit: cover;
 }
-  /*display: block;{
-  background: #0d8cff;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background 0.3s ease;
-}   */

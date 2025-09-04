@@ -10,26 +10,25 @@
 </head>
 
 <body>
-        <header>
-      <div id="profileButton">
-                <img src="https://i.pravatar.cc/40" alt="Perfil" /> 
-      </div>
-    </header>
+<!-- Header principal -->
+    <header class="main-header">
+        <div id="profileButton">
+            <img src="https://i.pravatar.cc/40" alt="Perfil" /> 
+        </div>
+        <div id = "homeButton">
+            <a href="home.html" class="back-btn">← Voltar</a>
+            </div>
+    </header>
    
-    <aside class="side-menu" id="sideMenu">
-      <header>
-        <button class="close-btn" onclick="toggleMenu()">←</button>
-        <span class="menu-title"
-          >./notif<span style="color: deepskyblue">IC</span></span>
-        <nav class="navbar">
-        </a>
-        <h1>./notif<span class="logo-ic">IC</span></h1>
-        <a href="home.html">
-        <img src="../img/home_icon.png" alt="Home" class="home-icon">
-        </a>
-
-    </nav>
-      </header>
+<aside class="side-menu" id="sideMenu">
+        <!-- Header do menu lateral -->
+        <header class="side-header">
+            <button class="close-btn" onclick="toggleMenu()">←</button>
+            <span class="menu-title">./notif<span style="color: deepskyblue">IC</span></span>
+            <nav class="navbar">
+                <h1>./notif<span class="logo-ic">IC</span></h1>
+            </nav>
+        </header>
 
       <nav>
         <a href="login.html">Login</a>
@@ -37,7 +36,7 @@
         <a href="#">Notificações</a>
         <a href="page_feed.html">Cadastrar Notícia</a>
         <a href="paginaUsuario.html">Perfil</a>
-        <a href="#">Sair</a>
+        <a href="login.html">Sair</a>
       </nav>
 
       <footer>© 2025 ./notifIC</footer>
