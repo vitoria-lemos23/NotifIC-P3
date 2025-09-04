@@ -35,8 +35,8 @@ body {
 }
 
 .logo p {
-  color: #1d60a0;
-  font-size: 0.9rem;
+  color: #9cc8ff;
+  font-size: 0.95rem;
   font-weight: bold;
   letter-spacing: 0.5px;
   margin-top: 5px;
@@ -76,7 +76,7 @@ body {
 }
 
 .auth-form .links a {
-  color: #1d60a0;
+  color: #66b2ff;
   font-size: 0.9rem;
   text-decoration: none;
 }
@@ -111,4 +111,11 @@ body {
   .auth-form button {
     font-size: 1em;
   }
+}
+.auth-form a:focus-visible,
+.auth-form button:focus-visible,
+.auth-form input:focus-visible {
+  outline: 2px solid #80cfff;
+  outline-offset: 2px;
+  border-radius: 6px;
 }
