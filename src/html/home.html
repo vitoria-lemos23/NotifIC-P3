@@ -14,12 +14,9 @@
         <!-- Ícone padrão (não logado) -->
         <span class="profile-icon" style="font-size: 24px">👤</span>
         <!-- Imagem de perfil (logado) -->
-        <img src="https://i.pravatar.cc/40" alt="Perfil" />
+        <img src="https://i.pravatar.cc/150" alt="Perfil" />
       </div>
-      <form id="notificacaoForm">
-        <input type="text" placeholder="Digite seu email..." />
-        <button type="submit">Enviar</button>
-      </form>
+
     </header>
 
     <section class="banner">
@@ -34,9 +31,7 @@
     <aside class="side-menu" id="sideMenu">
       <header>
         <button class="close-btn" onclick="toggleMenu()">←</button>
-        <span class="menu-title"
-          >./notif<span style="color: deepskyblue">IC</span></span
-        >
+        <span class="menu-title">./notif<span style="color: deepskyblue">IC</span></span>
       </header>
 
       <nav>
@@ -109,7 +104,7 @@
       const tabs = document.querySelectorAll(".tab");
       const feed = document.getElementById("feed");
       const searchBar = document.getElementById("searchBar");
-      const notificacaoForm = document.getElementById("notificacaoForm");
+
       const profileButton = document.getElementById("profileButton");
       const filterBtn = document.getElementById("filterBtn");
       const filterMenu = document.getElementById("filterMenu");
@@ -212,6 +207,7 @@
       }
 
       let favoritos = [];
+      
 
       function atualizarEstadoLogin() {
         const profileButton = document.getElementById("profileButton");
@@ -264,15 +260,7 @@
           });
       }
 
-      notificacaoForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const numeroCelular = this.querySelector("input").value;
 
-        if (numeroCelular) {
-          alert(`Confirme seu email via Inbox para receber notificações: ${numeroCelular}`);
-          this.querySelector("input").value = "";
-        }
-      });
 
       profileButton.addEventListener("click", () => {
         if (usuarioLogado) {

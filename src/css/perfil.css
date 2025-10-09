@@ -1,190 +1,65 @@
+/* ==========================
+   PERFIL.CSS – UNIFICADO COM HOME
+   Portal notifIC
+   ========================== */
+
+/* Base geral */
 body {
-    font-family:Arial, sans-serif;
-    background-color: #f0f2f5;
-    margin: 0;
-    padding: 0;
-    color: #333;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #222;
 }
 
-/* Container principal */
-.profile-container {
-    padding: 30px;
+/* ==========================
+   HEADER PRINCIPAL (igual ao home)
+   ========================== */
+.main-header {
+  background: #304b8a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.profile-content {
-    max-width: 900px;
-    margin: auto;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+#profileButton {
+  margin-right: auto;
+  cursor: pointer;
+  border: 2px solid #fff;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  transition: all 0.3s ease;
 }
 
-.section-container {
-    margin-bottom: 40px;
+#profileButton img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
-.section-container h2 {
-    font-size: 24px;
-    font-weight: 500;
-    margin-bottom: 20px;
-    color: #666;
+.home-link {
+  display: flex;
+  align-items: center;
 }
 
-/* Informações do perfil */
-.profile-info-section {
-    border-bottom: 1px solid #e0e0e0;
-    padding-bottom: 40px;
+.home-icon {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
 }
 
-.profile-details {
-    display: flex;
-    align-items: flex-start;
-    gap: 50px;
-}
-
-.profile-avatar {
-    text-align: center;
-}
-
-#profile-picture {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    border: 2px solid #e0e0e0;
-    object-fit: cover;
-    margin-bottom: 20px;
-}
-
-.avatar-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.avatar-actions button {
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #f0f0f0;
-    color: #333;
-    transition: background-color 0.3s;
-}
-
-.avatar-actions button:hover {
-    background-color: #e0e0e0;
-}
-
-.user-info-fields {
-    flex-grow: 1;
-}
-
-.info-group {
-    margin-bottom: 20px;
-}
-
-.info-group label {
-    display: block;
-    font-size: 14px;
-    color: #999;
-    margin-bottom: 5px;
-}
-
-.info-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
-.info-group input:disabled {
-    background-color: #f0f0f0;
-    color: #666;
-    border: 1px solid #e0e0e0;
-}
-
-/* Preferências de notificações */
-.notification-section {
-    margin-top: 40px;
-}
-
-.preferences-list {
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-}
-
-.preference-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.preference-item:last-child {
-    margin-bottom: 0;
-}
-
-/* Switch */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 48px;
-    height: 28px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 20px;
-    width: 20px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-}
-
-input:checked + .slider {
-    background-color: #6a1b9a;
-}
-
-input:focus + .slider {
-    box-shadow: 0 0 1px #6a1b9a;
-}
-
-input:checked + .slider:before {
-    transform: translateX(20px);
-}
-
-.slider.round {
-    border-radius: 28px;
-}
-
-.slider.round:before {
-    border-radius: 50%;
-}
-
-/* Drawer lateral */
+/* ==========================
+   SIDE MENU (idêntico ao home)
+   ========================== */
 .side-menu {
   position: fixed;
   top: 0;
@@ -200,41 +75,7 @@ input:checked + .slider:before {
   z-index: 1100;
 }
 
-.side-menu nav {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.side-menu nav a {
-  padding: 15px 20px;
-  text-decoration: none;
-  color: #333;
-  font-size: 1rem;
-  border-bottom: 1.5px solid #eee;
-  transition: background 0.2s ease;
-}
-
-.side-menu nav a:hover {
-  background: #e6f3ff;
-}
-
-.side-menu footer {
-  padding: 15px 20px;
-  background: #080b18;
-  color: #fff;
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-.menu-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #ffffff;
-  margin-left: 10px;
-}
-
-.side-menu header {
+.side-menu-header {
   display: flex;
   align-items: center;
   padding: 15px 20px;
@@ -251,6 +92,46 @@ input:checked + .slider:before {
   color: #fff;
   cursor: pointer;
   margin-right: 10px;
+}
+
+.menu-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-left: 10px;
+}
+
+.side-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-nav a {
+  padding: 15px 20px;
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  border-bottom: 1.5px solid #eee;
+  transition: background 0.2s ease;
+}
+
+.side-nav a:hover {
+  background: #e6f3ff;
+}
+
+.side-nav a.active {
+  background: #e6f3ff;
+  color: #0d8cff;
+  font-weight: bold;
+}
+
+.side-footer {
+  padding: 15px 20px;
+  background: #080b18;
+  color: #fff;
+  text-align: left;
+  font-size: 0.9rem;
 }
 
 .side-menu.active {
@@ -273,60 +154,208 @@ input:checked + .slider:before {
   display: block;
 }
 
-.side-menu h3 {
-  margin-top: 0;
-  color: #0d8cff;
+/* ==========================
+   CONTEÚDO DO PERFIL
+   ========================== */
+.profile-container {
+  padding: 40px 20px;
 }
 
-.side-menu ul {
-  list-style: none;
-  padding: 0;
+.profile-content {
+  max-width: 900px;
+  margin: 40px auto;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 40px;
 }
 
-.side-menu ul li {
-  margin: 15px 0;
+/* Seções internas */
+.section-container {
+  margin-bottom: 40px;
 }
 
-.side-menu ul li a {
-  text-decoration: none;
-  color: #333;
-  font-size: 1.1rem;
+.section-container h2 {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  color: #304b8a;
 }
 
-.feed-header {
-  padding: 20px;
+/* ==========================
+   INFORMAÇÕES DO PERFIL
+   ========================== */
+.profile-info-section {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 40px;
+}
+
+.profile-details {
   display: flex;
-  justify-content: space-between; /* título à esquerda, botão à direita */
+  align-items: flex-start;
+  gap: 50px;
+  flex-wrap: wrap;
+}
+
+.profile-avatar {
+  text-align: center;
+}
+
+#profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid #e0e0e0;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.avatar-actions button {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: #333;
+  transition: background-color 0.3s;
+}
+
+.avatar-actions button:hover {
+  background-color: #e0e0e0;
+}
+
+.user-info-fields {
+  flex-grow: 1;
+}
+
+.info-group {
+  margin-bottom: 20px;
+}
+
+.info-group label {
+  display: block;
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 5px;
+}
+
+.info-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.info-group input:disabled {
+  background-color: #f0f0f0;
+  color: #666;
+  border: 1px solid #e0e0e0;
+}
+
+/* ==========================
+   PREFERÊNCIAS DE NOTIFICAÇÕES
+   ========================== */
+.notification-section {
+  margin-top: 40px;
+}
+
+.preferences-list {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.preference-item {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 15px;
 }
 
-/* Header principal (barra azul) */
-.main-header {
-    background-color: #304b8a;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: flex-start;
+.preference-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ==========================
+   SWITCHES DE NOTIFICAÇÃO
+   ========================== */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 28px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #0d8cff;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #0d8cff;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.slider.round {
+  border-radius: 28px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* ==========================
+   RESPONSIVIDADE
+   ========================== */
+@media (max-width: 768px) {
+  .profile-details {
+    flex-direction: column;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 0;      /* Garante que não tenha margem superior */
-    border-top: 0;      /* Remove qualquer borda superior */
-}
+  }
 
+  .user-info-fields {
+    width: 100%;
+  }
 
-#profileButton {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#profileButton img {
-    border-radius: 50%;
-    border: 2px solid white;
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-}
-
-.home-icon {
-    margin-left: auto;
+  .profile-content {
+    padding: 25px;
+  }
 }
