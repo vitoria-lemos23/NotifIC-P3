@@ -8,7 +8,7 @@ body {
 
 header {
   background: #304b8a;
-  padding: 10px 20px;
+  padding: 10px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,6 +20,11 @@ header > div:last-child {
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.icone-ic{
+  display: flex;
+  height: 40px;
 }
 
 .tags {
@@ -47,7 +52,7 @@ header > div:last-child {
 .banner img {
   width: 100%;
   height: 60vh;
-  min-height: 300px;
+  min-height: 40px;
   opacity: 100%;
   object-fit: cover;
   filter: brightness(0.7);

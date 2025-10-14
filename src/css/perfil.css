@@ -16,7 +16,7 @@ body {
    ========================== */
 .main-header {
   background: #304b8a;
-  padding: 10px 20px;
+  padding: 10px 10px;;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -28,12 +28,12 @@ body {
   margin-right: auto;
   cursor: pointer;
   border: 2px solid #fff;
-  padding: 4px;
+  padding: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   box-sizing: border-box;
   border-radius: 50%;
   transition: all 0.3s ease;
@@ -52,81 +52,79 @@ body {
 }
 
 .home-icon {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
 }
 
 /* ==========================
    SIDE MENU (idêntico ao home)
    ========================== */
-.side-menu {
-  position: fixed;
-  top: 0;
-  left: -300px;
-  width: 300px;
-  max-width: 80%;
-  height: 100%;
+/* ==========================
+   MENU DROPDOWN (substitui o side-menu)
+   ========================== */
+.dropdown-menu {
+  position: absolute;
+  top: 70px;
+  left: 20px;
+  width: 280px;
+  max-width: 90vw;
   background: #fff;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
-  transition: left 0.3s ease;
+  transition: all 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
   z-index: 1100;
+  overflow: hidden;
 }
 
-.side-menu-header {
+.dropdown-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-header {
   display: flex;
   align-items: center;
-  padding: 15px 20px;
-  background: #304b8a;
+  padding: 20px 15px;
+  background: #1d60a0;
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #fff;
-  cursor: pointer;
-  margin-right: 10px;
-}
-
-.menu-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #ffffff;
-  margin-left: 10px;
-}
-
-.side-nav {
-  flex: 1;
+.dropdown-nav {
   display: flex;
   flex-direction: column;
 }
 
-.side-nav a {
+.dropdown-nav a {
   padding: 15px 20px;
   text-decoration: none;
   color: #333;
   font-size: 1rem;
-  border-bottom: 1.5px solid #eee;
+  border-bottom: 1px solid #f0f0f0;
   transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
 }
 
-.side-nav a:hover {
+.dropdown-nav a:hover {
   background: #e6f3ff;
 }
 
-.side-nav a.active {
+.dropdown-nav a.active {
   background: #e6f3ff;
   color: #0d8cff;
   font-weight: bold;
 }
 
-.side-footer {
+.dropdown-footer {
   padding: 15px 20px;
   background: #080b18;
   color: #fff;
@@ -134,26 +132,31 @@ body {
   font-size: 0.9rem;
 }
 
-.side-menu.active {
-  left: 0;
+/* Responsividade para o dropdown */
+@media (max-width: 480px) {
+  .dropdown-menu {
+    width: 260px;
+    left: 10px;
+    right: 10px;
+    margin: 0 auto;
+  }
+  
+  .profile-container {
+    padding: 20px 10px;
+  }
 }
 
-/* Fundo escuro atrás do menu */
+/* Animação suave para o botão de perfil */
+#profileButton:hover {
+  transform: scale(1.05);
+  border-color: #0d8cff;
+}
+
+/* Remove as regras antigas do side-menu */
+.side-menu,
 .side-menu-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
   display: none;
-  z-index: 1000;
 }
-
-.side-menu-backdrop.active {
-  display: block;
-}
-
 /* ==========================
    CONTEÚDO DO PERFIL
    ========================== */

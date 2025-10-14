@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Perfil do Usuário</title>
-  <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+  <link rel="icon" type="image/svg+xml" href="../img/notific.svg" />
   <link rel="stylesheet" href="../css/perfil.css" />
   <link
     rel="stylesheet"
@@ -23,25 +23,31 @@
     </a>
   </header>
 
-  <!-- Menu lateral -->
-  <aside class="side-menu" id="sideMenu" aria-hidden="true">
-    <div class="side-menu-header">
-      <button class="close-btn" onclick="toggleMenu()" aria-label="Fechar menu">←</button>
-      <span class="menu-title">./notif<span style="color: deepskyblue">IC</span></span>
-    </div>
+  <!-- Menu Dropdown -->
+  <div class="dropdown-menu" id="dropdownMenu" aria-hidden="true">
+    <nav class="dropdown-nav">
+      <a href="home.html">
+        <i class="fas fa-home" style="margin-right: 10px;"></i>
+        Página Inicial
+      </a>
 
-    <nav class="side-nav">
-      <a href="home.html">Página Inicial</a>
-      <a href="page_feed.html">Cadastrar Notícia</a>
-      <a href="paginaUsuario.html" class="active">Perfil</a>
-      <a href="login.html">Sair</a>
+      <a href="page_feed.html">
+        <i class="fas fa-plus" style="margin-right: 20px;"></i>
+        Cadastrar Notícia
+      </a>
+
+      <a href="paginaUsuario.html" class="active">
+        <i class="fas fa-user" style="margin-right: 10px;"></i>
+        Perfil
+      </a>
+      <a href="login.html">
+        <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i>
+        Sair
+      </a>
     </nav>
 
-    <footer class="side-footer">© 2025<br>./notifIC</footer>
-  </aside>
-
-  <!-- Fundo escuro do menu -->
-  <div class="side-menu-backdrop" id="sideMenuBackdrop" onclick="toggleMenu()"></div>
+    <footer class="dropdown-footer">© 2025<br>./notifIC</footer>
+  </div>
 
   <!-- Conteúdo principal -->
   <main class="profile-container">
@@ -110,20 +116,49 @@
     </div>
   </main>
 
-  <!-- Scripts -->
+  <!-- script para o menu dropdown -->
   <script>
     function toggleMenu() {
-      const sideMenu = document.getElementById("sideMenu");
-      const backdrop = document.getElementById("sideMenuBackdrop");
-      const isActive = sideMenu.classList.toggle("active");
-      backdrop.classList.toggle("active");
-      document.body.style.overflow = isActive ? "hidden" : "";
-      sideMenu.setAttribute("aria-hidden", !isActive);
+      const dropdownMenu = document.getElementById("dropdownMenu");
+      const isActive = dropdownMenu.classList.toggle("active");
+      
+      // Fecha o menu ao clicar fora dele
+      if (isActive) {
+        document.addEventListener('click', closeMenuOnClickOutside);
+      } else {
+        document.removeEventListener('click', closeMenuOnClickOutside);
+      }
+      
+      dropdownMenu.setAttribute("aria-hidden", !isActive);
     }
 
-    document
-      .getElementById("profileButton")
-      .addEventListener("click", toggleMenu);
+    function closeMenuOnClickOutside(event) {
+      const dropdownMenu = document.getElementById("dropdownMenu");
+      const profileButton = document.getElementById("profileButton");
+      
+      // Se o clique foi fora do menu e fora do botão, fecha o menu
+      if (!dropdownMenu.contains(event.target) && !profileButton.contains(event.target)) {
+        dropdownMenu.classList.remove("active");
+        dropdownMenu.setAttribute("aria-hidden", "true");
+        document.removeEventListener('click', closeMenuOnClickOutside);
+      }
+    }
+
+    // Adiciona o event listener ao botão de perfil
+    document.getElementById("profileButton").addEventListener("click", function(event) {
+      event.stopPropagation(); // Impede que o clique propague para o document
+      toggleMenu();
+    });
+
+    // Fecha o menu ao pressionar ESC
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        const dropdownMenu = document.getElementById("dropdownMenu");
+        dropdownMenu.classList.remove("active");
+        dropdownMenu.setAttribute("aria-hidden", "true");
+        document.removeEventListener('click', closeMenuOnClickOutside);
+      }
+    });
   </script>
 </body>
 </html>
