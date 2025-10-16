@@ -65,6 +65,7 @@ header > div:last-child {
   transform: translate(-50%, -50%);
 }
 
+
 .banner-text input {
   margin-top: 25px;
   padding: 12px 20px;
@@ -76,7 +77,7 @@ header > div:last-child {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   outline: none;
 }
-
+/*
 .banner-text h1 {
   font-size: 2.5rem;
   margin-bottom: 8px;
@@ -87,6 +88,45 @@ header > div:last-child {
   margin-bottom: 0;
   font-size: 1rem;
   font-style: italic;
+}
+
+*/
+
+/* --- CSS PARA A BARRA DE PESQUISA NO HEADER --- */
+
+.header-search {
+    width: 40%; /* Define uma largura, ex: 40% do header */
+    max-width: 350px; /* Impede que fique grande demais em telas largas */
+    margin-left: 20px; /* Adiciona um espaço à esquerda do campo */
+}
+
+.header-search input {
+    width: 100%; /* Ocupa todo o espaço do container .header-search */
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px; /* Bordas arredondadas */
+    font-size: 0.9rem;
+    background-color: #f1f1f1;
+    outline: none; /* Remove a borda ao clicar */
+    transition: background-color 0.3s;
+}
+
+/* IMPORTANTE: Adicione esta regra para o texto do placeholder também ficar branco */
+.header-search input::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: bold;
+}
+
+/* Efeito opcional quando o usuário clica na barra */
+.header-search input:focus {
+    background-color: #ffffff;
+}
+
+
+
+.header-search input::placeholder {
+    font-weight: bold;
+    color: #666; /* cor cinza, por exemplo */
 }
 
 /* Ícone de perfil - estados diferentes */
