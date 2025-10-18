@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>notifIC</title>
   <link rel="stylesheet" href="../css/home.css" />
-  <link rel="icon" type="image/svg+xml" href="../img/notific.svg" />
+  <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
 </head>
 
 <body>
@@ -137,7 +137,7 @@
             <h3>Opções Admin</h3>
             <button onclick="mostrarModalLogin()">Tela de requerimento de Login</button>
             <button onclick="alternarEstadoLogin()">Alternar Login</button>
-            <button onclick="mostrarPendentes()">Ver Pendentes</button>
+            <button onclick="Painel()">Ver Pendentes</button>
             <button onclick="fecharMenus()">Fechar</button>
         `;
 
@@ -174,6 +174,10 @@
       );
       atualizarEstadoLogin();
       fecharMenus();
+    }
+
+    function Painel() {
+    window.location.href = "painel_administrador.html";
     }
 
     function mostrarPendentes() {

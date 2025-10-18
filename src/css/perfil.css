@@ -51,11 +51,13 @@ body {
   align-items: center;
 }
 
-.home-icon {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-}
+ .home-icon {
+     width: 40px;
+     /* tamanho do ícone */
+     height: 40px;
+     cursor: pointer;
+     /* muda cursor para indicar que é clicável */
+ }
 
 /* ==========================
    SIDE MENU (idêntico ao home)
