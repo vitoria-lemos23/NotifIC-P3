@@ -3,6 +3,7 @@
         "title": "SECOMP 2025",
         "desc": "Preparem-se para a imersão tecnológica mais aguardada do ano!",
         "img": "../img/logo_secomp.png",
+        "imagem_banner": "../img/banners/secomp.jpg",
         "link": "news.html?id=1",
         "tags": ["geral"]
     },
@@ -10,6 +11,7 @@
         "title": "NEES Inscrições 2025",
         "desc": "Domina React, Vue ou Angular? Participe das inscrições!",
         "img": "../img/logo_nees.jpg",
+        "imagem_banner": "../img/banners/ness.jpg",
         "link": "news.html?id=2",
         "tags": ["geral"]
     },
@@ -17,6 +19,7 @@
         "title": "Vaga de Estágio - Dev Frontend",
         "desc": "Oportunidade para alunos com conhecimento em HTML, CSS e JS.",
         "img": "../img/logo_pesquisa.jpeg",
+        "imagem_banner": "../img/banners/vaga_frontend.png",
         "link": "news.html?id=3",
         "tags": ["vagas"],
         "status": "aberta",
@@ -26,6 +29,7 @@
         "title": "Grupo de Pesquisa do Professor Ranilson",
         "desc": "Projeto fechado para alunos de pós-graduação.",
         "img": "../img/logo_pesquisa.jpeg",
+        "imagem_banner": "../img/banners/grupo_pesquisa.png",
         "link": "news.html?id=4",
         "tags": ["vagas"],
         "status": "fechada"
