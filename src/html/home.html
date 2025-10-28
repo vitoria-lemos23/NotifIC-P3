@@ -1,103 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>notifIC</title>
-  <link rel="stylesheet" href="../css/home.css" />
-  <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
-</head>
-
-<body>
-  <header>
-    <div id="profileButton">
-      <!-- Ícone padrão (não logado) -->
-      <span class="profile-icon" style="font-size: 24px">👤</span>
-      <!-- Imagem de perfil (logado) -->
-      <img src="https://i.pravatar.cc/150" alt="Perfil" />
-    </div>
-
-    <div class="header-search">
-      <input type="search" id="searchBar" placeholder="Pesquise no site...">
-    </div>
-
-  </header>
-
-  <section class="banner">
-    <img src="../img/banner_ic.png" alt="Banner" />
-    </div>
-  </section>
-
-  <aside class="side-menu" id="sideMenu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>notifIC</title>
+    <link rel="stylesheet" href="../css/home.css" />
+    <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+  </head>
+  <body>
     <header>
-  <div class="header-logo">
-    <a href="home.html"> <img src="../img/logoNotific.png" alt="Logo NotifIC" id="logo-img" />
-    </a>
-  </div>
-
-  <div class="header-search-wrapper">
-    <svg
-      class="search-icon"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path
-        fill-rule="evenodd"
-        d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-        clip-rule="evenodd"
-      />
-    </svg>
-    <input
-      type="text"
-      id="searchBar"
-      placeholder="Buscar notícias..."
-    />
-  </div>
-
-  <div id="profileButton">
-    <span class="profile-icon">👤</span>
-    <img src="https://i.pravatar.cc/40" alt="Perfil" />
-  </div>
-</header>
+      <div class="header-logo">
+        <a href="home.html">
+          <img
+            src="../img/logoNotific.png"
+            alt="Logo NotifIC"
+            id="logo-img"
+          />
+        </a>
+      </div>
+      <div class="header-search-wrapper">
+        <svg
+          class="search-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <input
+          type="text"
+          id="searchBar"
+          placeholder="Buscar notícias..."
+        />
+      </div>
+      <div id="profileButton">
+        <span class="profile-icon">👤</span>
+        <img src="https://i.pravatar.cc/40" alt="Perfil" />
+      </div>
+    </header>
 
     <section class="hero-carousel">
-  <div class="carousel-container">
-
-    <div class="carousel-slides-wrapper"></div>
-
-    <button id="carousel-prev" class="carousel-nav-btn">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M12.79 5.23a.75.75 0 010 1.06L9.06 10l3.73 3.71a.75.75 0 11-1.06 1.06l-4.25-4.25a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 0z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    </button>
-    <button id="carousel-next" class="carousel-nav-btn">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M7.21 14.77a.75.75 0 010-1.06L10.94 10 7.21 6.29a.75.75 0 111.06-1.06l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    </button>
-
-    <div class="carousel-dots"></div>
-
-  </div>
-</section>
+      <div class="carousel-container">
+        <div class="carousel-slides-wrapper"></div>
+        <button id="carousel-prev" class="carousel-nav-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.79 5.23a.75.75 0 010 1.06L9.06 10l3.73 3.71a.75.75 0 11-1.06 1.06l-4.25-4.25a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <button id="carousel-next" class="carousel-nav-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.21 14.77a.75.75 0 010-1.06L10.94 10 7.21 6.29a.75.75 0 111.06-1.06l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <div class="carousel-dots"></div>
+      </div>
+    </section>
 
     <aside class="side-menu" id="sideMenu">
       <header>
@@ -106,13 +83,11 @@
           >./notif<span style="color: deepskyblue">IC</span></span
         >
       </header>
-
       <nav>
         <a href="paginaUsuario.html">Perfil</a>
         <a href="page_feed.html">Cadastrar Notícia</a>
         <a href="#">Sair</a>
       </nav>
-
       <footer>© 2025 ./notifIC</footer>
     </aside>
 
@@ -126,63 +101,20 @@
       <div class="tab" data-tab="pessoal">Pessoal</div>
       <div class="tab active" data-tab="geral">Geral</div>
       <div class="tab" data-tab="vagas">Vagas</div>
-      <button class="close-btn" onclick="toggleMenu()">←</button>
-      <span class="menu-title">./notif<span style="color: deepskyblue">IC</span></span>
-    </header>
-
-    <nav>
-      <a href="paginaUsuario.html">Perfil</a>
-      <a href="page_feed.html">Cadastrar Notícia</a>
-      <a href="#">Sair</a>
-    </nav>
-
-    <footer>© 2025 ./notifIC</footer>
-  </aside>
-
-  <div class="side-menu-backdrop" id="sideMenuBackdrop" onclick="toggleMenu()"></div>
-
-  <div class="tabs">
-    <div class="tab" data-tab="pessoal">Pessoal</div>
-    <div class="tab active" data-tab="geral">Geral</div>
-    <div class="tab" data-tab="vagas">Vagas</div>
-  </div>
-
-  <div class="feed-header">
-    <h2>Feed</h2>
-    <div class="feed-actions">
-      <button id="filterBtn" title="Filtrar">
-        <span class="filter-icon">≡</span>
-      </button>
-      <button id="adminBtn" title="Admin" style="display: none">⚙️</button>
     </div>
-  </div>
-  <p class="feed-subtitle">Notícias e oportunidades</p>
 
-  <!-- Dropdown de filtros -->
-  <div id="filterMenu" class="filter-menu"></div>
-
-  <!-- Menu de Admin -->
-  <div id="adminMenu" class="filter-menu"></div>
-
-  <section class="feed" id="feed"></section>
-
-  <footer>
-    <div>
-      <h4>Contato</h4>
-      <p>
-        Instituto de Computação - UFAL<br />
-        (82) 3214-0000<br />
-        notific@ic.ufal.br
-      </p>
+    <div class="feed-header">
+      <h2>Feed</h2>
+      <div class="feed-actions">
+        <button id="filterBtn" title="Filtrar">
+          <span class="filter-icon">≡</span>
+        </button>
+        <button id="adminBtn" title="Admin" style="display: none">⚙️</button>
+      </div>
     </div>
     <p class="feed-subtitle">Notícias e oportunidades</p>
-
-    <!-- Dropdown de filtros -->
     <div id="filterMenu" class="filter-menu"></div>
-
-    <!-- Menu de Admin -->
     <div id="adminMenu" class="filter-menu"></div>
-
     <section class="feed" id="feed"></section>
 
     <footer>
@@ -210,384 +142,460 @@
         </p>
       </div>
     </footer>
-      
-    <script src="../javascript/home.js" defer></script>
-  </body>
-</html>
-    <div>
-      <h4>Links Rápidos</h4>
-      <p>
-        <a href="page_feed.html">Anuncie no site</a><br />
-        <a href="#">Contate-nos</a><br />
-        <a href="#">Reportar problema</a>
-      </p>
-    </div>
-    <div>
-      <h4>./notific</h4>
-      <p>
-        Plataforma de divulgação de oportunidades e notícias para o Instituto
-        de Computação da UFAL.
-      </p>
-    </div>
-  </footer>
 
-  <script>
-    const tabs = document.querySelectorAll(".tab");
-    const feed = document.getElementById("feed");
-    const searchBar = document.getElementById("searchBar");
+    <script>
+      // Seletores de elementos
+      const tabs = document.querySelectorAll(".tab");
+      const feed = document.getElementById("feed");
+      const searchBar = document.getElementById("searchBar");
+      const profileButton = document.getElementById("profileButton");
+      const filterBtn = document.getElementById("filterBtn");
+      const filterMenu = document.getElementById("filterMenu");
+      const sideMenu = document.getElementById("sideMenu");
+      const sideMenuBackdrop = document.getElementById("sideMenuBackdrop");
 
-    const profileButton = document.getElementById("profileButton");
-    const filterBtn = document.getElementById("filterBtn");
-    const filterMenu = document.getElementById("filterMenu");
-    let activeTags = [];
-    let currentTab = "geral";
-    let usuarioLogado = true;
+      let activeTags = [];
+      let currentTab = "geral";
+      let usuarioLogado = true;
+      let data = [];
+      let isAdmin = true; // simulação
 
-    let data = [];
+      const adminBtn = document.getElementById("adminBtn");
+      const adminMenu = document.getElementById("adminMenu");
 
-    let isAdmin = true; // simulação: mude para false para esconder o botão
-
-    const adminBtn = document.getElementById("adminBtn");
-    const adminMenu = document.getElementById("adminMenu");
-
-    // Mostrar/ocultar botão admin
-    if (isAdmin) {
-      adminBtn.style.display = "inline-block";
-    }
-
-    // Menu de admin
-    adminBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-
-      // Fecha outros menus abertos
-      filterMenu.classList.remove("active");
-
-      // Alterna o menu admin
-      adminMenu.classList.toggle("active");
-
-      // Preenche o conteúdo do menu admin
-      if (adminMenu.classList.contains("active")) {
-        adminMenu.innerHTML = `
-            <h3>Opções Admin</h3>
-            <button onclick="mostrarModalLogin()">Tela de requerimento de Login</button>
-            <button onclick="alternarEstadoLogin()">Alternar Login</button>
-            <button onclick="Painel()">Ver Pendentes</button>
-            <button onclick="fecharMenus()">Fechar</button>
-        `;
-
-        // Posiciona o menu próximo ao botão admin
-        const adminBtnRect = adminBtn.getBoundingClientRect();
-        adminMenu.style.top = `${adminBtnRect.bottom + window.scrollY}px`;
-        adminMenu.style.right = `${window.innerWidth - adminBtnRect.right}px`;
+      // Mostrar/ocultar botão admin
+      if (isAdmin) {
+        adminBtn.style.display = "inline-block";
       }
-    });
 
-    // Fechar menus ao clicar fora
-    document.addEventListener("click", (e) => {
-      if (!adminMenu.contains(e.target) && e.target !== adminBtn) {
+      // Menu de admin
+      adminBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        filterMenu.classList.remove("active");
+        adminMenu.classList.toggle("active");
+
+        if (adminMenu.classList.contains("active")) {
+          adminMenu.innerHTML = `
+              <h3>Opções Admin</h3>
+              <button onclick="mostrarModalLogin()">Tela de requerimento de Login</button>
+              <button onclick="alternarEstadoLogin()">Alternar Login</button>
+              <button onclick="Painel()">Ver Pendentes</button>
+              <button onclick="fecharMenus()">Fechar</button>
+          `;
+          // Posiciona o menu próximo ao botão admin
+          const adminBtnRect = adminBtn.getBoundingClientRect();
+          adminMenu.style.top = `${adminBtnRect.bottom + window.scrollY}px`;
+          adminMenu.style.right = `${window.innerWidth - adminBtnRect.right}px`;
+        }
+      });
+
+      // Fechar menus ao clicar fora
+      document.addEventListener("click", (e) => {
+        if (!adminMenu.contains(e.target) && e.target !== adminBtn) {
+          adminMenu.classList.remove("active");
+        }
+        if (!filterMenu.contains(e.target) && e.target !== filterBtn) {
+          filterMenu.classList.remove("active");
+        }
+      });
+
+      // Função para fechar todos os menus
+      function fecharMenus() {
         adminMenu.classList.remove("active");
-      }
-      if (!filterMenu.contains(e.target) && e.target !== filterBtn) {
         filterMenu.classList.remove("active");
       }
-    });
 
-    // Função para fechar todos os menus
-    function fecharMenus() {
-      adminMenu.classList.remove("active");
-      filterMenu.classList.remove("active");
-    }
-
-    // Função para alternar estado de login
-    function alternarEstadoLogin() {
-      usuarioLogado = !usuarioLogado;
-      atualizarEstadoLogin();
-      alert(
-        `Estado de login alterado para: ${usuarioLogado ? "LOGADO" : "DESLOGADO"
-        }`
-      );
-      atualizarEstadoLogin();
-      fecharMenus();
-    }
-
-    function Painel() {
-    window.location.href = "pedidos.html";
-    }
-
-    function mostrarPendentes() {
-      const modal = document.createElement("div");
-      modal.className = "modal-backdrop";
-      modal.innerHTML = `
-        <div class="modal-content">
-            <h3>Submissões Pendentes</h3>
-            <p>Notícia 1 <button>Aceitar</button> <button>Rejeitar</button></p>
-            <p>Notícia 2 <button>Aceitar</button> <button>Rejeitar</button></p>
-            <button class="modal-button" onclick="document.body.removeChild(this.parentElement.parentElement)">Fechar</button>
-        </div>
-    `;
-      document.body.appendChild(modal);
-      fecharMenus();
-    }
-
-    async function loadNews() {
-      try {
-        const res = await fetch("../json/homeNews.json");
-        data = await res.json();
-        render(currentTab, searchBar.value.toLowerCase());
-      } catch (e) {
-        feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
-      }
-      renderFilterMenu();
-    }
-
-    let favoritos = [];
-
-
-    function atualizarEstadoLogin() {
-      const profileButton = document.getElementById("profileButton");
-      const menuTitle = document.querySelector("#sideMenu .menu-title");
-
-      console.log("Atualizando estado de login:", usuarioLogado);
-      console.log("Elemento profileButton:", profileButton);
-
-      if (usuarioLogado) {
-        // Usuário logado - mostra avatar circular com borda esférica
-        profileButton.classList.add("logged");
-        profileButton.classList.remove("not-logged");
-        menuTitle.textContent = "./notifIC";
-        console.log("Classe added: logged");
-      } else {
-        // Usuário não logado - mostra ícone com borda quadrada
-        profileButton.classList.remove("logged");
-        profileButton.classList.add("not-logged");
-        menuTitle.textContent = "Login";
-        favoritos = [];
-        render(currentTab, searchBar.value.toLowerCase());
-        console.log("Classe added: not-logged");
+      // Função para alternar estado de login
+      function alternarEstadoLogin() {
+        usuarioLogado = !usuarioLogado;
+        atualizarEstadoLogin();
+        alert(
+          `Estado de login alterado para: ${
+            usuarioLogado ? "LOGADO" : "DESLOGADO"
+          }`
+        );
+        atualizarEstadoLogin();
+        fecharMenus();
       }
 
-      // Debug: verificar quais elementos estão visíveis
-      const img = profileButton.querySelector("img");
-      const icon = profileButton.querySelector(".profile-icon");
-      console.log("Imagem display:", window.getComputedStyle(img).display);
-      console.log("Ícone display:", window.getComputedStyle(icon).display);
-    }
+      // **FUNÇÃO CORRIGIDA**
+      // Esta função agora navega para a página de pedidos.
+      function Painel() {
+        window.location.href = "pedidos.html";
+      }
 
-    function mostrarModalLogin() {
-      const modal = document.createElement("div");
-      modal.className = "modal-backdrop";
+      /**
+       * Cria os slides e dots do carrossel com base nos dados das notícias.
+       * @param {Array} newsData - O array de notícias vindo do JSON.
+       */
+      function renderCarousel(newsData) {
+        const slidesWrapper = document.querySelector(
+          ".carousel-slides-wrapper"
+        );
+        const dotsWrapper = document.querySelector(".carousel-dots");
 
-      modal.innerHTML = `
+        if (!slidesWrapper || !dotsWrapper) {
+          console.error("Elementos do carrossel não encontrados!");
+          return;
+        }
+
+        slidesWrapper.innerHTML = "";
+        dotsWrapper.innerHTML = "";
+
+        // Filtra apenas os itens que TÊM uma imagem_banner e pega os 5 primeiros
+        const carouselItems = newsData
+          .filter((item) => item.imagem_banner)
+          .slice(0, 5);
+
+        carouselItems.forEach((item, index) => {
+          // 1. Criar o Slide
+          const slide = document.createElement("div");
+          slide.className = "carousel-slide";
+
+          if (index === 0) {
+            slide.classList.add("active");
+          }
+
+          slide.innerHTML = `
+            <a href="${item.link}" target="_blank" style="text-decoration: none;">
+              <img src="${item.imagem_banner}" alt="${item.title}" />
+              <div class="carousel-gradient"></div> 
+              <div class="carousel-text"> 
+                <h2>${item.title}</h2> 
+                <p>${item.desc}</p> 
+              </div>
+            </a>
+          `;
+          slidesWrapper.appendChild(slide);
+
+          // 2. Criar o Dot (bolinha)
+          const dot = document.createElement("button");
+          dot.dataset.slide = index;
+
+          if (index === 0) {
+            dot.classList.add("active");
+          }
+          dotsWrapper.appendChild(dot);
+        });
+      }
+
+      /**
+       * Inicializa toda a lógica de navegação e timer do carrossel.
+       */
+      function initializeCarousel() {
+        const slides = document.querySelectorAll(".carousel-slide");
+        const dots = document.querySelectorAll(".carousel-dots button");
+        const prevBtn = document.getElementById("carousel-prev");
+        const nextBtn = document.getElementById("carousel-next");
+
+        if (slides.length === 0) return; // Se não houver slides, não faz nada
+
+        let currentSlide = 0;
+        const numSlides = slides.length;
+        let autoSlideTimer;
+
+        function goToSlide(slideIndex) {
+          slides.forEach((slide) => slide.classList.remove("active"));
+          dots.forEach((dot) => dot.classList.remove("active"));
+
+          currentSlide = (slideIndex + numSlides) % numSlides;
+
+          slides[currentSlide].classList.add("active");
+          dots[currentSlide].classList.add("active");
+        }
+
+        function goToNext() {
+          goToSlide(currentSlide + 1);
+        }
+
+        function goToPrev() {
+          goToSlide(currentSlide - 1);
+        }
+
+        function startAutoSlide() {
+          clearInterval(autoSlideTimer);
+          autoSlideTimer = setInterval(goToNext, 5000);
+        }
+
+        function stopAutoSlide() {
+          clearInterval(autoSlideTimer);
+        }
+
+        prevBtn.addEventListener("click", () => {
+          goToPrev();
+          stopAutoSlide();
+          startAutoSlide();
+        });
+
+        nextBtn.addEventListener("click", () => {
+          goToNext();
+          stopAutoSlide();
+          startAutoSlide();
+        });
+
+        dots.forEach((dot) => {
+          dot.addEventListener("click", () => {
+            const slideIndex = parseInt(dot.dataset.slide);
+            goToSlide(slideIndex);
+            stopAutoSlide();
+            startAutoSlide();
+          });
+        });
+
+        startAutoSlide();
+      }
+
+      // Função para carregar as notícias (agora também chama o carrossel)
+      async function loadNews() {
+        try {
+          const res = await fetch("../json/homeNews.json");
+          data = await res.json();
+          render(currentTab, searchBar.value.toLowerCase());
+
+          // Inicializa o carrossel com os dados
+          renderCarousel(data);
+          initializeCarousel();
+        } catch (e) {
+          feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
+          console.error("Erro ao carregar notícias:", e);
+        }
+        renderFilterMenu();
+      }
+
+      let favoritos = [];
+
+      // Função para atualizar o estado visual do login
+      function atualizarEstadoLogin() {
+        const profileButton = document.getElementById("profileButton");
+        const menuTitle = document.querySelector("#sideMenu .menu-title");
+
+        // Verifica se os elementos existem antes de usá-los
+        if (!profileButton || !menuTitle) return;
+
+        if (usuarioLogado) {
+          profileButton.classList.add("logged");
+          profileButton.classList.remove("not-logged");
+          menuTitle.textContent = "./notifIC";
+        } else {
+          profileButton.classList.remove("logged");
+          profileButton.classList.add("not-logged");
+          menuTitle.textContent = "Login";
+          favoritos = [];
+          render(currentTab, searchBar.value.toLowerCase());
+        }
+      }
+
+      // Função para mostrar o modal de "Login Necessário"
+      function mostrarModalLogin() {
+        const modal = document.createElement("div");
+        modal.className = "modal-backdrop";
+
+        modal.innerHTML = `
             <div class="modal-content">
                 <h3>Login Necessário</h3>
                 <p>Você deve fazer login antes de favoritar conteúdos.</p>
                 <button class="modal-button" id="fecharModal">Entendi</button>
             </div>
         `;
+        document.body.appendChild(modal);
 
-      document.body.appendChild(modal);
-
-      modal
-        .querySelector("#fecharModal")
-        .addEventListener("click", function () {
-          document.body.removeChild(modal);
-        });
-    }
-
-
-
-    profileButton.addEventListener("click", () => {
-      if (usuarioLogado) {
-        // Se estiver logado, abre o menu lateral
-        sideMenu.classList.add("active");
-        sideMenuBackdrop.classList.add("active");
-      } else {
-        // Se não estiver logado, redireciona para a página de login
-        window.location.href = "login.html"; // Altere para o caminho correto da sua página de login
+        modal
+          .querySelector("#fecharModal")
+          .addEventListener("click", function () {
+            document.body.removeChild(modal);
+          });
       }
-    });
 
-    filterBtn.addEventListener("click", (e) => {
-      e.stopPropagation(); // Impede que o evento se propague
+      // Evento de clique no botão de perfil
+      profileButton.addEventListener("click", () => {
+        if (usuarioLogado) {
+          sideMenu.classList.add("active");
+          sideMenuBackdrop.classList.add("active");
+        } else {
+          window.location.href = "login.html";
+        }
+      });
 
-      // Fecha o menu admin se estiver aberto
-      adminMenu.classList.remove("active");
+      // Evento de clique no botão de filtro
+      filterBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        adminMenu.classList.remove("active");
+        renderFilterMenu();
+        filterMenu.classList.toggle("active");
+      });
 
-      // Abre o menu de filtro
-      renderFilterMenu();
-      filterMenu.classList.toggle("active");
-    });
+      // Gerar lista de tags únicas
+      function getAllTags() {
+        const allTags = new Set();
+        data.forEach((item) => item.tags?.forEach((t) => allTags.add(t)));
+        return [...allTags];
+      }
 
-    // Gerar lista de tags únicas
-    function getAllTags() {
-      const allTags = new Set();
-      data.forEach((item) => item.tags?.forEach((t) => allTags.add(t)));
-      return [...allTags];
-    }
-
-    function renderFilterMenu() {
-      filterMenu.innerHTML = getAllTags()
-        .map(
-          (tag) => `
-        <span class="filter-tag ${activeTags.includes(tag) ? "active" : ""
-            }" data-tag="${tag}">
+      // Renderizar o menu de filtro
+      function renderFilterMenu() {
+        filterMenu.innerHTML = getAllTags()
+          .map(
+            (tag) => `
+        <span class="filter-tag ${
+          activeTags.includes(tag) ? "active" : ""
+        }" data-tag="${tag}">
           ${tag}
         </span>
       `
-        )
-        .join("");
+          )
+          .join("");
 
-      filterMenu.querySelectorAll(".filter-tag").forEach((el) => {
-        el.addEventListener("click", () => {
-          const tag = el.dataset.tag;
-          if (activeTags.includes(tag)) {
-            activeTags = activeTags.filter((t) => t !== tag);
-            el.classList.remove("active");
-          } else {
-            activeTags.push(tag);
-            el.classList.add("active");
+        filterMenu.querySelectorAll(".filter-tag").forEach((el) => {
+          el.addEventListener("click", () => {
+            const tag = el.dataset.tag;
+            if (activeTags.includes(tag)) {
+              activeTags = activeTags.filter((t) => t !== tag);
+              el.classList.remove("active");
+            } else {
+              activeTags.push(tag);
+              el.classList.add("active");
+            }
+            render(currentTab, searchBar.value.toLowerCase());
+          });
+        });
+      }
+
+      // Simular verificação de login
+      function verificarLogin() {
+        usuarioLogado = Math.random() > 0.5;
+        atualizarEstadoLogin();
+      }
+
+      // Renderizar o feed de notícias
+      function render(tab, query = "") {
+        feed.innerHTML = "";
+        let items;
+
+        if (tab === "pessoal") {
+          items = [...favoritos];
+        } else if (tab === "geral") {
+          items = [...data];
+        } else if (tab === "vagas") {
+          items = data.filter((item) => item.tags.includes("vagas"));
+        }
+
+        // filtro por busca
+        if (query) {
+          items = items.filter(
+            (item) =>
+              item.title.toLowerCase().includes(query) ||
+              item.desc.toLowerCase().includes(query)
+          );
+        }
+
+        // filtro por tags
+        if (activeTags.length) {
+          items = items.filter(
+            (item) =>
+              item.tags && activeTags.every((tag) => item.tags.includes(tag))
+          );
+        }
+
+        items.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "card";
+
+          const isFav = favoritos.some((f) => f.title === item.title);
+
+          let statusHTML = "";
+          let timerHTML = "";
+
+          if (item.tags.includes("vagas")) {
+            if (item.status === "aberta") {
+              statusHTML = `<span class="status aberta">ABERTA</span>`;
+              timerHTML = `<div class="timer" data-deadline="${item.deadline}"></div>`;
+            } else {
+              statusHTML = `<span class="status fechada">FECHADA</span>`;
+            }
           }
+
+          let tagsHTML = "";
+          if (item.tags && item.tags.length) {
+            tagsHTML = `<div class="tags">${item.tags
+              .map((tag) => `<span class="tag">${tag}</span>`)
+              .join(" ")}</div>`;
+          }
+
+          card.innerHTML = `
+            <span class="favorite ${isFav ? "active" : ""}">★</span>
+            <img src="${item.img}" alt="">
+            <div>
+              <div class="card-header">
+                <h3>${item.title} ${statusHTML} ${tagsHTML}</h3>
+                ${timerHTML}
+              </div>
+              <p>${item.desc}</p>
+              <a href="${item.link}">Saiba mais...</a>
+            </div>
+          `;
+
+          card.querySelector(".favorite").addEventListener("click", () => {
+            if (!usuarioLogado) {
+              mostrarModalLogin();
+              return;
+            }
+
+            if (isFav) {
+              favoritos = favoritos.filter((f) => f.title !== item.title);
+            } else {
+              favoritos.push(item);
+            }
+            render(tab, searchBar.value.toLowerCase());
+          });
+
+          feed.appendChild(card);
+        });
+
+        document.querySelectorAll(".timer").forEach((el) => {
+          const deadline = new Date(el.dataset.deadline);
+          function updateTimer() {
+            const diff = deadline - new Date();
+            if (diff <= 0) {
+              el.innerHTML = "Expirado";
+              return;
+            }
+            const h = Math.floor(diff / 1000 / 3600);
+            const m = Math.floor(((diff / 1000) % 3600) / 60);
+            const s = Math.floor((diff / 1000) % 60);
+            el.innerHTML = `Encerra em: ${h}h ${m}m ${s}s`;
+          }
+          updateTimer();
+          setInterval(updateTimer, 1000);
+        });
+      }
+
+      // Eventos das abas
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document.querySelector(".tab.active").classList.remove("active");
+          tab.classList.add("active");
+          currentTab = tab.dataset.tab;
           render(currentTab, searchBar.value.toLowerCase());
         });
       });
-    }
 
-    function verificarLogin() {
-      // Simulação - na implementação real, isso verifica se há um token de sesão
-      usuarioLogado = Math.random() > 0.5;
-      atualizarEstadoLogin();
-    }
-
-    // Ajustar o render
-    function render(tab, query = "") {
-      feed.innerHTML = "";
-      let items;
-
-      if (tab === "pessoal") {
-        items = [...favoritos];
-      } else if (tab === "geral") {
-        items = [...data];
-      } else if (tab === "vagas") {
-        items = data.filter((item) => item.tags.includes("vagas"));
-      }
-
-      // filtro por busca
-      if (query) {
-        items = items.filter(
-          (item) =>
-            item.title.toLowerCase().includes(query) ||
-            item.desc.toLowerCase().includes(query)
-        );
-      }
-
-      // filtro por tags
-      if (activeTags.length) {
-        items = items.filter(
-          (item) =>
-            item.tags && activeTags.every((tag) => item.tags.includes(tag))
-        );
-      }
-
-      items.forEach((item) => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const isFav = favoritos.some((f) => f.title === item.title);
-
-        let statusHTML = "";
-        let timerHTML = "";
-
-        if (item.tags.includes("vagas")) {
-          if (item.status === "aberta") {
-            statusHTML = `<span class="status aberta">ABERTA</span>`;
-            timerHTML = `<div class="timer" data-deadline="${item.deadline}"></div>`;
-          } else {
-            statusHTML = `<span class="status fechada">FECHADA</span>`;
-          }
-        }
-
-        let tagsHTML = "";
-        if (item.tags && item.tags.length) {
-          tagsHTML = `<div class="tags">${item.tags
-            .map((tag) => `<span class="tag">${tag}</span>`)
-            .join(" ")}</div>`;
-        }
-
-        card.innerHTML = `
-  <span class="favorite ${isFav ? "active" : ""}">★</span>
-  <img src="${item.img}" alt="">
-  <div>
-    <div class="card-header">
-      <h3>${item.title} ${statusHTML} ${tagsHTML}</h3>
-      ${timerHTML}
-    </div>
-    <p>${item.desc}</p>
-    <a href="${item.link}">Saiba mais...</a>
-  </div>
-`;
-
-        card.querySelector(".favorite").addEventListener("click", () => {
-          if (!usuarioLogado) {
-            mostrarModalLogin();
-            return;
-          }
-
-          if (isFav) {
-            favoritos = favoritos.filter((f) => f.title !== item.title);
-          } else {
-            favoritos.push(item);
-          }
-          render(tab, searchBar.value.toLowerCase());
-        });
-
-        feed.appendChild(card);
-      });
-
-      document.querySelectorAll(".timer").forEach((el) => {
-        const deadline = new Date(el.dataset.deadline);
-        function updateTimer() {
-          const diff = deadline - new Date();
-          if (diff <= 0) {
-            el.innerHTML = "Expirado";
-            return;
-          }
-          const h = Math.floor(diff / 1000 / 3600);
-          const m = Math.floor(((diff / 1000) % 3600) / 60);
-          const s = Math.floor((diff / 1000) % 60);
-          el.innerHTML = `Encerra em: ${h}h ${m}m ${s}s`;
-        }
-        updateTimer();
-        setInterval(updateTimer, 1000);
-      });
-    }
-
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        document.querySelector(".tab.active").classList.remove("active");
-        tab.classList.add("active");
-        currentTab = tab.dataset.tab;
+      // Evento da barra de pesquisa
+      searchBar.addEventListener("input", () => {
         render(currentTab, searchBar.value.toLowerCase());
       });
-    });
 
-    searchBar.addEventListener("input", () => {
-      render(currentTab, searchBar.value.toLowerCase());
-    });
+      // Função para abrir/fechar menu lateral
+      function toggleMenu() {
+        sideMenu.classList.toggle("active");
+        sideMenuBackdrop.classList.toggle("active");
+        document.body.style.overflow = sideMenu.classList.contains("active")
+          ? "hidden"
+          : "";
+      }
 
-    function toggleMenu() {
-      sideMenu.classList.toggle("active");
-      sideMenuBackdrop.classList.toggle("active");
-
-      // Impede a rolagem do corpo quando o menu está aberto
-      document.body.style.overflow = sideMenu.classList.contains("active")
-        ? "hidden"
-        : "";
-    }
-
-    // Inicializar
-    loadNews();
-    verificarLogin();
-  </script>
-</body>
-
+      // Inicializar
+      loadNews();
+      verificarLogin();
+    </script>
+  </body>
 </html>
