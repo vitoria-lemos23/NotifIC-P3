@@ -7,84 +7,12 @@ body {
 }
 
 header {
-  /* Layout principal de 3 colunas */
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr; /* Logo | Busca (maior) | Perfil */
-  align-items: center;
-  gap: 20px;
-
-  /* Estilo do header (fundo branco, borda) */
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb; /* Borda cinza clara */
-  padding: 10px 20px;
-  height: 64px; /* Altura fixa (h-16 do código de exemplo) */
-  box-sizing: border-box;
-}
-
-#logo-img {
-  height: 40px; /* Ajuste essa altura como preferir */
-  width: auto;  /* Mantém a proporção */
-  display: block; /* Remove espaços extras */
-}
-
-/* 1. Estilos do Logo */
-.header-logo a {
   background: #304b8a;
   padding: 10px 10px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  font-size: 1.5rem; /* text-xl */
-  font-weight: bold;
-  color: #111827; /* Cor escura (text-foreground) */
-  white-space: nowrap; /* Impede quebra de linha */
-}
-
-/* 2. Estilos da Barra de Busca */
-.header-search-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 500px; /* Limita o tamanho no centro */
-  justify-self: center; /* Centraliza a busca na coluna do grid */
-}
-
-.header-search-wrapper .search-icon {
-  position: absolute;
-  left: 12px; /* Posição do ícone */
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px; /* h-4 w-4 */
-  height: 18px;
-  color: #6b7280; /* text-muted-foreground */
-  pointer-events: none; /* Permite clicar no input "através" do ícone */
-}
-
-/* Novo estilo para o SEU #searchBar */
-header #searchBar {
-  width: 100%;
-  box-sizing: border-box; /* Garante que padding não estoure a largura */
-  border: 1px solid #d1d5db; /* Borda cinza */
-  border-radius: 8px; /* rounded-lg */
-  padding: 10px 15px 10px 40px; /* Top/Bot | Direita | Esquerda (para o ícone) */
-  font-size: 0.95rem;
-  background: #ffffff;
-  transition: all 0.2s ease-in-out;
-}
-
-header #searchBar:focus {
-  outline: none;
-  border-color: #304b8a; /* Destaca com sua cor primária */
-  box-shadow: 0 0 0 2px rgba(48, 75, 138, 0.2); /* Sombra suave */
-}
-
-/* 3. Ajuste do Seu Botão de Perfil */
-#profileButton {
-  /* Apenas garante que ele vá para a direita */
-  justify-self: end;
-  margin-right: 0; /* Remove a margem antiga */
-  
-  /* Seus outros estilos (border, width, height, etc.) continuam valendo */
+  color: #fff;
 }
 
 header > div:last-child {
@@ -203,6 +131,7 @@ header > div:last-child {
 
 /* Ícone de perfil - estados diferentes */
 #profileButton {
+    margin-right: auto;
     cursor: pointer;
     border: 2px solid #fff;
     padding: 4px; /* Reduzi o padding para dar mais espaço à imagem */
@@ -258,7 +187,32 @@ header > div:last-child {
     display: block;
 }
 
+/* Notificação */
 
+#notificacaoForm {
+  gap: 10px;
+  margin-left: auto;
+}
+
+#notificacaoForm input {
+  padding: 10px 8px;
+  border: none;
+  border-radius: 6px;
+  min-width: 150px;
+  max-width: 250px;
+  font-size: 1rem;
+}
+
+#notificacaoForm button {
+  background: #ff9100;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+}
 
 /* Drawer lateral */
 .side-menu {
@@ -706,147 +660,4 @@ footer a {
   cursor: pointer;
   font-size: 1rem;
   margin-top: 15px;
-}
-
-/* CARROSSEL*/
-.hero-carousel {
-  width: 100%;
-  padding: 20px; /* Dando um respiro como no exemplo */
-  box-sizing: border-box;
-  background: #f1f5f9; /* Cor de fundo (bg-muted/30) */
-}
-
-.carousel-container {
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px; /* rounded-xl */
-  aspect-ratio: 21 / 8; /* Proporção do exemplo */
-  min-height: 350px;
-}
-
-.carousel-slide {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.7s ease-in-out;
-}
-
-.carousel-slide.active {
-  opacity: 1;
-}
-
-.carousel-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.carousel-gradient {
-  position: absolute;
-  inset: 0;
-  /* Gradiente (from-black/80 via-black/40) */
-  background-image: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.8) 0%,
-    rgba(0, 0, 0, 0.4) 50%,
-    transparent 100%
-  );
-}
-
-.carousel-text {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 24px 32px; /* p-6 md:p-8 */
-  color: white;
-}
-
-.carousel-text .carousel-category {
-  display: inline-block;
-  padding: 4px 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background: #ff9100; /* Sua cor primária */
-  border-radius: 9999px; /* rounded-full */
-  margin-bottom: 12px;
-}
-
-.carousel-text h2 {
-  font-size: 2.25rem; /* text-4xl */
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.carousel-text p {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
-  max-width: 42rem; /* max-w-2xl */
-}
-
-.carousel-nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-  z-index: 10;
-}
-
-.carousel-nav-btn:hover {
-  background: rgba(0, 0, 0, 0.7);
-}
-
-.carousel-nav-btn svg {
-  width: 24px;
-  height: 24px;
-}
-
-#carousel-prev {
-  left: 16px; /* left-4 */
-}
-
-#carousel-next {
-  right: 16px; /* right-4 */
-}
-
-.carousel-dots {
-  position: absolute;
-  bottom: 16px; /* bottom-4 */
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  z-index: 10;
-}
-
-.carousel-dots button {
-  width: 8px; /* w-2 */
-  height: 8px; /* h-2 */
-  background: rgba(255, 255, 255, 0.5); /* bg-white/50 */
-  border: none;
-  border-radius: 9999px;
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.3s;
-}
-
-.carousel-dots button:hover {
-  background: rgba(255, 255, 255, 0.75); /* hover:bg-white/75 */
-}
-
-.carousel-dots button.active {
-  width: 32px; /* w-8 */
-  background: white; /* bg-white */
 }
