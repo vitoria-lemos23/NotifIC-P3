@@ -1,3 +1,28 @@
+/* 1. Reseta o INPUT (barra interna) */
+.header-search input,
+.header-search input[type="search"] {
+    -webkit-appearance: none; /* Remove estilos padrão do WebKit/Chrome/Safari */
+    appearance: none;
+    
+    border: none !important;      /* Força a remoção da borda */
+    outline: none !important;     /* Força a remoção do contorno */
+    box-shadow: none !important;  /* Força a remoção de qualquer sombra */
+}
+
+/* 2. Reseta o INPUT quando está focado (clicado) */
+.header-search input:focus,
+.header-search input[type="search"]:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* 3. Reseta o CONTAINER (a caixa azul em volta) quando focado */
+.header-search:focus-within {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
 /* home.css */
 body {
   margin: 0;
@@ -119,7 +144,12 @@ header > div:last-child {
 
 /* Efeito opcional quando o usuário clica na barra */
 .header-search input:focus {
+  outline: none;
     background-color: #ffffff;
+}
+/* Remove o contorno tracejado do container da pesquisa */
+.header-search:focus-within {
+  outline: none;
 }
 
 
