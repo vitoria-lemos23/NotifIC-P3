@@ -6,6 +6,8 @@ body {
   color: #222;
 }
 
+/* * NOVO HEADER (Branco, com Grid)
+ */
 header {
   /* Layout principal de 3 colunas */
   display: grid;
@@ -17,56 +19,55 @@ header {
   background: #ffffff;
   border-bottom: 1px solid #e5e7eb; /* Borda cinza clara */
   padding: 10px 20px;
-  height: 64px; /* Altura fixa (h-16 do código de exemplo) */
+  height: 64px; /* Altura fixa */
   box-sizing: border-box;
 }
 
 #logo-img {
-  height: 40px; /* Ajuste essa altura como preferir */
-  width: auto;  /* Mantém a proporção */
-  display: block; /* Remove espaços extras */
+  height: 40px;
+  width: auto;
+  display: block;
 }
 
 /* 1. Estilos do Logo */
 .header-logo a {
-  background: #304b8a;
-  padding: 10px 10px;
+  /* Removido o fundo azul e cor de texto escura */
+  padding: 0; /* Simplificado */
   display: flex;
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  font-size: 1.5rem; /* text-xl */
+  font-size: 1.5rem;
   font-weight: bold;
-  color: #111827; /* Cor escura (text-foreground) */
-  white-space: nowrap; /* Impede quebra de linha */
+  white-space: nowrap;
 }
 
 /* 2. Estilos da Barra de Busca */
 .header-search-wrapper {
   position: relative;
   width: 100%;
-  max-width: 500px; /* Limita o tamanho no centro */
-  justify-self: center; /* Centraliza a busca na coluna do grid */
+  max-width: 500px;
+  justify-self: center;
 }
 
 .header-search-wrapper .search-icon {
   position: absolute;
-  left: 12px; /* Posição do ícone */
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 18px; /* h-4 w-4 */
+  width: 18px;
   height: 18px;
-  color: #6b7280; /* text-muted-foreground */
-  pointer-events: none; /* Permite clicar no input "através" do ícone */
+  color: #6b7280;
+  pointer-events: none;
 }
 
-/* Novo estilo para o SEU #searchBar */
+/* Estilo para a searchBar DENTRO do header */
 header #searchBar {
   width: 100%;
-  box-sizing: border-box; /* Garante que padding não estoure a largura */
-  border: 1px solid #d1d5db; /* Borda cinza */
-  border-radius: 8px; /* rounded-lg */
-  padding: 10px 15px 10px 40px; /* Top/Bot | Direita | Esquerda (para o ícone) */
+  box-sizing: border-box;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 15px 10px 40px; /* Padding p/ ícone */
   font-size: 0.95rem;
   background: #ffffff;
   transition: all 0.2s ease-in-out;
@@ -74,656 +75,74 @@ header #searchBar {
 
 header #searchBar:focus {
   outline: none;
-  border-color: #304b8a; /* Destaca com sua cor primária */
-  box-shadow: 0 0 0 2px rgba(48, 75, 138, 0.2); /* Sombra suave */
+  border-color: #304b8a;
+  box-shadow: 0 0 0 2px rgba(48, 75, 138, 0.2);
 }
 
-/* 3. Ajuste do Seu Botão de Perfil */
+/* 3. Estilo do Botão de Perfil */
 #profileButton {
-  /* Apenas garante que ele vá para a direita */
-  justify-self: end;
-  margin-right: 0; /* Remove a margem antiga */
-  
-  /* Seus outros estilos (border, width, height, etc.) continuam valendo */
-}
+  justify-self: end; /* Alinha à direita na coluna do grid */
+  margin-right: 0;
 
-header > div:last-child {
-  border: 2px solid #fff;
-  padding: 6px 12px;
-  border-radius: 6px;
+  /* Seus estilos antigos de ícone (logado/deslogado) */
   cursor: pointer;
-}
-
-.icone-ic{
-  display: flex;
-  height: 40px;
-}
-
-.tags {
-  margin: 5px 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.tag {
-  background: #a5a5a5;
-  color: #ffffff;
-  font-size: 0.75rem;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-.banner {
-  position: relative;
-  text-align: center;
-  color: #fff;
-}
-
-.banner img {
-  width: 100%;
-  height: 60vh;
-  min-height: 40px;
-  opacity: 100%;
-  object-fit: cover;
-  filter: brightness(0.7);
-}
-
-.banner-text {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-
-.banner-text input {
-  margin-top: 25px;
-  padding: 12px 20px;
-  width: 85%;
-  max-width: 400px;
-  border-radius: 50px;
-  border: none;
-  font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  outline: none;
-}
-/*
-.banner-text h1 {
-  font-size: 2.5rem;
-  margin-bottom: 8px;
-}
-
-.banner-text p {
-  margin-top: 0;
-  margin-bottom: 0;
-  font-size: 1rem;
-  font-style: italic;
-}
-
-*/
-
-/* --- CSS PARA A BARRA DE PESQUISA NO HEADER --- */
-
-.header-search {
-    width: 40%; /* Define uma largura, ex: 40% do header */
-    max-width: 350px; /* Impede que fique grande demais em telas largas */
-    margin-left: 20px; /* Adiciona um espaço à esquerda do campo */
-}
-
-.header-search input {
-    width: 100%; /* Ocupa todo o espaço do container .header-search */
-    padding: 8px 16px;
-    border: none;
-    border-radius: 20px; /* Bordas arredondadas */
-    font-size: 0.9rem;
-    background-color: #f1f1f1;
-    outline: none; /* Remove a borda ao clicar */
-    transition: background-color 0.3s;
-}
-
-/* IMPORTANTE: Adicione esta regra para o texto do placeholder também ficar branco */
-.header-search input::placeholder {
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: bold;
-}
-
-/* Efeito opcional quando o usuário clica na barra */
-.header-search input:focus {
-    background-color: #ffffff;
-}
-
-
-
-.header-search input::placeholder {
-    font-weight: bold;
-    color: #666; /* cor cinza, por exemplo */
-}
-
-/* Ícone de perfil - estados diferentes */
-#profileButton {
-    cursor: pointer;
-    border: 2px solid #fff;
-    padding: 4px; /* Reduzi o padding para dar mais espaço à imagem */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px; /* Aumentei levemente */
-    height: 48px;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-}
-
-/* Quando NÃO logado - borda quadrada */
-#profileButton:not(.logged) {
-    border-radius: 6px;
-}
-
-/* Quando LOGADO - borda esférica */
-#profileButton.logged {
-    border-radius: 50%;
-}
-
-/* Imagem de perfil - tamanho aumentado */
-#profileButton img {
-    width: 40px;  /* Aumentei o tamanho */
-    height: 40px;
-    object-fit: cover;
-    border-radius: 50%;
-    display: none;
-}
-
-/* Ícone de perfil - tamanho aumentado */
-#profileButton .profile-icon {
-    font-size: 40px; /* Aumentei o tamanho */
-    color: white;
-}
-
-/* Quando LOGADO - mostra imagem, esconde ícone */
-#profileButton.logged img {
-    display: block;
-}
-
-#profileButton.logged .profile-icon {
-    display: none;
-}
-
-/* Quando NÃO LOGADO - mostra ícone, esconde imagem */
-#profileButton:not(.logged) img {
-    display: none;
-}
-
-#profileButton:not(.logged) .profile-icon {
-    display: block;
-}
-
-
-
-/* Drawer lateral */
-.side-menu {
-  position: fixed;
-  top: 0;
-  left: -300px;
-  width: 300px;
-  max-width: 80%;
-  height: 100%;
-  background: #fff;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  transition: left 0.3s ease;
-  z-index: 1100;
-}
-
-.side-menu nav {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.side-menu nav a {
-  padding: 15px 20px;
-  text-decoration: none;
-  color: #333;
-  font-size: 1rem;
-  border-bottom: 1.5px solid #eee;
-  transition: background 0.2s ease;
-}
-
-.side-menu nav a:hover {
-  background: #e6f3ff;
-}
-
-.side-menu footer {
-  padding: 15px 20px;
-  background: #080b18;
-  color: #fff;
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-.menu-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #ffffff;
-  margin-left: 10px;
-}
-
-.side-menu header {
+  border: 2px solid #aaa; /* Borda cinza */
+  padding: 4px;
   display: flex;
   align-items: center;
-  padding: 15px 20px;
-  background: #304b8a;
-  color: #fff;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #fff;
-  cursor: pointer;
-  margin-right: 10px;
-}
-
-.side-menu.active {
-  left: 0;
-}
-
-/* Fundo escuro atrás do menu */
-.side-menu-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: none;
-  z-index: 1000;
-}
-
-.side-menu-backdrop.active {
-  display: block;
-}
-
-.side-menu h3 {
-  margin-top: 0;
-  color: #0d8cff;
-}
-
-.side-menu ul {
-  list-style: none;
-  padding: 0;
-}
-
-.side-menu ul li {
-  margin: 15px 0;
-}
-
-.side-menu ul li a {
-  text-decoration: none;
-  color: #333;
-  font-size: 1.1rem;
-}
-
-.feed-header {
-  padding: 20px;
-  display: flex;
-  justify-content: space-between; /* título à esquerda, botão à direita */
-  align-items: center;
-}
-
-.feed-header h2 {
-  margin: 0;
-  font-size: 2rem;
-  color: #333;
-}
-
-.feed-subtitle {
-  margin: 0 20px 10px;
-  color: #666;
-  font-style: italic;
-}
-
-.feed-subtitle {
-  margin: 0 20px 10px;
-  color: #666;
-  font-style: italic;
-}
-
-.feed-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.filter-menu::before {
-  content: "Filtro:"; /* o título */
-  display: block;
-  text-align: center;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #333;
-}
-
-.filter-menu {
-  display: none;
-  position: fixed; /* fica preso à tela, não ao layout */
-  top: 50%; /* centraliza verticalmente */
-  left: 50%; /* centraliza horizontalmente */
-  transform: translate(-50%, -50%); /* ajusta para o centro exato */
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  z-index: 1200;
-  max-width: 300px;
-  width: 90%; /* responsivo no mobile */
-}
-
-#filterBtn {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-  padding: 6px;
-  transition: transform 0.2s;
-}
-
-#filterBtn:hover {
-  transform: scale(1.1);
-}
-
-/* Menu de Admin - Estilo Integrado */
-#adminMenu {
-  display: none;
-  position: absolute;
-  top: 100%; /* Abaixo do botão de admin */
-  right: 20px;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 15px;
-  z-index: 1001;
-  min-width: 200px;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 5px;
-}
-
-#adminBtn {
-  background: none;
-  border: none;
-  font-size: 1.6rem;
-  cursor: pointer;
-  padding: 5px;
-  transition: transform 0.2s;
-  color: #333; /* Cor do ícone */
-}
-
-#adminBtn:hover {
-  transform: scale(1.1);
-  color: #0d8cff; /* Cor ao passar o mouse */
-}
-
-#adminMenu.active {
-  display: flex;
-}
-
-#adminMenu button {
-  background: #0d8cff;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.2s;
-}
-
-#adminMenu button:hover {
-  background: #0066cc;
-}
-
-#adminMenu h3 {
-  margin: 0 0 10px 0;
-  color: #333;
-  font-size: 1.1rem;
-  border-bottom: 2px solid #0d8cff;
-  padding-bottom: 5px;
-}
-
-/* Container para posicionamento relativo */
-.feed-actions {
-  position: relative;
-  display: flex;
-  gap: 10px;
-}
-
-.filter-menu.active {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.filter-menu label {
-  display: block;
-  margin: 5px 0;
-  cursor: pointer;
-}
-
-/* Tag de filtro clicável */
-.filter-tag {
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  background: #eee;
-  color: #333;
-  transition: 0.2s;
-}
-
-.filter-tag:hover {
-  background: #d6ecff;
-  color: #0d8cff;
-}
-
-.filter-tag.active {
-  background: #0d8cff;
-  color: #fff;
-  font-weight: bold;
-}
-
-.tabs {
-  display: flex;
-  justify-content: space-around;
-  background: #304b8a;
-  color: #fff;
-  font-weight: bold;
-}
-
-.tab {
-  padding: 15px;
-  cursor: pointer;
-  flex: 1;
-  text-align: center;
-}
-
-.tab.active {
-  background: #222d74;
-}
-
-.feed {
-  padding: 20px;
-}
-
-.card {
-  background: #fff;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  padding: 15px;
-  display: flex;
-  gap: 15px;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.card img {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
-.card h3 {
-  margin: 0 0 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.status {
-  font-size: 0.8rem;
-  padding: 2px 6px;
-  border-radius: 5px;
-  color: #fff;
-  font-weight: bold;
-}
-
-.aberta {
-  background: green;
-}
-
-.fechada {
-  background: red;
-}
-
-.timer {
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: #0d8cff;
-}
-
-.card p {
-  margin: 0 0 10px;
-}
-
-.card a {
-  background: #0d8cff;
-  color: #fff;
-  padding: 8px 12px;
-  text-decoration: none;
-  border-radius: 5px;
-  font-size: 0.9rem;
-}
-
-.favorite {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  font-size: 32px;
-  cursor: pointer;
-  color: #bbb;
-  transition: 0.3s;
-}
-
-.favorite.active {
-  color: rebeccapurple;
-}
-
-footer {
-  background: #333;
-  color: #eee;
-  padding: 40px 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
-}
-
-footer h4 {
-  color: #ff9100;
-  margin-top: 0;
-}
-
-footer a {
-  color: #eee;
-  text-decoration: none;
-}
-
-@media (max-width: 768px) {
-  .card {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  footer {
-    grid-template-columns: 1fr;
-  }
-}
-
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
   justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  width: 48px;
+  height: 48px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
-.modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
-  max-width: 400px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+#profileButton:not(.logged) {
+  border-radius: 6px;
+}
+#profileButton.logged {
+  border-radius: 50%;
+}
+#profileButton img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: none;
+}
+#profileButton .profile-icon {
+  font-size: 40px;
+  color: #555; /* Ícone escuro para fundo branco */
+}
+#profileButton.logged img {
+  display: block;
+}
+#profileButton.logged .profile-icon {
+  display: none;
+}
+#profileButton:not(.logged) img {
+  display: none;
+}
+#profileButton:not(.logged) .profile-icon {
+  display: block;
 }
 
-.modal-content h3 {
-  margin-top: 0;
-  color: #333;
-}
 
-.modal-content p {
-  margin: 15px 0;
-  color: #666;
-}
-
-.modal-button {
-  background: #0d8cff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 15px;
-}
-
-/* CARROSSEL*/
+/* * CARROSSEL
+ */
 .hero-carousel {
   width: 100%;
-  padding: 20px; /* Dando um respiro como no exemplo */
+  padding: 20px;
   box-sizing: border-box;
-  background: #f1f5f9; /* Cor de fundo (bg-muted/30) */
+  background: #f1f5f9;
 }
-
 .carousel-container {
   position: relative;
   overflow: hidden;
-  border-radius: 12px; /* rounded-xl */
-  aspect-ratio: 21 / 8; /* Proporção do exemplo */
+  border-radius: 12px;
+  aspect-ratio: 21 / 8;
   min-height: 350px;
 }
-
 .carousel-slide {
   position: absolute;
   inset: 0;
@@ -732,21 +151,17 @@ footer a {
   opacity: 0;
   transition: opacity 0.7s ease-in-out;
 }
-
 .carousel-slide.active {
   opacity: 1;
 }
-
 .carousel-slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 .carousel-gradient {
   position: absolute;
   inset: 0;
-  /* Gradiente (from-black/80 via-black/40) */
   background-image: linear-gradient(
     to top,
     rgba(0, 0, 0, 0.8) 0%,
@@ -754,38 +169,33 @@ footer a {
     transparent 100%
   );
 }
-
 .carousel-text {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 24px 32px; /* p-6 md:p-8 */
+  padding: 24px 32px;
   color: white;
 }
-
 .carousel-text .carousel-category {
   display: inline-block;
   padding: 4px 12px;
   font-size: 0.8rem;
   font-weight: 600;
-  background: #ff9100; /* Sua cor primária */
-  border-radius: 9999px; /* rounded-full */
+  background: #ff9100;
+  border-radius: 9999px;
   margin-bottom: 12px;
 }
-
 .carousel-text h2 {
-  font-size: 2.25rem; /* text-4xl */
+  font-size: 2.25rem;
   font-weight: bold;
   margin-bottom: 8px;
 }
-
 .carousel-text p {
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.9);
-  max-width: 42rem; /* max-w-2xl */
+  max-width: 42rem;
 }
-
 .carousel-nav-btn {
   position: absolute;
   top: 50%;
@@ -803,50 +213,465 @@ footer a {
   transition: background 0.2s;
   z-index: 10;
 }
-
 .carousel-nav-btn:hover {
   background: rgba(0, 0, 0, 0.7);
 }
-
 .carousel-nav-btn svg {
   width: 24px;
   height: 24px;
 }
-
 #carousel-prev {
-  left: 16px; /* left-4 */
+  left: 16px;
 }
-
 #carousel-next {
-  right: 16px; /* right-4 */
+  right: 16px;
 }
-
 .carousel-dots {
   position: absolute;
-  bottom: 16px; /* bottom-4 */
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 8px;
   z-index: 10;
 }
-
 .carousel-dots button {
-  width: 8px; /* w-2 */
-  height: 8px; /* h-2 */
-  background: rgba(255, 255, 255, 0.5); /* bg-white/50 */
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.5);
   border: none;
   border-radius: 9999px;
   cursor: pointer;
   padding: 0;
   transition: all 0.3s;
 }
-
 .carousel-dots button:hover {
-  background: rgba(255, 255, 255, 0.75); /* hover:bg-white/75 */
+  background: rgba(255, 255, 255, 0.75);
+}
+.carousel-dots button.active {
+  width: 32px;
+  background: white;
 }
 
-.carousel-dots button.active {
-  width: 32px; /* w-8 */
-  background: white; /* bg-white */
+
+/* * ESTILOS ANTIGOS (Feed, Tabs, etc.)
+ */
+.tags {
+  margin: 5px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  background: #a5a5a5;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Drawer lateral */
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  max-width: 80%;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  transition: left 0.3s ease;
+  z-index: 1100;
+}
+.side-menu nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.side-menu nav a {
+  padding: 15px 20px;
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  border-bottom: 1.5px solid #eee;
+  transition: background 0.2s ease;
+}
+.side-menu nav a:hover {
+  background: #e6f3ff;
+}
+.side-menu footer {
+  padding: 15px 20px;
+  background: #080b18;
+  color: #fff;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.menu-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-left: 10px;
+}
+.side-menu header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background: #304b8a;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 10px;
+}
+.side-menu.active {
+  left: 0;
+}
+.side-menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 1000;
+}
+.side-menu-backdrop.active {
+  display: block;
+}
+
+/* Feed Header */
+.feed-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.feed-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  color: #333;
+}
+.feed-subtitle {
+  margin: 0 20px 10px;
+  color: #666;
+  font-style: italic;
+}
+.feed-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Filtro e Menu Admin */
+.filter-menu {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1200;
+  max-width: 300px;
+  width: 90%;
+}
+.filter-menu::before {
+  content: "Filtro:";
+  display: block;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+#filterBtn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 6px;
+  transition: transform 0.2s;
+}
+#filterBtn:hover {
+  transform: scale(1.1);
+}
+#adminMenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 20px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  z-index: 1001;
+  min-width: 200px;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 5px;
+}
+#adminBtn {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
+  color: #333;
+}
+#adminBtn:hover {
+  transform: scale(1.1);
+  color: #0d8cff;
+}
+#adminMenu.active {
+  display: flex;
+}
+#adminMenu button {
+  background: #0d8cff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+#adminMenu button:hover {
+  background: #0066cc;
+}
+#adminMenu h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #0d8cff;
+  padding-bottom: 5px;
+}
+.feed-actions {
+  position: relative;
+  display: flex;
+  gap: 10px;
+}
+.filter-menu.active {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.filter-tag {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  background: #eee;
+  color: #333;
+  transition: 0.2s;
+}
+.filter-tag:hover {
+  background: #d6ecff;
+  color: #0d8cff;
+}
+.filter-tag.active {
+  background: #0d8cff;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Abas (Tabs) */
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  background: #304b8a;
+  color: #fff;
+  font-weight: bold;
+}
+.tab {
+  padding: 15px;
+  cursor: pointer;
+  flex: 1;
+  text-align: center;
+}
+.tab.active {
+  background: #222d74;
+}
+
+/* Feed e Cards */
+.feed {
+  padding: 20px;
+}
+.card {
+  background: #fff;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  gap: 15px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+.card img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.card h3 {
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.status {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: bold;
+}
+.aberta {
+  background: green;
+}
+.fechada {
+  background: red;
+}
+.timer {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #0d8cff;
+}
+.card p {
+  margin: 0 0 10px;
+}
+.card a {
+  background: #0d8cff;
+  color: #fff;
+  padding: 8px 12px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+.favorite {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 32px;
+  cursor: pointer;
+  color: #bbb;
+  transition: 0.3s;
+}
+.favorite.active {
+  color: rebeccapurple;
+}
+
+/* Rodapé */
+footer {
+  background: #333;
+  color: #eee;
+  padding: 40px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+footer h4 {
+  color: #ff9100;
+  margin-top: 0;
+}
+footer a {
+  color: #eee;
+  text-decoration: none;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+.modal-content h3 {
+  margin-top: 0;
+  color: #333;
+}
+.modal-content p {
+  margin: 15px 0;
+  color: #666;
+}
+.modal-button {
+  background: #0d8cff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 15px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  /* Ajusta o header para mobile */
+  header {
+    grid-template-columns: 1fr 1fr; /* Logo | Perfil */
+    height: auto; /* Altura automática */
+    padding: 10px 15px;
+  }
+  .header-search-wrapper {
+    /* Move a busca para a próxima linha */
+    grid-column: 1 / -1; /* Ocupa todas as colunas */
+    order: 3; /* Joga para baixo */
+    max-width: none;
+    justify-self: stretch;
+  }
+  #profileButton {
+    /* Mantém o perfil no canto */
+    justify-self: end;
+  }
+
+  /* Ajusta o carrossel */
+  .carousel-container {
+    aspect-ratio: 4 / 3;
+    min-height: 250px;
+  }
+  .carousel-text h2 {
+    font-size: 1.5rem;
+  }
+  .carousel-text p {
+    font-size: 0.9rem;
+  }
+
+  /* Ajusta o card */
+  .card {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Ajusta o rodapé */
+  footer {
+    grid-template-columns: 1fr;
+  }
 }
