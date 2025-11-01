@@ -111,7 +111,7 @@ header #searchBar:focus {
   display: none;
 }
 #profileButton .profile-icon {
-  font-size: 40px;
+  font-size: 28px;
   color: #555; /* Ícone escuro para fundo branco */
 }
 #profileButton.logged img {
@@ -276,7 +276,7 @@ header #searchBar:focus {
 .side-menu {
   position: fixed;
   top: 0;
-  left: -300px;
+  right: -300px; 
   width: 300px;
   max-width: 80%;
   height: 100%;
@@ -284,14 +284,16 @@ header #searchBar:focus {
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  transition: left 0.3s ease;
+  transition: right 0.3s ease;
   z-index: 1100;
 }
+
 .side-menu nav {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
+
 .side-menu nav a {
   padding: 15px 20px;
   text-decoration: none;
@@ -334,12 +336,12 @@ header #searchBar:focus {
   margin-right: 10px;
 }
 .side-menu.active {
-  left: 0;
+  right: 0;
 }
 .side-menu-backdrop {
   position: fixed;
   top: 0;
-  left: 0;
+  right: 0;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
