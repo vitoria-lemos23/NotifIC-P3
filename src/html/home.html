@@ -9,39 +9,43 @@
   </head>
   <body>
     <header>
-      <div class="header-logo">
-        <a href="home.html">
-          <img
-            src="../img/notific.svg"
-            alt="Logo NotifIC"
-            id="logo-img"
-          />
-        </a>
+  <div class="header-logo">
+    <a href="home.html">
+      <img src="../img/notific.svg" alt="Logo NotifIC" id="logo-img" />
+    </a>
+  </div>
+  <div class="header-search-wrapper">
+    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+    </svg>
+    <input type="text" id="searchBar" placeholder="Buscar notícias..." />
+  </div>
+  
+  <!-- Botão de Notificações -->
+  <div class="header-notifications-wrapper">
+    <button id="notificationsButton" class="header-icon-btn" title="Notificações">
+      <span class="notifications-icon">🔔</span>
+      <span id="notificationBadge" class="notification-badge">0</span>
+    </button>
+    <div id="notificationsDropdown" class="notifications-dropdown">
+      <div class="notifications-header">
+        <h3>Notificações</h3>
+        <button id="markAllRead" class="mark-read-btn">Marcar todas como lidas</button>
       </div>
-      <div class="header-search-wrapper">
-        <svg
-          class="search-icon"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-            clip-rule="evenodd"
-          />
-        </svg>
-        <input
-          type="text"
-          id="searchBar"
-          placeholder="Buscar notícias..."
-        />
+      <div id="notificationsList" class="notifications-list">
+        <!-- Notificações serão inseridas aqui via JavaScript -->
       </div>
-      <div id="profileButton">
-        <span class="profile-icon">👤</span>
-        <img src="https://i.pravatar.cc/40" alt="Perfil" />
+      <div class="notifications-footer">
+        <a href="#" class="view-all-link">Ver todas</a>
       </div>
-    </header>
+    </div>
+  </div>
+
+  <div id="profileButton">
+    <span class="profile-icon">👤</span>
+    <img src="https://i.pravatar.cc/40" alt="Perfil" />
+  </div>
+</header>
 
     <section class="hero-carousel">
       <div class="carousel-container">
