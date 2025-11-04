@@ -96,7 +96,7 @@ function renderCarousel(newsData) {
 
   // Filtra apenas os itens que TÊM uma imagem_banner e pega os 5 primeiros
   const carouselItems = newsData
-    .filter((item) => item.imagem_banner)
+    .filter((item) => item.imagem_banner && item.tags.includes("destaque"))
     .slice(0, 5);
 
   carouselItems.forEach((item, index) => {
@@ -114,7 +114,7 @@ function renderCarousel(newsData) {
         <div class="carousel-gradient"></div> 
         <div class="carousel-text"> 
           <h2>${item.title}</h2> 
-          <p>${item.desc}</p> 
+          <p>${item.content}</p> 
         </div>
       </a>
     `;
@@ -200,7 +200,7 @@ function initializeCarousel() {
 // Função para carregar as notícias
 async function loadNews() {
   try {
-    const res = await fetch("../json/homeNews.json");
+    const res = await fetch("../json/noticias.json");
     data = await res.json();
     render(currentTab, searchBar.value.toLowerCase());
 
@@ -363,7 +363,7 @@ function render(tab, query = "") {
     if (item.tags && item.tags.includes("vagas")) {
       if (item.status === "aberta") {
         statusHTML = `<span class="status aberta">ABERTA</span>`;
-        timerHTML = `<div class="timer" data-deadline="${item.deadline}"></div>`;
+        timerHTML = `<div class="timer" data-deadline="${item.end_date}"></div>`;
       } else {
         statusHTML = `<span class="status fechada">FECHADA</span>`;
       }
@@ -384,8 +384,7 @@ function render(tab, query = "") {
           <h3>${item.title} ${statusHTML} ${tagsHTML}</h3>
           ${timerHTML}
         </div>
-        <p>${item.desc}</p>
-        <a href="${item.link}">Saiba mais...</a>
+        <p>${item.content}</p> <a href="${item.link}">Saiba mais...</a>
       </div>
     `;
 
