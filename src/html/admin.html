@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Administração</title>
+
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="home.html">
+      <img src="../img/notific.svg" alt="Logo Notific" class="logo-ic">
+    </a>
+    <h1 class="navbar-title">Administrador</h1>
+    <a href="home.html" class="nav-back-link">Voltar</a>
+  </nav>
+
+  <main class="conteudo-principal">
+    <h1 class="titulo-principal">Painel de Controle</h1>
+
+    <div class="busca-container">
+      <input type="text" id="campoBusca" placeholder="Buscar por ID, username ou e-mail">
+      <button id="btnBuscar">Buscar</button>
+    </div>
+
+    <section id="resultadoUsuario" class="resultado-usuario oculto">
+      <h2>Informações do Usuário</h2>
+
+      <div class="pedido-card">
+
+        <div class="pedido-conteudo">
+          <h3 class="pedido-titulo" id="infoUsername"></h3>
+          <p class="pedido-info"><strong>ID:</strong> <span id="infoId"></span></p>
+          <p class="pedido-info"><strong>Email:</strong> <span id="infoEmail"></span></p>
+          <p class="pedido-info"><strong>Status:</strong> <span id="infoStatus"></span></p>
+        </div>
+      </div>
+
+      <div class="pedido-acoes">
+              <button id="btnBanir" class="btn-rejeitar">Banir Usuário</button>
+              <button id="btnMembro" class="btn-aceitar">Tornar Membro</button>
+              <button id="btnExcluir" class="btn-rejeitar">Excluir Anúncio</button>
+            </div>
+    </section>
+  </main>
+
+  <script src="../javascript/admin.js"></script>
+</body>
+
+</html>

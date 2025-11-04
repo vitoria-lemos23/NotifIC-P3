@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu de controle do Administrador</title>
+
+  <link rel="stylesheet" href="../css/pedidos_pendentes.css">
+  <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="home.html">
+      <img src="../img/notific.svg" alt="Logo Notific" class="logo-ic">
+    </a>
+    <h1 class="navbar-title">Administrador</h1>
+    <a href="admin.html" class="nav-back-link">Controle</a>
+  </nav>
+
+  <main>
+    <h1 class="titulo-principal">Pedidos Pendentes</h1>
+    <div id="pedidos-container" class="pedidos-lista">
+      <!-- Cards são adicionados dinamicamente pelo JS -->
+    </div>
+  </main>
+
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-btn">&times;</button>
+      <h2 id="modal-title">Detalhes do Anúncio</h2>
+      <img id="modal-img" src="" alt="Imagem do Anúncio" class="modal-imagem">
+      <p><strong>Requerente:</strong> <span id="modal-requester"></span></p>
+      <p><strong>Data:</strong> <span id="modal-date"></span></p>
+      <p><strong>Descrição Completa:</strong></p>
+      <p id="modal-desc"></p>
+    </div>
+  </div>
+
+  <script src="../javascript/pedidos_pendentes.js"></script>
+</body>
+</html>
