@@ -33,7 +33,7 @@ adminBtn.addEventListener("click", (e) => {
         <h3>Opções Admin</h3>
         <button onclick="mostrarModalLogin()">Tela de requerimento de Login</button>
         <button onclick="alternarEstadoLogin()">Alternar Login</button>
-        <button onclick="Painel()">Ver Pendentes</button>
+        <button onclick="Painel()">Tela do Administrador</button>
         <button onclick="fecharMenus()">Fechar</button>
     `;
     // Posiciona o menu próximo ao botão admin
@@ -75,7 +75,7 @@ function alternarEstadoLogin() {
 // Função para ir ao Painel de Pendentes
 function Painel() {
   // ATENÇÃO: Verifique se o nome do arquivo é "pedidos.html" ou "pedidos_pendentes.html"
-  window.location.href = "pedidos.html";
+  window.location.href = "controle.html";
 }
 
 /**
