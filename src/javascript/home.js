@@ -75,7 +75,7 @@ function alternarEstadoLogin() {
 // Função para ir ao Painel de Pendentes
 function Painel() {
   // ATENÇÃO: Verifique se o nome do arquivo é "pedidos.html" ou "pedidos_pendentes.html"
-  window.location.href = "controle.html";
+  window.location.href = "pedidos_pendentes.html";
 }
 
 /**
