@@ -16,16 +16,17 @@ body {
    ========================== */
 .main-header {
   background: #304b8a;
-  padding: 10px 10px;;
+  padding: 10px 10px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Mantém espaço entre os elementos */
   align-items: center;
   color: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-
 #profileButton {
-  margin-right: auto;
+  /* Remove margin-right: auto e adiciona margin-left: auto */
+  margin-left: auto;
+  margin-right: 0;
   cursor: pointer;
   border: 2px solid #fff;
   padding: 5px;
@@ -49,15 +50,13 @@ body {
 .home-link {
   display: flex;
   align-items: center;
+  margin-right: auto;
 }
 
- .logo-IC {
-    
-     /* tamanho do ícone */
-     height: 40px;
-     cursor: pointer;
-     /* muda cursor para indicar que é clicável */
- }
+.logo-IC {
+  height: 40px;
+  cursor: pointer;
+}
 
 /* ==========================
    SIDE MENU (idêntico ao home)

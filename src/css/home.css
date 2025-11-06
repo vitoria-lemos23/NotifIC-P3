@@ -47,7 +47,7 @@ header {
   position: relative;
   width: 100%;
   max-width: 500px;
-  justify-self: center;
+  justify-self: center - (max-width / 2); /* Centraliza na coluna do grid */
 }
 
 .header-search-wrapper .search-icon {
@@ -210,6 +210,46 @@ header #searchBar:focus {
   font-size: 1.1rem;
   color: #304b8a;
   font-weight: bold;
+}
+
+.notification-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.notification-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s;
+}
+
+#markAllRead {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+#markAllRead:hover {
+  background-color: #bbdefb;
+}
+
+#clearAllNotifications {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+#clearAllNotifications:hover {
+  background-color: #ffcdd2;
+}
+
+/* Animação para o feedback */
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  20% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
 }
 
 .mark-read-btn {

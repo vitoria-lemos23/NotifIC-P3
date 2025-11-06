@@ -10,7 +10,7 @@ const sideMenuBackdrop = document.getElementById("sideMenuBackdrop");
 
 let activeTags = [];
 let currentTab = "geral";
-let usuarioLogado = true; // Simulação
+let usuarioLogado = true;
 let data = [];
 let isAdmin = true; // Simulação
 
@@ -64,9 +64,7 @@ function alternarEstadoLogin() {
   usuarioLogado = !usuarioLogado;
   atualizarEstadoLogin();
   alert(
-    `Estado de login alterado para: ${
-      usuarioLogado ? "LOGADO" : "DESLOGADO"
-    }`
+    `Estado de login alterado para: ${usuarioLogado ? "LOGADO" : "DESLOGADO"}`
   );
   atualizarEstadoLogin();
   fecharMenus();
@@ -248,11 +246,9 @@ function mostrarModalLogin() {
   `;
   document.body.appendChild(modal);
 
-  modal
-    .querySelector("#fecharModal")
-    .addEventListener("click", function () {
-      document.body.removeChild(modal);
-    });
+  modal.querySelector("#fecharModal").addEventListener("click", function () {
+    document.body.removeChild(modal);
+  });
 }
 
 // Evento de clique no botão de perfil
@@ -267,11 +263,11 @@ if (profileButton) {
   });
 }
 
-
 // Sistema de Notificações
 class NotificationSystem {
   constructor() {
-    this.notifications = JSON.parse(localStorage.getItem('userNotifications')) || [];
+    this.notifications =
+      JSON.parse(localStorage.getItem("userNotifications")) || [];
     this.init();
   }
 
@@ -281,40 +277,104 @@ class NotificationSystem {
     this.checkForNewNotifications();
   }
 
+  // Adicione esta função à classe NotificationSystem
+  clearAllNotifications() {
+    if (this.notifications.length === 0) {
+      return; // Não faz nada se não houver notificações
+    }
+
+    this.notifications = [];
+    this.saveToLocalStorage();
+    this.renderNotifications();
+    this.updateBadge();
+
+    // Opcional: Mostrar feedback visual
+    this.showClearFeedback();
+  }
+
+  // Método auxiliar para mostrar feedback (opcional)
+  showClearFeedback() {
+    // Cria um toast/feedback temporário
+    const toast = document.createElement("div");
+    toast.textContent = "Todas as notificações foram removidas";
+    toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    z-index: 10000;
+    animation: fadeInOut 3s ease-in-out;
+  `;
+
+    document.body.appendChild(toast);
+
+    // Remove o toast após 3 segundos
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast);
+      }
+    }, 3000);
+  }
+
   setupEventListeners() {
     // Toggle dropdown
-    document.getElementById('notificationsButton').addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.toggleDropdown();
-    });
+    document
+      .getElementById("notificationsButton")
+      .addEventListener("click", (e) => {
+        e.stopPropagation();
 
-    // Marcar todas como lidas
-    document.getElementById('markAllRead').addEventListener('click', () => {
+        // Verifica se o usuário está logado
+        if (!usuarioLogado) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        this.toggleDropdown();
+      });
+
+    // Marcar todas notificações como lidas
+    document.getElementById("markAllRead").addEventListener("click", () => {
       this.markAllAsRead();
     });
 
+    document.getElementById("markAllRead").addEventListener("click", () => {
+      this.markAllAsRead();
+    });
+
+    // Limpar todas as notificações (NOVO)
+    document
+      .getElementById("clearAllNotifications")
+      .addEventListener("click", () => {
+        this.clearAllNotifications();
+      });
+
     // Fechar dropdown ao clicar fora
-    document.addEventListener('click', () => {
+    document.addEventListener("click", () => {
       this.closeDropdown();
     });
 
     // Prevenir fechamento ao clicar dentro do dropdown
-    document.getElementById('notificationsDropdown').addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
+    document
+      .getElementById("notificationsDropdown")
+      .addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
   }
 
   toggleDropdown() {
-    const dropdown = document.getElementById('notificationsDropdown');
-    dropdown.classList.toggle('active');
-    
-    if (dropdown.classList.contains('active')) {
+    const dropdown = document.getElementById("notificationsDropdown");
+    dropdown.classList.toggle("active");
+
+    if (dropdown.classList.contains("active")) {
       this.markAllAsRead();
     }
   }
 
   closeDropdown() {
-    document.getElementById('notificationsDropdown').classList.remove('active');
+    document.getElementById("notificationsDropdown").classList.remove("active");
   }
 
   addNotification(notification) {
@@ -325,7 +385,7 @@ class NotificationSystem {
       message: notification.message,
       newsId: notification.newsId,
       timestamp: new Date().toISOString(),
-      read: false
+      read: false,
     };
 
     this.notifications.unshift(newNotification);
@@ -335,7 +395,9 @@ class NotificationSystem {
   }
 
   markAsRead(notificationId) {
-    const notification = this.notifications.find(n => n.id === notificationId);
+    const notification = this.notifications.find(
+      (n) => n.id === notificationId
+    );
     if (notification && !notification.read) {
       notification.read = true;
       this.saveToLocalStorage();
@@ -346,7 +408,7 @@ class NotificationSystem {
 
   markAllAsRead() {
     let updated = false;
-    this.notifications.forEach(notification => {
+    this.notifications.forEach((notification) => {
       if (!notification.read) {
         notification.read = true;
         updated = true;
@@ -362,10 +424,10 @@ class NotificationSystem {
 
   getNotificationIcon(type) {
     const icons = {
-      update: '🔄',
-      reminder: '⏰',
-      expiry: '⚠️',
-      favorite: '⭐'
+      update: "🔄",
+      reminder: "⏰",
+      expiry: "⚠️",
+      favorite: "⭐",
     };
     return `<span class="notification-icon">${icons[type]}</span>`;
   }
@@ -374,20 +436,20 @@ class NotificationSystem {
     const now = new Date();
     const time = new Date(timestamp);
     const diffInMinutes = Math.floor((now - time) / (1000 * 60));
-    
-    if (diffInMinutes < 1) return 'Agora';
+
+    if (diffInMinutes < 1) return "Agora";
     if (diffInMinutes < 60) return `${diffInMinutes}m atrás`;
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h atrás`;
     return `${Math.floor(diffInMinutes / 1440)}d atrás`;
   }
 
   renderNotifications() {
-    const container = document.getElementById('notificationsList');
-    const badge = document.getElementById('notificationBadge');
-    
-    const unreadCount = this.notifications.filter(n => !n.read).length;
-    badge.textContent = unreadCount > 99 ? '99+' : unreadCount.toString();
-    
+    const container = document.getElementById("notificationsList");
+    const badge = document.getElementById("notificationBadge");
+
+    const unreadCount = this.notifications.filter((n) => !n.read).length;
+    badge.textContent = unreadCount > 99 ? "99+" : unreadCount.toString();
+
     if (this.notifications.length === 0) {
       container.innerHTML = `
         <div class="notification-item read">
@@ -399,48 +461,60 @@ class NotificationSystem {
       return;
     }
 
-    container.innerHTML = this.notifications.map(notification => `
-      <div class="notification-item ${notification.read ? 'read' : 'unread'}" 
+    container.innerHTML = this.notifications
+      .map(
+        (notification) => `
+      <div class="notification-item ${notification.read ? "read" : "unread"}" 
            onclick="notificationSystem.markAsRead(${notification.id})">
         ${this.getNotificationIcon(notification.type)}
         <div class="notification-content">
           <div class="notification-title">${notification.title}</div>
           <div class="notification-message">${notification.message}</div>
-          <div class="notification-time">${this.formatTime(notification.timestamp)}</div>
+          <div class="notification-time">${this.formatTime(
+            notification.timestamp
+          )}</div>
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join("");
   }
 
   updateBadge() {
-    const unreadCount = this.notifications.filter(n => !n.read).length;
-    const badge = document.getElementById('notificationBadge');
-    badge.textContent = unreadCount > 99 ? '99+' : unreadCount.toString();
-    
+    const unreadCount = this.notifications.filter((n) => !n.read).length;
+    const badge = document.getElementById("notificationBadge");
+    badge.textContent = unreadCount > 99 ? "99+" : unreadCount.toString();
+
     // Adicionar animação quando há novas notificações
     if (unreadCount > 0) {
-      badge.style.animation = 'pulse 2s infinite';
+      badge.style.animation = "pulse 2s infinite";
     } else {
-      badge.style.animation = 'none';
+      badge.style.animation = "none";
     }
   }
 
   saveToLocalStorage() {
-    localStorage.setItem('userNotifications', JSON.stringify(this.notifications));
+    localStorage.setItem(
+      "userNotifications",
+      JSON.stringify(this.notifications)
+    );
   }
 
   checkForNewNotifications() {
     // Simular notificações baseadas em notícias favoritadas
-    const favoriteNews = JSON.parse(localStorage.getItem('favoriteNews')) || [];
-    
-    favoriteNews.forEach(news => {
+    const favoriteNews = JSON.parse(localStorage.getItem("favoriteNews")) || [];
+
+    favoriteNews.forEach((news) => {
       // Simular atualizações ocasionais
-      if (Math.random() < 0.3 && !this.notifications.some(n => n.newsId === news.id)) {
+      if (
+        Math.random() < 0.3 &&
+        !this.notifications.some((n) => n.newsId === news.id)
+      ) {
         this.addNotification({
-          type: 'update',
-          title: 'Atualização na notícia',
+          type: "update",
+          title: "Atualização na notícia",
           message: `"${news.title}" recebeu uma atualização`,
-          newsId: news.id
+          newsId: news.id,
         });
       }
     });
@@ -448,20 +522,20 @@ class NotificationSystem {
 
   // Método para simular notificações (para teste)
   simulateNotification() {
-    const types = ['update', 'reminder', 'expiry', 'favorite'];
+    const types = ["update", "reminder", "expiry", "favorite"];
     const messages = [
-      'Nova oportunidade disponível na sua área',
-      'Lembrete: Prazo se aproximando',
-      'Atualização importante na vaga que você favoritou',
-      'Novo comentário na notícia que você segue',
-      'Você recebeu uma nova mensagem'
+      "Nova oportunidade disponível na sua área",
+      "Lembrete: Prazo se aproximando",
+      "Atualização importante na vaga que você favoritou",
+      "Novo conteúdo adicionado",
+      "A sua notícia favorita está quase expirando",
     ];
-    
+
     this.addNotification({
       type: types[Math.floor(Math.random() * types.length)],
-      title: 'Nova notificação',
+      title: "Nova notificação",
       message: messages[Math.floor(Math.random() * messages.length)],
-      newsId: Date.now()
+      newsId: Date.now(),
     });
   }
 }
@@ -470,7 +544,7 @@ class NotificationSystem {
 const notificationSystem = new NotificationSystem();
 
 // Adicionar CSS para animação do badge
-const style = document.createElement('style');
+const style = document.createElement("style");
 style.textContent = `
   @keyframes pulse {
     0% { transform: scale(1); }
@@ -481,7 +555,7 @@ style.textContent = `
 document.head.appendChild(style);
 
 // Para testar: adicionar uma notificação a cada 30 segundos (remover em produção)
-//setInterval(() => notificationSystem.simulateNotification(), 10000);
+setInterval(() => notificationSystem.simulateNotification(), 10000);
 
 // Evento de clique no botão de filtro
 if (filterBtn) {
@@ -532,7 +606,7 @@ function renderFilterMenu() {
 
 // Simular verificação de login
 function verificarLogin() {
-  usuarioLogado = Math.random() > 0.5;
+  //usuarioLogado = Math.random() > 0.5;
   atualizarEstadoLogin();
 }
 
@@ -562,8 +636,7 @@ function render(tab, query = "") {
   // filtro por tags
   if (activeTags.length) {
     items = items.filter(
-      (item) =>
-        item.tags && activeTags.every((tag) => item.tags.includes(tag))
+      (item) => item.tags && activeTags.every((tag) => item.tags.includes(tag))
     );
   }
 
