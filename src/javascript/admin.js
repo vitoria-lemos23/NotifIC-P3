@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function buscarUsuario() {
     const termo = campoBusca.value.trim().toLowerCase();
     if (!termo) {
-      alert("⚠️ Digite um ID, username ou e-mail!");
+      alert("Digite um ID, username ou e-mail!");
       return;
     }
 
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (!usuario) {
-        alert("❌ Usuário não encontrado!");
+        alert("Usuário não encontrado!");
         resultado.classList.add("oculto");
         return;
       }
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function alterarStatus(status) {
     infoStatus.textContent = status;
-    alert(`✅ Status do usuário alterado para: ${status}`);
+    alert(`${status}`);
   }
 
   btnBuscar.addEventListener("click", buscarUsuario);
