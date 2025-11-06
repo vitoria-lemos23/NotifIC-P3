@@ -267,6 +267,222 @@ if (profileButton) {
   });
 }
 
+
+// Sistema de Notificações
+class NotificationSystem {
+  constructor() {
+    this.notifications = JSON.parse(localStorage.getItem('userNotifications')) || [];
+    this.init();
+  }
+
+  init() {
+    this.renderNotifications();
+    this.setupEventListeners();
+    this.checkForNewNotifications();
+  }
+
+  setupEventListeners() {
+    // Toggle dropdown
+    document.getElementById('notificationsButton').addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggleDropdown();
+    });
+
+    // Marcar todas como lidas
+    document.getElementById('markAllRead').addEventListener('click', () => {
+      this.markAllAsRead();
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', () => {
+      this.closeDropdown();
+    });
+
+    // Prevenir fechamento ao clicar dentro do dropdown
+    document.getElementById('notificationsDropdown').addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  toggleDropdown() {
+    const dropdown = document.getElementById('notificationsDropdown');
+    dropdown.classList.toggle('active');
+    
+    if (dropdown.classList.contains('active')) {
+      this.markAllAsRead();
+    }
+  }
+
+  closeDropdown() {
+    document.getElementById('notificationsDropdown').classList.remove('active');
+  }
+
+  addNotification(notification) {
+    const newNotification = {
+      id: Date.now(),
+      type: notification.type,
+      title: notification.title,
+      message: notification.message,
+      newsId: notification.newsId,
+      timestamp: new Date().toISOString(),
+      read: false
+    };
+
+    this.notifications.unshift(newNotification);
+    this.saveToLocalStorage();
+    this.renderNotifications();
+    this.updateBadge();
+  }
+
+  markAsRead(notificationId) {
+    const notification = this.notifications.find(n => n.id === notificationId);
+    if (notification && !notification.read) {
+      notification.read = true;
+      this.saveToLocalStorage();
+      this.renderNotifications();
+      this.updateBadge();
+    }
+  }
+
+  markAllAsRead() {
+    let updated = false;
+    this.notifications.forEach(notification => {
+      if (!notification.read) {
+        notification.read = true;
+        updated = true;
+      }
+    });
+
+    if (updated) {
+      this.saveToLocalStorage();
+      this.renderNotifications();
+      this.updateBadge();
+    }
+  }
+
+  getNotificationIcon(type) {
+    const icons = {
+      update: '🔄',
+      reminder: '⏰',
+      expiry: '⚠️',
+      favorite: '⭐'
+    };
+    return `<span class="notification-icon">${icons[type]}</span>`;
+  }
+
+  formatTime(timestamp) {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diffInMinutes = Math.floor((now - time) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Agora';
+    if (diffInMinutes < 60) return `${diffInMinutes}m atrás`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h atrás`;
+    return `${Math.floor(diffInMinutes / 1440)}d atrás`;
+  }
+
+  renderNotifications() {
+    const container = document.getElementById('notificationsList');
+    const badge = document.getElementById('notificationBadge');
+    
+    const unreadCount = this.notifications.filter(n => !n.read).length;
+    badge.textContent = unreadCount > 99 ? '99+' : unreadCount.toString();
+    
+    if (this.notifications.length === 0) {
+      container.innerHTML = `
+        <div class="notification-item read">
+          <div class="notification-content" style="text-align: center;">
+            <div class="notification-message">Nenhuma notificação</div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = this.notifications.map(notification => `
+      <div class="notification-item ${notification.read ? 'read' : 'unread'}" 
+           onclick="notificationSystem.markAsRead(${notification.id})">
+        ${this.getNotificationIcon(notification.type)}
+        <div class="notification-content">
+          <div class="notification-title">${notification.title}</div>
+          <div class="notification-message">${notification.message}</div>
+          <div class="notification-time">${this.formatTime(notification.timestamp)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  updateBadge() {
+    const unreadCount = this.notifications.filter(n => !n.read).length;
+    const badge = document.getElementById('notificationBadge');
+    badge.textContent = unreadCount > 99 ? '99+' : unreadCount.toString();
+    
+    // Adicionar animação quando há novas notificações
+    if (unreadCount > 0) {
+      badge.style.animation = 'pulse 2s infinite';
+    } else {
+      badge.style.animation = 'none';
+    }
+  }
+
+  saveToLocalStorage() {
+    localStorage.setItem('userNotifications', JSON.stringify(this.notifications));
+  }
+
+  checkForNewNotifications() {
+    // Simular notificações baseadas em notícias favoritadas
+    const favoriteNews = JSON.parse(localStorage.getItem('favoriteNews')) || [];
+    
+    favoriteNews.forEach(news => {
+      // Simular atualizações ocasionais
+      if (Math.random() < 0.3 && !this.notifications.some(n => n.newsId === news.id)) {
+        this.addNotification({
+          type: 'update',
+          title: 'Atualização na notícia',
+          message: `"${news.title}" recebeu uma atualização`,
+          newsId: news.id
+        });
+      }
+    });
+  }
+
+  // Método para simular notificações (para teste)
+  simulateNotification() {
+    const types = ['update', 'reminder', 'expiry', 'favorite'];
+    const messages = [
+      'Nova oportunidade disponível na sua área',
+      'Lembrete: Prazo se aproximando',
+      'Atualização importante na vaga que você favoritou',
+      'Novo comentário na notícia que você segue',
+      'Você recebeu uma nova mensagem'
+    ];
+    
+    this.addNotification({
+      type: types[Math.floor(Math.random() * types.length)],
+      title: 'Nova notificação',
+      message: messages[Math.floor(Math.random() * messages.length)],
+      newsId: Date.now()
+    });
+  }
+}
+
+// Inicializar o sistema de notificações
+const notificationSystem = new NotificationSystem();
+
+// Adicionar CSS para animação do badge
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+`;
+document.head.appendChild(style);
+
+// Para testar: adicionar uma notificação a cada 30 segundos (remover em produção)
+//setInterval(() => notificationSystem.simulateNotification(), 10000);
+
 // Evento de clique no botão de filtro
 if (filterBtn) {
   filterBtn.addEventListener("click", (e) => {
