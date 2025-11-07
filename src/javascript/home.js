@@ -380,10 +380,12 @@ class NotificationSystem {
   addNotification(notification) {
     const newNotification = {
       id: Date.now(),
+      notification_id: notification.notification_id || null,
       type: notification.type,
       title: notification.title,
       message: notification.message,
       newsId: notification.newsId,
+      sent_at: notification.sent_at || null,
       timestamp: new Date().toISOString(),
       read: false,
     };
