@@ -6,8 +6,21 @@ from datetime import datetime, timedelta, timezone
 from models.userModel import User
 from app import db, mail
 from flask_mail import Message
+from flask import render_template
 
 auth_routes = Blueprint('auth_routes', __name__)
+
+@auth_routes.route('/login-page')
+def login_page():
+    return render_template('login.html')  # Flask vai buscar em src/html/
+
+@auth_routes.route('/registrar-page')
+def registrar_page():
+    return render_template('registrar.html')
+
+@auth_routes.route('/recuperacao-senha-page')
+def recuperacao_senha_page():
+    return render_template('recuperacaoSenha.html')
 
 @auth_routes.route('/login', methods=['POST'])
 def login():
