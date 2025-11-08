@@ -15,9 +15,12 @@
         <img src="../img/notific.svg" alt="Logo Notific" class="logo-img" />
         <p>Seu sistema de notificações eficiente</p>
       </div>
+      
+      <div id="message-container"></div>
+      
       <div class="auth-form">
         <h2>Acesse sua Conta</h2>
-        <form action="/login" method="POST">
+        <form id="loginForm">
           <label for="email">Email</label>
           <input
             type="email"
@@ -37,12 +40,14 @@
           />
 
           <div class="links">
-            <a href="registrar.html">Criar Conta</a>
-            <a href="recuperacaoSenha.html">Esqueci minha senha</a>
+            <a href="/registrar-page">Criar Conta</a>
+            <a href="/recuperacao-senha-page">Esqueci minha senha</a>
           </div>
           <button type="submit">Entrar</button>
         </form>
       </div>
     </div>
+
+    <script src="../javascript/auth.js"></script>
   </body>
 </html>

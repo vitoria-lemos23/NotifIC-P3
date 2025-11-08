@@ -7,7 +7,6 @@
     <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
     <meta name="description" content="Crie sua conta no NotifIC e centralize notificações e 
     oportunidades do Instituto de Computação da UFAL em um só lugar." />
-
     <title>Criar Conta - Notific</title>
   </head>
   <body>
@@ -16,15 +15,18 @@
         <img src="../img/notific.svg" alt="Logo Notific" class="logo-img" />
         <p>Seu sistema de notificações eficiente</p>
       </div>
+      
+      <div id="message-container"></div>
+      
       <div class="auth-form">
         <h2>Criar Conta</h2>
-        <form action="/registro" method="POST">
-          <label for="nome">Nome Completo</label>
+        <form id="registerForm">
+          <label for="username">Nome de Usuário</label>
           <input
             type="text"
-            id="nome"
-            name="nome"
-            placeholder="Digite seu nome completo"
+            id="username"
+            name="username"
+            placeholder="Digite seu nome de usuário"
             required
           />
 
@@ -56,12 +58,14 @@
           />
 
           <div class="links">
-            <a href="login.html">Já tenho conta</a>
-            <a href="recuperacaoSenha.html">Esqueci minha senha</a>
+            <a href="/login-page">Já tenho conta</a>
+            <a href="/recuperacao-senha-page">Esqueci minha senha</a>
           </div>
           <button type="submit">Criar Conta</button>
         </form>
       </div>
     </div>
+
+    <script src="../javascript/auth.js"></script>
   </body>
 </html>

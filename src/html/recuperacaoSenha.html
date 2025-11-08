@@ -15,9 +15,12 @@
         <img src="../img/notific.svg" alt="Logo Notific" class="logo-img" />
         <p>Seu sistema de notificações eficiente</p>
       </div>
+      
+      <div id="message-container"></div>
+      
       <div class="auth-form">
         <h2>Recuperar Senha</h2>
-        <form action="/password-recovery" method="POST">
+        <form id="recoveryForm">
           <label for="email">Email</label>
           <input
             type="email"
@@ -28,12 +31,14 @@
           />
 
           <div class="links">
-            <a href="login.html">Login</a>
-            <a href="home.html">Tela inicial</a>
+            <a href="/login-page">Login</a>
+            <a href="/">Tela inicial</a>
           </div>
           <button type="submit">Recuperar Senha</button>
         </form>
       </div>
     </div>
+
+    <script src="../javascript/auth.js"></script>
   </body>
 </html>
