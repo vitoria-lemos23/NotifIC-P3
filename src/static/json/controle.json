@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "requester": "Maria Oliveira (EASY)",
+        "title": "Anúncio de processo seletivo EASY",
+        "date": "28/10/2025",
+        "img": "../img/easy.jpeg",
+        "full_description": "A Empresa Júnior EASY está com inscrições abertas para o processo seletivo 2025.2. Buscamos alunos de Computação e Engenharia interessados em desenvolvimento, design e gestão de projetos. Inscrições até 05/11."
+    },
+    {
+        "id": 2,
+        "requester": "Coordenação do IC/UFAL",
+        "title": "Notícia: Alunos vencem maratona.",
+        "date": "27/10/2025",
+        "img": "https://i.pravatar.cc/300?img=3",
+        "full_description": "Os alunos João Silva e Carla Dias, do 5º período, ganharam o primeiro lugar na Maratona de Programação regional, classificando-se para a etapa nacional. O evento ocorreu no último fim de semana em Recife."
+    },
+    {
+        "id": 3,
+        "requester": "NEES",
+        "title": "Abertura de Inscrições NEES",
+        "date": "26/10/2025",
+        "img": "../img/logo_nees.jpg",
+        "full_description": "O Núcleo de Excelência em Engenharia de Software (NEES) está com inscrições abertas para novos membros. Vagas para desenvolvedores (React, Node) e pesquisadores."
+    }
+]
