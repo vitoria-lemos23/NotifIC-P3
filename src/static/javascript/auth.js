@@ -3,6 +3,7 @@ class AuthService {
     static baseURL = '';
 
     static async login(email, password) {
+        print("Login chamado");
         try {
             const response = await fetch('/login', {
                 method: 'POST',
