@@ -3,7 +3,7 @@ class AuthService {
     static baseURL = '';
 
     static async login(email, password) {
-        print("Login chamado");
+        console.log("Login chamado");
         try {
             const response = await fetch('/login', {
                 method: 'POST',
@@ -13,15 +13,22 @@ class AuthService {
                 body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
+            // tenta parsear JSON com segurança
+            let data = {};
+            try { data = await response.json(); } catch (e) { /* corpo vazio ou não-JSON */ }
 
             if (response.ok) {
                 // Salva o token no localStorage
-                localStorage.setItem('token', data.token);
+                if (data.token) localStorage.setItem('token', data.token);
                 return { success: true, data };
-            } else {
-                return { success: false, error: data.error };
             }
+
+            // Trata códigos específicos do backend
+            if (response.status === 401) {
+                return { success: false, error: data.error || 'Credenciais inválidas' };
+            }
+
+            return { success: false, error: data.error || `Erro: ${response.status}` };
         } catch (error) {
             return { success: false, error: 'Erro de conexão' };
         }
@@ -58,14 +65,14 @@ class AuthService {
                 },
                 body: JSON.stringify({ email })
             });
+            let data = {};
+            try { data = await response.json(); } catch (e) { }
 
-            const data = await response.json();
+            if (response.ok) return { success: true, data };
 
-            if (response.ok) {
-                return { success: true, data };
-            } else {
-                return { success: false, error: data.error };
-            }
+            if (response.status === 404) return { success: false, error: data.error || 'E-mail não encontrado' };
+
+            return { success: false, error: data.error || `Erro: ${response.status}` };
         } catch (error) {
             return { success: false, error: 'Erro de conexão' };
         }
@@ -81,7 +88,8 @@ class AuthService {
 
     static logout() {
         localStorage.removeItem('token');
-        window.location.href = '/login-page';
+        // rota de login no backend é '/login' (GET)
+        window.location.href = '/login';
     }
 }
 
@@ -182,7 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (result.success) {
                 UIManager.showMessage('Conta criada com sucesso! Redirecionando para login...', 'success');
                 setTimeout(() => {
-                    window.location.href = '/login-page';
+                    // rota de login no backend é '/login'
+                    window.location.href = '/login';
                 }, 2000);
             } else {
                 UIManager.showMessage(result.error, 'error');
@@ -214,3 +223,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Helpers para fluxo de redefinição de senha (frontend)
+// valida token (faz GET /redefinir-senha?token=...)
+async function validateResetToken(token) {
+    try {
+        const res = await fetch(`/redefinir-senha?token=${encodeURIComponent(token)}`, { method: 'GET' });
+        let data = {};
+        try { data = await res.json(); } catch (e) {}
+        if (res.ok) return { valid: true, data };
+        return { valid: false, error: data.error || `Erro: ${res.status}` };
+    } catch (err) {
+        return { valid: false, error: 'Erro de conexão' };
+    }
+}
+
+// efetua redefinição (POST /redefinir-senha { token, nova_senha })
+async function resetPassword(token, nova_senha) {
+    try {
+        const res = await fetch('/redefinir-senha', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, nova_senha })
+        });
+        let data = {};
+        try { data = await res.json(); } catch (e) {}
+        if (res.ok) return { success: true, data };
+        return { success: false, error: data.error || `Erro: ${res.status}` };
+    } catch (err) {
+        return { success: false, error: 'Erro de conexão' };
+    }
+}
