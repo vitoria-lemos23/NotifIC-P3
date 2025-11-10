@@ -258,7 +258,7 @@ if (profileButton) {
       sideMenu.classList.add("active");
       sideMenuBackdrop.classList.add("active");
     } else {
-      window.location.href = "login.html";
+      window.location.href = "/login";
     }
   });
 }
@@ -328,7 +328,7 @@ class NotificationSystem {
 
         // Verifica se o usuário está logado
         if (!usuarioLogado) {
-          window.location.href = "login.html";
+          window.location.href = "/login";
           return;
         }
 
