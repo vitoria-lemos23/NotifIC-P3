@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/auth.css" />
-    <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
     <meta name="description" content="Crie sua conta no NotifIC e centralize notificações e 
     oportunidades do Instituto de Computação da UFAL em um só lugar." />
     <title>Criar Conta - Notific</title>
   </head>
-  <body>
+  <body data-page="register">
     <div class="auth-container">
       <div class="logo">
-        <img src="../img/notific.svg" alt="Logo Notific" class="logo-img" />
+  <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-img" />
         <p>Seu sistema de notificações eficiente</p>
       </div>
       
@@ -58,7 +58,7 @@
           />
 
           <div class="links">
-            <a href="/login-page">Já tenho conta</a>
+            <a href="/login">Já tenho conta</a>
             <a href="/recuperacao-senha-page">Esqueci minha senha</a>
           </div>
           <button type="submit">Criar Conta</button>
@@ -66,6 +66,6 @@
       </div>
     </div>
 
-    <script src="../javascript/auth.js"></script>
+  <script src="{{ url_for('static', filename='javascript/auth.js') }}"></script>
   </body>
 </html>

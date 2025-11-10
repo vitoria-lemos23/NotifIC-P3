@@ -25,11 +25,14 @@ class AuthService {
 
             // Trata códigos específicos do backend
             if (response.status === 401) {
+                console.warn('login unauthorized', data);
                 return { success: false, error: data.error || 'Credenciais inválidas' };
             }
 
+            console.error('login failed', response.status, data);
             return { success: false, error: data.error || `Erro: ${response.status}` };
         } catch (error) {
+            console.error('login error', error);
             return { success: false, error: 'Erro de conexão' };
         }
     }
@@ -44,14 +47,24 @@ class AuthService {
                 body: JSON.stringify({ username, email, password })
             });
 
-            const data = await response.json();
+            // parse JSON safely
+            let data = {};
+            try { data = await response.json(); } catch (e) { console.warn('register: no JSON response', e); }
 
             if (response.ok) {
                 return { success: true, data };
-            } else {
-                return { success: false, error: data.error };
             }
+
+            // specific handling for conflict
+            if (response.status === 409) {
+                console.warn('register conflict', data);
+                return { success: false, error: data.error || 'Usuário ou email já existe' };
+            }
+
+            console.error('register failed', response.status, data);
+            return { success: false, error: data.error || `Erro: ${response.status}` };
         } catch (error) {
+            console.error('register error', error);
             return { success: false, error: 'Erro de conexão' };
         }
     }
@@ -66,14 +79,19 @@ class AuthService {
                 body: JSON.stringify({ email })
             });
             let data = {};
-            try { data = await response.json(); } catch (e) { }
+            try { data = await response.json(); } catch (e) { console.warn('recoverPassword: no JSON response', e); }
 
             if (response.ok) return { success: true, data };
 
-            if (response.status === 404) return { success: false, error: data.error || 'E-mail não encontrado' };
+            if (response.status === 404) {
+                console.warn('recoverPassword not found', data);
+                return { success: false, error: data.error || 'E-mail não encontrado' };
+            }
 
+            console.error('recoverPassword failed', response.status, data);
             return { success: false, error: data.error || `Erro: ${response.status}` };
         } catch (error) {
+            console.error('recoverPassword error', error);
             return { success: false, error: 'Erro de conexão' };
         }
     }
@@ -126,102 +144,136 @@ class UIManager {
     }
 }
 
-// Handlers para os formulários
-document.addEventListener('DOMContentLoaded', function() {
-    // Login Form
+// Init functions per-page -------------------------------------------------
+function initLogin() {
     const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const button = this.querySelector('button[type="submit"]');
+    if (!loginForm) return;
 
-            // Salva texto original do botão
-            button.setAttribute('data-original-text', button.innerHTML);
-            UIManager.setLoading(button, true);
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-            const result = await AuthService.login(email, password);
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const button = this.querySelector('button[type="submit"]');
 
-            UIManager.setLoading(button, false);
+        button.setAttribute('data-original-text', button.innerHTML);
+        UIManager.setLoading(button, true);
 
-            if (result.success) {
-                UIManager.showMessage('Login realizado com sucesso!', 'success');
-                setTimeout(() => {
-                    window.location.href = '/home';
-                }, 1000);
-            } else {
-                UIManager.showMessage(result.error, 'error');
-            }
-        });
-    }
+        const result = await AuthService.login(email, password);
 
-    // Register Form
+        UIManager.setLoading(button, false);
+
+        if (result.success) {
+            UIManager.showMessage('Login realizado com sucesso!', 'success');
+            setTimeout(() => { window.location.href = '/home'; }, 1000);
+        } else {
+            UIManager.showMessage(result.error, 'error');
+        }
+    });
+}
+
+function initRegister() {
     const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const button = this.querySelector('button[type="submit"]');
+    if (!registerForm) return;
 
-            // Validação básica no frontend
-            if (password !== confirmPassword) {
-                UIManager.showMessage('As senhas não coincidem!', 'error');
-                return;
-            }
+    registerForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-            if (password.length < 6) {
-                UIManager.showMessage('A senha deve ter pelo menos 6 caracteres!', 'error');
-                return;
-            }
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const button = this.querySelector('button[type="submit"]');
 
-            button.setAttribute('data-original-text', button.innerHTML);
-            UIManager.setLoading(button, true);
+        if (password !== confirmPassword) {
+            UIManager.showMessage('As senhas não coincidem!', 'error');
+            return;
+        }
+        if (password.length < 6) {
+            UIManager.showMessage('A senha deve ter pelo menos 6 caracteres!', 'error');
+            return;
+        }
 
-            const result = await AuthService.register(username, email, password);
+        button.setAttribute('data-original-text', button.innerHTML);
+        UIManager.setLoading(button, true);
 
-            UIManager.setLoading(button, false);
+        const result = await AuthService.register(username, email, password);
 
-            if (result.success) {
-                UIManager.showMessage('Conta criada com sucesso! Redirecionando para login...', 'success');
-                setTimeout(() => {
-                    // rota de login no backend é '/login'
-                    window.location.href = '/login';
-                }, 2000);
-            } else {
-                UIManager.showMessage(result.error, 'error');
-            }
-        });
-    }
+        UIManager.setLoading(button, false);
 
-    // Recovery Form
+        if (result.success) {
+            UIManager.showMessage('Conta criada com sucesso! Redirecionando para login...', 'success');
+            setTimeout(() => { window.location.href = '/login'; }, 2000);
+        } else {
+            UIManager.showMessage(result.error, 'error');
+        }
+    });
+}
+
+function initRecovery() {
     const recoveryForm = document.getElementById('recoveryForm');
-    if (recoveryForm) {
-        recoveryForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const button = this.querySelector('button[type="submit"]');
+    if (!recoveryForm) return;
 
-            button.setAttribute('data-original-text', button.innerHTML);
-            UIManager.setLoading(button, true);
+    recoveryForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-            const result = await AuthService.recoverPassword(email);
+        const email = document.getElementById('email').value;
+        const button = this.querySelector('button[type="submit"]');
 
-            UIManager.setLoading(button, false);
+        button.setAttribute('data-original-text', button.innerHTML);
+        UIManager.setLoading(button, true);
 
-            if (result.success) {
-                UIManager.showMessage('Se o email existir em nosso sistema, enviaremos instruções de recuperação.', 'info');
-            } else {
-                UIManager.showMessage(result.error, 'error');
-            }
-        });
-    }
+        const result = await AuthService.recoverPassword(email);
+
+        UIManager.setLoading(button, false);
+
+        if (result.success) {
+            UIManager.showMessage('Se o email existir em nosso sistema, enviaremos instruções de recuperação.', 'info');
+        } else {
+            UIManager.showMessage(result.error, 'error');
+        }
+    });
+}
+
+function initReset() {
+    // If you have a reset page with token param and a form, implement hookup here.
+    const resetForm = document.getElementById('resetForm');
+    if (!resetForm) return;
+
+    resetForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const token = document.getElementById('token').value;
+        const nova_senha = document.getElementById('nova_senha').value;
+        const button = this.querySelector('button[type="submit"]');
+
+        button.setAttribute('data-original-text', button.innerHTML);
+        UIManager.setLoading(button, true);
+
+        const result = await resetPassword(token, nova_senha);
+
+        UIManager.setLoading(button, false);
+        if (result.success) {
+            UIManager.showMessage('Senha redefinida com sucesso!', 'success');
+            setTimeout(() => { window.location.href = '/login'; }, 1200);
+        } else {
+            UIManager.showMessage(result.error, 'error');
+        }
+    });
+}
+
+// Bootstrap: pick init based on data-page or element presence
+document.addEventListener('DOMContentLoaded', function() {
+    const page = document.body && document.body.dataset && document.body.dataset.page;
+    if (page === 'login') return initLogin();
+    if (page === 'register') return initRegister();
+    if (page === 'recovery') return initRecovery();
+    if (page === 'reset') return initReset();
+
+    // fallback: detect by element ids
+    if (document.getElementById('loginForm')) initLogin();
+    if (document.getElementById('registerForm')) initRegister();
+    if (document.getElementById('recoveryForm')) initRecovery();
+    if (document.getElementById('resetForm')) initReset();
 });
 
 // Helpers para fluxo de redefinição de senha (frontend)
