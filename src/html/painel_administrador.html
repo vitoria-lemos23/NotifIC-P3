@@ -3,8 +3,8 @@
   <!-- Header (mesmo do feed) -->
   <header>
     <div class="icone-ic">
-      <a href="home.html">
-        <img src="../img/home_icon.png" alt="Home" class="home-icon">
+      <a href="{{ url_for('static', filename='html/home.html') }}">
+        <img src="{{ url_for('static', filename='img/home_icon.png') }}" alt="Home" class="home-icon">
       </a>
       <div class="menu-title">notif<span class="logo-ic">IC</span></div>
     </div>
@@ -12,7 +12,7 @@
     <div id="profileButton" class="">
       <span class="profile-icon">👤</span>
       
-      <img src="../img/profile.jpg" alt="Perfil">
+      <img src="{{ url_for('static', filename='img/profile.jpg') }}" alt="Perfil">
     </div>
   </header>
 

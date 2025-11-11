@@ -6,18 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel de Administração</title>
 
-  <link rel="stylesheet" href="../css/admin.css">
-  <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
 </head>
 
 <body>
 
   <nav class="navbar">
-    <a href="home.html">
-      <img src="../img/notific.svg" alt="Logo Notific" class="logo-ic">
+    <a href="{{ url_for('static', filename='html/home.html') }}">
+      <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-ic">
     </a>
     <h1 class="navbar-title">Administrador</h1>
-    <a href="home.html" class="nav-back-link">Voltar</a>
+    <a href="{{ url_for('static', filename='html/home.html') }}" class="nav-back-link">Voltar</a>
   </nav>
 
   <main class="conteudo-principal">
@@ -45,11 +45,11 @@
               <button id="btnBanir" class="btn-rejeitar">Banir Usuário</button>
               <button id="btnMembro" class="btn-aceitar">Tornar Membro</button>
               <button id="btnExcluir" class="btn-rejeitar">Excluir Anúncio</button>
-            </div>
+      </div>
     </section>
   </main>
 
-  <script src="../javascript/admin.js"></script>
+  <script src="{{ url_for('static', filename='javascript/admin.js') }}"></script>
 </body>
 
 </html>

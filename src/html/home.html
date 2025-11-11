@@ -103,9 +103,9 @@
         >
       </header>
       <nav>
-  <a href="paginaUsuario.html">Perfil</a>
-  <a href="page_feed.html">Cadastrar Notícia</a>
-  <a href="#" id="logoutLink">Sair</a>
+        <a href="{{ url_for('static', filename='html/paginaUsuario.html') }}">Perfil</a>
+        <a href="{{ url_for('static', filename='html/page_feed.html') }}">Cadastrar Notícia</a>
+        <a href="#">Sair</a>
       </nav>
       <footer>© 2025 ./notifIC</footer>
     </aside>
@@ -149,9 +149,9 @@
       </div>
       <div>
         <h4>Links Rápidos</h4>
-        <p>
-          <a href="page_feed.html">Anuncie no site</a><br />
-          <a href="painel_administrador.html">Contate-nos</a><br />
+          <p>
+          <a href="{{ url_for('static', filename='html/page_feed.html') }}">Anuncie no site</a><br />
+          <a href="{{ url_for('static', filename='html/painel_administrador.html') }}">Contate-nos</a><br />
           <a href="#">Reportar problema</a>
         </p>
       </div>
