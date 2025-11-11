@@ -10,7 +10,49 @@ const sideMenuBackdrop = document.getElementById("sideMenuBackdrop");
 
 let activeTags = [];
 let currentTab = "geral";
-let usuarioLogado = false;
+// Initialize login state from localStorage token so it persists across reloads
+let usuarioLogado = !!localStorage.getItem('token');
+
+// Small JWT helpers (client-side only)
+function parseJwt(token) {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(atob(payload).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
+}
+
+function isTokenExpired(token) {
+  const payload = parseJwt(token);
+  if (!payload || !payload.exp) return true;
+  // exp in JWT is seconds since epoch
+  const now = Math.floor(Date.now() / 1000);
+  return payload.exp <= now;
+}
+
+// Busca informações do usuário no backend usando o token atual
+async function fetchMe() {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+  try {
+    const res = await fetch('/me', {
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    console.error('fetchMe error', e);
+    return null;
+  }
+}
 let data = [];
 let isAdmin = true; // Simulação
 
@@ -222,7 +264,15 @@ function atualizarEstadoLogin() {
   if (usuarioLogado) {
     profileButton.classList.add("logged");
     profileButton.classList.remove("not-logged");
-    if (menuTitle) menuTitle.textContent = "./notifIC";
+    // Preferir exibir o username salvo no localStorage quando disponível
+    const username = localStorage.getItem('username');
+    if (menuTitle) menuTitle.textContent = username ? username : "./notifIC";
+    // Atualiza imagem de perfil quando disponível
+    const imgEl = profileButton.querySelector('img');
+    const profilePic = localStorage.getItem('profile_picture');
+    if (imgEl) {
+      imgEl.src = profilePic && profilePic.length ? profilePic : 'https://i.pravatar.cc/40';
+    }
   } else {
     profileButton.classList.remove("logged");
     profileButton.classList.add("not-logged");
@@ -260,6 +310,15 @@ if (profileButton) {
     } else {
       window.location.href = "/login";
     }
+  });
+}
+
+// Wire logout link (if present in the DOM)
+const logoutLink = document.getElementById('logoutLink');
+if (logoutLink) {
+  logoutLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    logout();
   });
 }
 
@@ -608,9 +667,59 @@ function renderFilterMenu() {
 
 // Simular verificação de login
 function verificarLogin() {
-  //usuarioLogado = Math.random() > 0.5;
+  // Set usuarioLogado based on presence and validity of auth token in localStorage
+  const token = localStorage.getItem('token');
+  if (!token) {
+    usuarioLogado = false;
+  } else if (isTokenExpired(token)) {
+    // Token expired: clear it and treat as logged out
+    console.log('Token expirado — deslogando');
+    logout();
+    return;
+  } else {
+    // token parece válido — vamos confirmar com o servidor e obter dados do usuário
+    usuarioLogado = true;
+    fetchMe().then((user) => {
+      if (user && user.username) {
+        // armazena nome para exibição
+        localStorage.setItem('username', user.username);
+        // armazena foto de perfil (se fornecida pelo backend)
+        if (user.profile_picture) {
+          localStorage.setItem('profile_picture', user.profile_picture);
+        }
+        atualizarEstadoLogin();
+      } else {
+        // token inválido no backend — desloga
+        logout();
+      }
+    }).catch((e) => {
+      console.error('Erro ao validar token com /me', e);
+      logout();
+    });
+    return;
+  }
   atualizarEstadoLogin();
 }
+
+// Logout helper: clears token and updates UI
+function logout() {
+  localStorage.removeItem('token');
+  // remove any other stored user info if present
+  localStorage.removeItem('username');
+  usuarioLogado = false;
+  atualizarEstadoLogin();
+  // redirect to login page
+  window.location.href = '/login';
+}
+
+// Periodically check token validity and auto-logout if expired
+setInterval(() => {
+  const token = localStorage.getItem('token');
+  if (token && isTokenExpired(token)) {
+    console.log('Token expirado durante sessão — deslogando');
+    logout();
+  }
+}, 30 * 1000); // check every 30s
 
 // Renderizar o feed de notícias
 function render(tab, query = "") {

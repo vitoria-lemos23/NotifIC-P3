@@ -165,7 +165,8 @@ function initLogin() {
 
         if (result.success) {
             UIManager.showMessage('Login realizado com sucesso!', 'success');
-            setTimeout(() => { window.location.href = '/home'; }, 1000);
+            // Redirect to the root path (home page is served at '/')
+            setTimeout(() => { window.location.href = '/'; }, 1000);
         } else {
             UIManager.showMessage(result.error, 'error');
         }

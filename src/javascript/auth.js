@@ -139,8 +139,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (result.success) {
                 UIManager.showMessage('Login realizado com sucesso!', 'success');
+                // Redirect to root where the home page is served
                 setTimeout(() => {
-                    window.location.href = '/home';
+                    window.location.href = '/';
                 }, 1000);
             } else {
                 UIManager.showMessage(result.error, 'error');
