@@ -3,21 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/auth.css" />
-    <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
     <meta name="description" content="Recupere o acesso ao NotifIC, o sistema do
      Instituto de Computação da UFAL para centralizar notificações e oportunidades." />
     <title>Recuperação de Senha- Notific</title>
   </head>
-  <body>
+  <body data-page="recovery">
     <div class="auth-container">
       <div class="logo">
-        <img src="../img/notific.svg" alt="Logo Notific" class="logo-img" />
+  <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-img" />
         <p>Seu sistema de notificações eficiente</p>
       </div>
+      
+      <div id="message-container"></div>
+      
       <div class="auth-form">
         <h2>Recuperar Senha</h2>
-        <form action="/password-recovery" method="POST">
+        <form id="recoveryForm">
           <label for="email">Email</label>
           <input
             type="email"
@@ -28,12 +31,14 @@
           />
 
           <div class="links">
-            <a href="login.html">Login</a>
-            <a href="home.html">Tela inicial</a>
+            <a href="/login">Login</a>
+            <a href="/">Tela inicial</a>
           </div>
           <button type="submit">Recuperar Senha</button>
         </form>
       </div>
     </div>
+
+  <script src="{{ url_for('static', filename='javascript/auth.js') }}"></script>
   </body>
 </html>

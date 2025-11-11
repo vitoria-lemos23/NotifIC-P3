@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Perfil do Usuário</title>
-    <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
-    <link rel="stylesheet" href="../css/perfil.css" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -15,8 +15,8 @@
   <body>
     <!-- Header principal -->
     <header class="main-header">
-      <a href="home.html">
-        <img src="../img/notific.svg" alt="Ícone do notifIC" class="logo-IC" />
+      <a href="/">
+        <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Ícone do notifIC" class="logo-IC" />
       </a>
 
       <div id="profileButton" aria-label="Abrir menu lateral">
@@ -27,21 +27,21 @@
     <!-- Menu Dropdown -->
     <div class="dropdown-menu" id="dropdownMenu" aria-hidden="true">
       <nav class="dropdown-nav">
-        <a href="home.html">
+        <a href="{{ url_for('static', filename='html/home.html') }}">
           <i class="fas fa-home" style="margin-right: 10px"></i>
           Página Inicial
         </a>
 
-        <a href="page_feed.html">
+        <a href="{{ url_for('static', filename='html/page_feed.html') }}">
           <i class="fas fa-plus" style="margin-right: 20px"></i>
           Cadastrar Notícia
         </a>
 
-        <a href="paginaUsuario.html" class="active">
+        <a href="{{ url_for('static', filename='html/paginaUsuario.html') }}" class="active">
           <i class="fas fa-user" style="margin-right: 10px"></i>
           Perfil
         </a>
-        <a href="login.html">
+        <a href="{{ url_for('static', filename='html/login.html') }}">
           <i class="fas fa-sign-out-alt" style="margin-right: 10px"></i>
           Sair
         </a>
@@ -130,54 +130,6 @@
       </div>
     </main>
 
-    <!-- script para o menu dropdown -->
-    <script>
-      function toggleMenu() {
-        const dropdownMenu = document.getElementById("dropdownMenu");
-        const isActive = dropdownMenu.classList.toggle("active");
-
-        // Fecha o menu ao clicar fora dele
-        if (isActive) {
-          document.addEventListener("click", closeMenuOnClickOutside);
-        } else {
-          document.removeEventListener("click", closeMenuOnClickOutside);
-        }
-
-        dropdownMenu.setAttribute("aria-hidden", !isActive);
-      }
-
-      function closeMenuOnClickOutside(event) {
-        const dropdownMenu = document.getElementById("dropdownMenu");
-        const profileButton = document.getElementById("profileButton");
-
-        // Se o clique foi fora do menu e fora do botão, fecha o menu
-        if (
-          !dropdownMenu.contains(event.target) &&
-          !profileButton.contains(event.target)
-        ) {
-          dropdownMenu.classList.remove("active");
-          dropdownMenu.setAttribute("aria-hidden", "true");
-          document.removeEventListener("click", closeMenuOnClickOutside);
-        }
-      }
-
-      // Adiciona o event listener ao botão de perfil
-      document
-        .getElementById("profileButton")
-        .addEventListener("click", function (event) {
-          event.stopPropagation(); // Impede que o clique propague para o document
-          toggleMenu();
-        });
-
-      // Fecha o menu ao pressionar ESC
-      document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") {
-          const dropdownMenu = document.getElementById("dropdownMenu");
-          dropdownMenu.classList.remove("active");
-          dropdownMenu.setAttribute("aria-hidden", "true");
-          document.removeEventListener("click", closeMenuOnClickOutside);
-        }
-      });
-    </script>
+    <script src="{{ url_for('static', filename='javascript/perfil.js') }}"></script>
   </body>
 </html>

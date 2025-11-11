@@ -5,16 +5,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anuncie seu Evento</title>
-  <link rel="stylesheet" href="../css/feed.css">
-  <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/feed.css') }}">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
 </head>
 
 <body>
 
   <!-- Navbar -->
   <nav class="navbar">
-    <a href="home.html">
-      <img src="../img/notific.svg" alt="logo do notific" class="logo-ic">
+    <a href="{{ url_for('static', filename='html/home.html') }}">
+      <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="logo do notific" class="logo-ic">
     </a>
   </nav>
 
@@ -73,7 +73,7 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <!-- Script externo -->
-<script src="../javascript/preview.js"></script>
+<script src="{{ url_for('static', filename='javascript/preview.js') }}"></script>
 
 </body>
 

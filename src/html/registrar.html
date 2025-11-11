@@ -3,28 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/auth.css" />
-    <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
     <meta name="description" content="Crie sua conta no NotifIC e centralize notificações e 
     oportunidades do Instituto de Computação da UFAL em um só lugar." />
-
     <title>Criar Conta - Notific</title>
   </head>
-  <body>
+  <body data-page="register">
     <div class="auth-container">
       <div class="logo">
-        <img src="../img/notific.svg" alt="Logo Notific" class="logo-img" />
+  <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-img" />
         <p>Seu sistema de notificações eficiente</p>
       </div>
+      
+      <div id="message-container"></div>
+      
       <div class="auth-form">
         <h2>Criar Conta</h2>
-        <form action="/registro" method="POST">
-          <label for="nome">Nome Completo</label>
+        <form id="registerForm">
+          <label for="username">Nome de Usuário</label>
           <input
             type="text"
-            id="nome"
-            name="nome"
-            placeholder="Digite seu nome completo"
+            id="username"
+            name="username"
+            placeholder="Digite seu nome de usuário"
             required
           />
 
@@ -56,12 +58,14 @@
           />
 
           <div class="links">
-            <a href="login.html">Já tenho conta</a>
-            <a href="recuperacaoSenha.html">Esqueci minha senha</a>
+            <a href="/login">Já tenho conta</a>
+            <a href="/recuperacao">Esqueci minha senha</a>
           </div>
           <button type="submit">Criar Conta</button>
         </form>
       </div>
     </div>
+
+  <script src="{{ url_for('static', filename='javascript/auth.js') }}"></script>
   </body>
 </html>

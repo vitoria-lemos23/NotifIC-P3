@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "title": "SECOMP 2025",
+        "desc": "A Semana de Computação da UFAL está chegando! Serão palestras, minicursos, hackathons e muito networking com profissionais renomados do mercado de tecnologia. Não perca a chance de expandir seus conhecimentos e fazer novas conexões. Fique ligado na programação oficial!",
+        "img": "../img/banner_secomp.webp",
+        "date": "31/08/2025",
+        "externalLink": "https://www.instagram.com/secomp.ufal/"
+    },
+    {
+        "id": 2,
+        "title": "NEES Inscrições 2025",
+        "desc": "O Núcleo de Excelência em Engenharia de Software está com inscrições abertas para novos membros! Se você tem interesse em desenvolvimento web, mobile ou pesquisa acadêmica, essa é sua oportunidade de participar de projetos inovadores e colaborar com outros estudantes. As vagas são limitadas!",
+        "img": "../img/logo_nees.jpg",
+        "date": "01/09/2025",
+        "externalLink": "https://www.instagram.com/nees.ufal/"
+    },
+    {
+        "id": 3,
+        "title": "Vaga de Estágio - Dev Frontend",
+        "desc": "Empresa parceira da UFAL está oferecendo vaga de estágio para estudantes de Computação com foco em desenvolvimento Frontend. Os requisitos incluem conhecimento em HTML, CSS, JavaScript e frameworks modernos. O estágio oferece bolsa, possibilidade de efetivação e ambiente colaborativo.",
+        "img": "https://i.imgur.com/fLpxHmP.jpeg",
+        "date": "01/09/2025",
+        "externalLink": "https://empresa.com/estagio-frontend"
+    },
+    {
+        "id": 4,
+        "title": "Grupo de Pesquisa do Professor Ranilson",
+        "desc": "O grupo de pesquisa coordenado pelo Prof. Ranilson está selecionando alunos de pós-graduação para atuar em projetos de Inteligência Artificial e Ciência de Dados. Os participantes terão acesso a recursos exclusivos, orientação especializada e possibilidade de publicação científica.",
+        "img": "https://i.imgur.com/fLpxHmP.jpeg",
+        "date": "01/09/2025",
+        "externalLink": "https://ufal.br/grupo-pesquisa-ranilson"
+    }
+]

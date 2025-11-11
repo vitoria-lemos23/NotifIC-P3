@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Menu de controle do Administrador</title>
 
-  <link rel="stylesheet" href="../css/pedidos_pendentes.css">
-  <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pedidos_pendentes.css') }}">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
 </head>
 <body>
 
   <nav class="navbar">
-    <a href="home.html">
-      <img src="../img/notific.svg" alt="Logo Notific" class="logo-ic">
+    <a href="{{ url_for('static', filename='html/home.html') }}">
+      <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-ic">
     </a>
     <h1 class="navbar-title">Administrador</h1>
-    <a href="admin.html" class="nav-back-link">Controle</a>
+    <a href="{{ url_for('static', filename='html/admin.html') }}" class="nav-back-link">Controle</a>
   </nav>
 
   <main>
@@ -37,6 +37,6 @@
     </div>
   </div>
 
-  <script src="../javascript/pedidos_pendentes.js"></script>
+  <script src="{{ url_for('static', filename='javascript/pedidos_pendentes.js') }}"></script>
 </body>
 </html>

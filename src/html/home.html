@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>notifIC</title>
-    <link rel="stylesheet" href="../css/home.css" />
-    <link rel="icon" type="image/svg+xml" href="../img/logo-notific.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
   </head>
   <body>
     <header>
       <div class="header-logo">
-        <a href="home.html">
-          <img src="../img/notific.svg" alt="Logo NotifIC" id="logo-img" />
+        <a href="/home">
+          <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo NotifIC" id="logo-img" />
         </a>
       </div>
       <div class="header-search-wrapper">
@@ -103,8 +103,8 @@
         >
       </header>
       <nav>
-        <a href="paginaUsuario.html">Perfil</a>
-        <a href="page_feed.html">Cadastrar Notícia</a>
+        <a href="{{ url_for('static', filename='html/paginaUsuario.html') }}">Perfil</a>
+        <a href="{{ url_for('static', filename='html/page_feed.html') }}">Cadastrar Notícia</a>
         <a href="#">Sair</a>
       </nav>
       <footer>© 2025 ./notifIC</footer>
@@ -149,9 +149,9 @@
       </div>
       <div>
         <h4>Links Rápidos</h4>
-        <p>
-          <a href="page_feed.html">Anuncie no site</a><br />
-          <a href="painel_administrador.html">Contate-nos</a><br />
+          <p>
+          <a href="{{ url_for('static', filename='html/page_feed.html') }}">Anuncie no site</a><br />
+          <a href="{{ url_for('static', filename='html/painel_administrador.html') }}">Contate-nos</a><br />
           <a href="#">Reportar problema</a>
         </p>
       </div>
@@ -164,6 +164,6 @@
       </div>
     </footer>
 
-    <script src="../javascript/home.js" defer></script>
+  <script src="{{ url_for('static', filename='javascript/home.js') }}" defer></script>
   </body>
 </html>
