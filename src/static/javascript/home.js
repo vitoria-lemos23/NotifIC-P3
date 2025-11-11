@@ -10,7 +10,7 @@ const sideMenuBackdrop = document.getElementById("sideMenuBackdrop");
 
 let activeTags = [];
 let currentTab = "geral";
-let usuarioLogado = true;
+let usuarioLogado = false;
 let data = [];
 let isAdmin = true; // Simulação
 
