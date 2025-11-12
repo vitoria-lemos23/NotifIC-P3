@@ -10,7 +10,7 @@
   <body>
     <header>
       <div class="header-logo">
-        <a href="/home">
+        <a href="{{ url_for('home_routes.home') }}">
           <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo NotifIC" id="logo-img" />
         </a>
       </div>
@@ -103,9 +103,9 @@
         >
       </header>
       <nav>
-        <a href="{{ url_for('static', filename='html/paginaUsuario.html') }}">Perfil</a>
-        <a href="{{ url_for('static', filename='html/page_feed.html') }}">Cadastrar Notícia</a>
-        <a href="#">Sair</a>
+        <a href="{{ url_for('user_routes.perfil') }}">Perfil</a>
+        <a href="{{ url_for('news_routes.news_page') }}">Cadastrar Notícia</a>
+        <a href="#" class="logout-link">Sair</a>
       </nav>
       <footer>© 2025 ./notifIC</footer>
     </aside>
@@ -150,7 +150,7 @@
       <div>
         <h4>Links Rápidos</h4>
           <p>
-          <a href="{{ url_for('static', filename='html/page_feed.html') }}">Anuncie no site</a><br />
+          <a href="{{ url_for('news_routes.news_page') }}">Anuncie no site</a><br />
           <a href="{{ url_for('static', filename='html/painel_administrador.html') }}">Contate-nos</a><br />
           <a href="#">Reportar problema</a>
         </p>
@@ -164,6 +164,31 @@
       </div>
     </footer>
 
+  <script>
+    // Server-provided user object for client-side initialization
+    window.APP_USER = {{ usuario|tojson }};
+  </script>
   <script src="{{ url_for('static', filename='javascript/home.js') }}" defer></script>
+  <script>
+    // Logout via POST to clear HttpOnly cookie, then redirect to login page
+    document.addEventListener('DOMContentLoaded', function () {
+      const logoutEls = document.querySelectorAll('.logout-link');
+      logoutEls.forEach(function (el) {
+        el.addEventListener('click', async function (e) {
+          e.preventDefault();
+          try {
+            await fetch("{{ url_for('auth_routes.logout') }}", {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+            });
+          } catch (err) {
+            // ignore network errors, still redirect
+          }
+          window.location = "{{ url_for('auth_routes.login_page') }}";
+        });
+      });
+    });
+  </script>
   </body>
 </html>

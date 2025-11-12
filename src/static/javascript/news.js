@@ -8,7 +8,7 @@ async function loadNews() {
     const newsDiv = document.getElementById("news");
     
     try {
-        const response = await fetch("../json/news.json");
+    const response = await fetch('/static/json/news.json');
         const newsList = await response.json();
         const newsItem = newsList.find((n) => n.id == newsId);
 
@@ -19,12 +19,12 @@ async function loadNews() {
 
         newsDiv.innerHTML = `
             <h2 class="news-title">${newsItem.title}</h2>
-            <div class="news-meta">${newsItem.date || ""}</div>
+            <div class="news-meta">${newsItem.created_at || newsItem.date || ""}</div>
             <img src="${newsItem.img}" alt="Imagem da notícia" class="news-img">
-            <p class="news-desc">${newsItem.desc}</p>
+            <p class="news-desc">${newsItem.content || newsItem.desc || ''}</p>
             ${
-                newsItem.externalLink
-                    ? `<a href="${newsItem.externalLink}" target="_blank" class="subscribe-btn">Ir para o site</a>`
+                (newsItem.link || newsItem.externalLink)
+                    ? `<a href="${newsItem.link || newsItem.externalLink}" target="_blank" class="subscribe-btn">Ir para o site</a>`
                     : ""
             }
         `;
