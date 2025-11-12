@@ -22,10 +22,6 @@
       </div>
     </main>
 
-    <script>
-      // Server-provided user object for client-side initialization
-      window.APP_USER = {{ usuario|tojson }};
-    </script>
     <script src="{{ url_for('static', filename='javascript/news.js') }}"></script>
   </body>
 </html>

@@ -664,16 +664,19 @@ function renderFilterMenu() {
 }
 
 // Simular verificação de login
-function verificarLogin() {
+async function verificarLogin() {
   // Se o servidor já injetou a variável window.APP_USER (render-time), usamos isso
   if (typeof window !== 'undefined' && window.APP_USER) {
     usuarioLogado = true;
     atualizarEstadoLogin();
+    // garantir que, mesmo quando o servidor injetou o usuário no template,
+    // carregamos os favoritos do servidor para sincronizar o estado
+    await loadFavoritesFromServer();
     return;
   }
 
   // Caso contrário, tentamos perguntar ao servidor (cookie HttpOnly enviado via fetch)
-  fetchServerUser();
+  await fetchServerUser();
 }
 
 
@@ -726,31 +729,35 @@ async function loadFavoritesFromServer() {
 
 
 // Toggle favorito no servidor (adiciona ou remove)
-async function toggleFavoriteServer(newsId) {
+async function toggleFavoriteServer(news) {
   try {
+    // send full news object as fallback so server can create DB record when necessary
+    const payload = (typeof news === 'object') ? news : { news_id: news };
     const res = await fetch('/user/favorites', {
       method: 'POST',
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ news_id: newsId })
+      body: JSON.stringify(payload)
     });
     if (!res.ok) {
       console.error('Falha ao alternar favorito', await res.text());
       return null;
     }
-    const text = await res.json();
+    const body = await res.json();
+    const returnedNewsId = body.news_id;
     // atualiza lista local: se foi removido, filtra; se adicionado, adiciona
     if (res.status === 200) {
       // removed
-      favoritos = favoritos.filter((f) => f.id !== newsId);
+      favoritos = favoritos.filter((f) => f.id !== returnedNewsId);
     } else if (res.status === 201) {
       // added
-      // find news in data
-      const newsItem = data.find((d) => d.id === newsId);
-      if (newsItem) favoritos.push({ id: newsItem.id, title: newsItem.title });
+      // find news in data by id if present, otherwise use payload
+      const newsItem = data.find((d) => d.id === returnedNewsId) || (typeof news === 'object' ? news : null);
+      if (newsItem) favoritos.push({ id: returnedNewsId, title: newsItem.title || 'Sem título' });
+      else favoritos.push({ id: returnedNewsId, title: 'Sem título' });
     }
     localStorage.setItem('favoriteNews', JSON.stringify(favoritos));
-    return text;
+    return body;
   } catch (err) {
     console.error('Erro ao alternar favorito no servidor:', err);
     return null;
@@ -765,7 +772,7 @@ function render(tab, query = "") {
 
   if (tab === "pessoal") {
     // map stored favorites to the full news objects when possible
-    items = favoritos.map(f => data.find(d => d.id === f.id) || f);
+    items = favoritos.map(f => data.find(d => String(d.id) === String(f.id)) || f);
   } else if (tab === "geral") {
     items = [...data];
   } else if (tab === "vagas") {
@@ -792,7 +799,7 @@ function render(tab, query = "") {
     const card = document.createElement("div");
     card.className = "card";
 
-  const isFav = favoritos.some((f) => f.id === item.id);
+  const isFav = favoritos.some((f) => String(f.id) === String(item.id));
 
     let statusHTML = "";
     let timerHTML = "";
@@ -885,6 +892,14 @@ function toggleMenu() {
     : "";
 }
 
-// Inicializar
-loadNews();
-verificarLogin();
+// Inicializar a aplicação: garantir que carregamos o estado de login/favoritos
+// antes de buscar e renderizar as notícias, assim as estrelinhas já aparecem ativadas.
+async function initApp() {
+  // garante que o estado de login/favoritos é carregado primeiro
+  await verificarLogin();
+  // depois carrega notícias (render será chamado no final de loadNews)
+  await loadNews();
+}
+
+// Inicializa
+initApp();
