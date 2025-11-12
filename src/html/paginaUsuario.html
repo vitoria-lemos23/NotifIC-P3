@@ -12,7 +12,20 @@
     />
   </head>
 
-  <body>
+  <body data-app-user='{{ usuario | default(None) | tojson | safe }}'>
+    <script>
+      // Lê o JSON injetado no atributo data-app-user do body
+      (function () {
+        try {
+          const raw = document.body.getAttribute('data-app-user');
+          window.APP_USER = raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          // Em caso de parse inválido, garante que não quebre o JS do cliente
+          console.error('Erro ao parsear data-app-user:', e);
+          window.APP_USER = null;
+        }
+      })();
+    </script>
     <!-- Header principal -->
     <header class="main-header">
       <a href="{{ url_for('home_routes.home') }}">
@@ -53,7 +66,7 @@
       <div class="profile-content">
         <!-- Informações do usuário -->
         <section class="section-container profile-info-section">
-          <h2>Minhas Informações</h2>
+          <h2>Informações</h2>
           <div class="profile-details">
             <div class="profile-avatar">
               <img
@@ -85,6 +98,7 @@
                   id="username"
                   name="username"
                   placeholder="Nome"
+                  disabled
                 />
               </div>
               <div class="info-group">
@@ -94,7 +108,12 @@
                   id="email"
                   name="email"
                   placeholder="Email"
+                  disabled
                 />
+              </div>
+              <div class="info-group">
+                <label for="role">Cargo</label>
+                <input type="text" id="role" name="role" disabled />
               </div>
             </form>
           </div>
@@ -131,6 +150,7 @@
     </main>
 
     <script src="{{ url_for('static', filename='javascript/perfil.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascript/perfil_page.js') }}"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
         const logoutEls = document.querySelectorAll('.logout-link');
