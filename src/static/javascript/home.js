@@ -635,7 +635,7 @@ style.textContent = `
 document.head.appendChild(style);
 
 // Para testar: adicionar uma notificação a cada 30 segundos (remover em produção)
-setInterval(() => notificationSystem.simulateNotification(), 10000);
+// setInterval(() => notificationSystem.simulateNotification(), 10000);
 
 // Evento de clique no botão de filtro
 if (filterBtn) {

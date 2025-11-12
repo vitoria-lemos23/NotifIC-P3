@@ -174,7 +174,7 @@
     document.addEventListener('DOMContentLoaded', function () {
       const logoutEls = document.querySelectorAll('.logout-link');
       logoutEls.forEach(function (el) {
-        el.addEventListener('click', async function (e) {
+          el.addEventListener('click', async function (e) {
           e.preventDefault();
           try {
             await fetch("{{ url_for('auth_routes.logout') }}", {
@@ -185,7 +185,8 @@
           } catch (err) {
             // ignore network errors, still redirect
           }
-          window.location = "{{ url_for('auth_routes.login_page') }}";
+          // Redirect to home page after logout (instead of login page)
+          window.location = "{{ url_for('home_routes.home') }}";
         });
       });
     });
