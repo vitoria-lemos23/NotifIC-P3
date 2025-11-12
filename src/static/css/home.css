@@ -96,6 +96,20 @@ header #searchBar:focus {
   box-sizing: border-box;
   transition: all 0.3s ease;
 }
+/* Container que agrupa o nome do usuário e o botão de perfil
+   para que o nome apareça à esquerda do ícone sem quebrar o grid */
+.header-user-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: end; /* posiciona o grupo na área direita do header */
+}
+
+#headerUsername {
+  display: none; /* visível somente quando usuário logado */
+  color: #ffffff;
+  font-weight: 600;
+}
 
 #profileButton:not(.logged) {
   border-radius: 6px;

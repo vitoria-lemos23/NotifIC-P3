@@ -270,6 +270,7 @@ function normalizeImagePath(p) {
 }
 
 let favoritos = [];
+const headerUsername = document.getElementById('headerUsername');
 
 // Função para atualizar o estado visual do login
 function atualizarEstadoLogin() {
@@ -280,12 +281,32 @@ function atualizarEstadoLogin() {
     profileButton.classList.add("logged");
     profileButton.classList.remove("not-logged");
     if (menuTitle) menuTitle.textContent = "./notifIC";
+    // mostra nome do usuário ao lado do ícone de perfil, se disponível
+    try {
+      const user = window.APP_USER || null;
+      if (headerUsername) {
+        if (user && (user.username || user.name)) {
+          headerUsername.textContent = user.username || user.name;
+          headerUsername.style.display = 'flex';
+          headerUsername.style.alignItems = 'center';
+          headerUsername.style.marginRight = '8px';
+          headerUsername.style.color = '#fff';
+          headerUsername.style.fontWeight = '600';
+        } else {
+          headerUsername.textContent = '';
+          headerUsername.style.display = 'none';
+        }
+      }
+    } catch (e) {
+      console.error('Erro ao exibir nome do usuário:', e);
+    }
   } else {
     profileButton.classList.remove("logged");
     profileButton.classList.add("not-logged");
     if (menuTitle) menuTitle.textContent = "Login";
     favoritos = [];
     render(currentTab, searchBar.value.toLowerCase());
+    if (headerUsername) headerUsername.style.display = 'none';
   }
 }
 
