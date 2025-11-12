@@ -10,7 +10,9 @@ const sideMenuBackdrop = document.getElementById("sideMenuBackdrop");
 
 let activeTags = [];
 let currentTab = "geral";
-let usuarioLogado = true;
+// Define estado inicial de login a partir da variável server-driven `window.APP_USER`.
+// Se o servidor injetou `window.APP_USER` no template, usamos isso como fonte de verdade.
+let usuarioLogado = (typeof window !== 'undefined' && !!window.APP_USER) ? true : false;
 let data = [];
 let isAdmin = true; // Simulação
 
@@ -92,9 +94,9 @@ function renderCarousel(newsData) {
   slidesWrapper.innerHTML = "";
   dotsWrapper.innerHTML = "";
 
-  // Filtra apenas os itens que TÊM uma imagem_banner e pega os 5 primeiros
+  // Filtra apenas os itens que TÊM uma imagem_banner e são marcados como hotNews
   const carouselItems = newsData
-    .filter((item) => item.imagem_banner && item.tags.includes("destaque"))
+    .filter((item) => item.imagem_banner && (item.hotNews === true || (item.tags || []).includes('DESTAQUE')))
     .slice(0, 5);
 
   carouselItems.forEach((item, index) => {
@@ -198,8 +200,10 @@ function initializeCarousel() {
 // Função para carregar as notícias
 async function loadNews() {
   try {
-    const res = await fetch("../json/noticias.json");
-    data = await res.json();
+  // fetch from the Flask static path so absolute location works regardless of current URL
+  const res = await fetch('/static/json/noticias.json');
+    const raw = await res.json();
+    data = normalizeNewsData(raw);
     render(currentTab, searchBar.value.toLowerCase());
 
     // Inicializa o carrossel com os dados
@@ -210,6 +214,59 @@ async function loadNews() {
     console.error("Erro ao carregar notícias:", e);
   }
   renderFilterMenu();
+}
+
+
+// Normaliza os objetos do JSON para o shape esperado pelo front/back
+function normalizeNewsData(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((item) => {
+    const tags = (item.tags || []).map((t) => String(t).toUpperCase());
+    // map common synonyms to tag enum values if needed
+    const normalizedTags = tags.map((t) => {
+      if (t === 'VAGAS' || t === 'VAGA') return 'VAGA';
+      if (t === 'EVENTO' || t === 'EVENTOS' || t === 'DESTAQUE') return 'EVENTO';
+      if (t === 'PROJETO' || t === 'PROJETOS' || t === 'PESQUISA') return 'PROJETO';
+      if (t === 'GERAL') return 'PROJETO';
+      return t;
+    });
+
+    // normalize status to model values (ACEITA/PENDENTE/REJEITADA)
+    let status = (item.status || '').toString().toUpperCase();
+    if (status === 'PUBLICADO' || status === 'ABERTA' || status === 'ABERTO' || status === 'ACEITA') {
+      status = 'ACEITA';
+    } else if (status === 'FECHADA' || status === 'FECHADO' || status === 'REJEITADA') {
+      status = 'REJEITADA';
+    } else {
+      status = 'PENDENTE';
+    }
+
+    return {
+      id: item.id,
+      title: item.title,
+      content: item.content || item.desc || '',
+      author_id: item.author_id || null,
+      created_at: item.created_at || null,
+      updated_at: item.updated_at || null,
+      hotNews: item.hotNews === true || normalizedTags.includes('DESTAQUE') || false,
+      start_date: item.start_date || null,
+      end_date: item.end_date || null,
+      status: status,
+      tags: normalizedTags,
+      link: item.link || null,
+      img: normalizeImagePath(item.img),
+      imagem_banner: normalizeImagePath(item.imagem_banner),
+    };
+  });
+}
+
+
+function normalizeImagePath(p) {
+  if (!p) return null;
+  // If it's already an absolute URL, return as-is
+  if (p.startsWith('http://') || p.startsWith('https://') || p.startsWith('/')) return p;
+  // Convert relative path like ../img/... to /static/img/...
+  return p.replace(/^(\.\.\/)+img\//, '/static/img/');
 }
 
 let favoritos = [];
@@ -608,8 +665,96 @@ function renderFilterMenu() {
 
 // Simular verificação de login
 function verificarLogin() {
-  //usuarioLogado = Math.random() > 0.5;
-  atualizarEstadoLogin();
+  // Se o servidor já injetou a variável window.APP_USER (render-time), usamos isso
+  if (typeof window !== 'undefined' && window.APP_USER) {
+    usuarioLogado = true;
+    atualizarEstadoLogin();
+    return;
+  }
+
+  // Caso contrário, tentamos perguntar ao servidor (cookie HttpOnly enviado via fetch)
+  fetchServerUser();
+}
+
+
+// Pergunta ao servidor se há um usuário autenticado (lê cookie HttpOnly no servidor)
+async function fetchServerUser() {
+  try {
+    const res = await fetch('/auth/me', { credentials: 'same-origin' });
+    if (!res.ok) {
+      usuarioLogado = false;
+      atualizarEstadoLogin();
+      return null;
+    }
+    const user = await res.json();
+    // Ajusta estado e disponibiliza para outros scripts
+    window.APP_USER = user;
+    usuarioLogado = true;
+    atualizarEstadoLogin();
+    // após confirmar usuário, carregamos favoritos do servidor
+    await loadFavoritesFromServer();
+    return user;
+  } catch (err) {
+    console.error('Erro ao verificar usuário no servidor:', err);
+    usuarioLogado = false;
+    atualizarEstadoLogin();
+    return null;
+  }
+}
+
+
+// Busca favoritos do servidor para o usuário autenticado
+async function loadFavoritesFromServer() {
+  try {
+    const res = await fetch('/user/favorites', { credentials: 'same-origin' });
+    if (!res.ok) {
+      favoritos = [];
+      localStorage.removeItem('favoriteNews');
+      return [];
+    }
+    const body = await res.json();
+    // body: { favorites: [newsObj,...] }
+    favoritos = (body.favorites || []).map((n) => ({ id: n.id, title: n.title }));
+    // store minimal info in localStorage as fallback for offline
+    localStorage.setItem('favoriteNews', JSON.stringify(favoritos));
+    return favoritos;
+  } catch (err) {
+    console.error('Erro ao carregar favoritos do servidor:', err);
+    return [];
+  }
+}
+
+
+// Toggle favorito no servidor (adiciona ou remove)
+async function toggleFavoriteServer(newsId) {
+  try {
+    const res = await fetch('/user/favorites', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ news_id: newsId })
+    });
+    if (!res.ok) {
+      console.error('Falha ao alternar favorito', await res.text());
+      return null;
+    }
+    const text = await res.json();
+    // atualiza lista local: se foi removido, filtra; se adicionado, adiciona
+    if (res.status === 200) {
+      // removed
+      favoritos = favoritos.filter((f) => f.id !== newsId);
+    } else if (res.status === 201) {
+      // added
+      // find news in data
+      const newsItem = data.find((d) => d.id === newsId);
+      if (newsItem) favoritos.push({ id: newsItem.id, title: newsItem.title });
+    }
+    localStorage.setItem('favoriteNews', JSON.stringify(favoritos));
+    return text;
+  } catch (err) {
+    console.error('Erro ao alternar favorito no servidor:', err);
+    return null;
+  }
 }
 
 // Renderizar o feed de notícias
@@ -619,11 +764,12 @@ function render(tab, query = "") {
   let items;
 
   if (tab === "pessoal") {
-    items = [...favoritos];
+    // map stored favorites to the full news objects when possible
+    items = favoritos.map(f => data.find(d => d.id === f.id) || f);
   } else if (tab === "geral") {
     items = [...data];
   } else if (tab === "vagas") {
-    items = data.filter((item) => item.tags.includes("vagas"));
+    items = data.filter((item) => (item.tags || []).includes("VAGA"));
   }
 
   // filtro por busca
@@ -631,7 +777,7 @@ function render(tab, query = "") {
     items = items.filter(
       (item) =>
         item.title.toLowerCase().includes(query) ||
-        item.desc.toLowerCase().includes(query)
+        (item.content || '').toLowerCase().includes(query)
     );
   }
 
@@ -646,13 +792,13 @@ function render(tab, query = "") {
     const card = document.createElement("div");
     card.className = "card";
 
-    const isFav = favoritos.some((f) => f.title === item.title);
+  const isFav = favoritos.some((f) => f.id === item.id);
 
     let statusHTML = "";
     let timerHTML = "";
 
-    if (item.tags && item.tags.includes("vagas")) {
-      if (item.status === "aberta") {
+      if (item.tags && item.tags.includes("VAGA")) {
+      if (item.status === "ACEITA") {
         statusHTML = `<span class="status aberta">ABERTA</span>`;
         timerHTML = `<div class="timer" data-deadline="${item.end_date}"></div>`;
       } else {
@@ -679,17 +825,15 @@ function render(tab, query = "") {
       </div>
     `;
 
-    card.querySelector(".favorite").addEventListener("click", () => {
+    card.querySelector(".favorite").addEventListener("click", async () => {
       if (!usuarioLogado) {
         mostrarModalLogin();
         return;
       }
 
-      if (isFav) {
-        favoritos = favoritos.filter((f) => f.title !== item.title);
-      } else {
-        favoritos.push(item);
-      }
+      // usa endpoint do servidor para alternar favorito
+      const res = await toggleFavoriteServer(item.id);
+      // re-renderiza para atualizar estado visual
       render(tab, searchBar.value.toLowerCase());
     });
 

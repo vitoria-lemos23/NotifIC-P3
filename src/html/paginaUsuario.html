@@ -15,7 +15,7 @@
   <body>
     <!-- Header principal -->
     <header class="main-header">
-      <a href="/">
+      <a href="{{ url_for('home_routes.home') }}">
         <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Ícone do notifIC" class="logo-IC" />
       </a>
 
@@ -27,21 +27,21 @@
     <!-- Menu Dropdown -->
     <div class="dropdown-menu" id="dropdownMenu" aria-hidden="true">
       <nav class="dropdown-nav">
-        <a href="{{ url_for('static', filename='html/home.html') }}">
+        <a href="{{ url_for('home_routes.home') }}">
           <i class="fas fa-home" style="margin-right: 10px"></i>
           Página Inicial
         </a>
 
-        <a href="{{ url_for('static', filename='html/page_feed.html') }}">
+        <a href="{{ url_for('news_routes.news_page') }}">
           <i class="fas fa-plus" style="margin-right: 20px"></i>
           Cadastrar Notícia
         </a>
 
-        <a href="{{ url_for('static', filename='html/paginaUsuario.html') }}" class="active">
+        <a href="{{ url_for('user_routes.perfil') }}" class="active">
           <i class="fas fa-user" style="margin-right: 10px"></i>
           Perfil
         </a>
-        <a href="{{ url_for('static', filename='html/login.html') }}">
+        <a href="#" class="logout-link">
           <i class="fas fa-sign-out-alt" style="margin-right: 10px"></i>
           Sair
         </a>
@@ -130,6 +130,30 @@
       </div>
     </main>
 
+    <script>
+      // Server-provided user object for client-side initialization
+      window.APP_USER = {{ usuario|tojson }};
+    </script>
     <script src="{{ url_for('static', filename='javascript/perfil.js') }}"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const logoutEls = document.querySelectorAll('.logout-link');
+        logoutEls.forEach(function (el) {
+          el.addEventListener('click', async function (e) {
+            e.preventDefault();
+            try {
+              await fetch("{{ url_for('auth_routes.logout') }}", {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+              });
+            } catch (err) {
+              // ignore network errors
+            }
+            window.location = "{{ url_for('auth_routes.login_page') }}";
+          });
+        });
+      });
+    </script>
   </body>
 </html>

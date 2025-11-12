@@ -165,7 +165,7 @@ function initLogin() {
 
         if (result.success) {
             UIManager.showMessage('Login realizado com sucesso!', 'success');
-            setTimeout(() => { window.location.href = '/home'; }, 1000);
+            setTimeout(() => { window.location.href = '/'; }, 1000);
         } else {
             UIManager.showMessage(result.error, 'error');
         }
