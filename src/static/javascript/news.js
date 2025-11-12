@@ -8,26 +8,35 @@ async function loadNews() {
     const newsDiv = document.getElementById("news");
     
     try {
-    const response = await fetch('/static/json/news.json');
-        const newsList = await response.json();
-        const newsItem = newsList.find((n) => n.id == newsId);
+    if (!newsId) {
+        newsDiv.innerHTML = `<p>Notícia não especificada.</p>`;
+        return;
+    }
 
-        if (!newsItem) {
+    // Fetch the news item from the backend API (GET /news/<id>)
+    const res = await fetch(`/news/${encodeURIComponent(newsId)}`);
+    if (!res.ok) {
+        if (res.status === 404) {
             newsDiv.innerHTML = `<p>Notícia não encontrada.</p>`;
             return;
         }
+        newsDiv.innerHTML = `<p>Erro ao carregar notícia.</p>`;
+        return;
+    }
 
-        newsDiv.innerHTML = `
-            <h2 class="news-title">${newsItem.title}</h2>
-            <div class="news-meta">${newsItem.created_at || newsItem.date || ""}</div>
-            <img src="${newsItem.img}" alt="Imagem da notícia" class="news-img">
-            <p class="news-desc">${newsItem.content || newsItem.desc || ''}</p>
-            ${
-                (newsItem.link || newsItem.externalLink)
-                    ? `<a href="${newsItem.link || newsItem.externalLink}" target="_blank" class="subscribe-btn">Ir para o site</a>`
-                    : ""
-            }
-        `;
+    const newsItem = await res.json();
+
+    // Prefer banner image then regular image
+    const imgSrc = newsItem.imagem_banner || newsItem.img || '';
+    const metaDate = newsItem.created_at || newsItem.start_date || '';
+
+    newsDiv.innerHTML = `
+        <h2 class="news-title">${newsItem.title || 'Sem título'}</h2>
+        <div class="news-meta">${metaDate}</div>
+        ${imgSrc ? `<img src="${imgSrc}" alt="Imagem da notícia" class="news-img">` : ''}
+        <p class="news-desc">${newsItem.content || ''}</p>
+        ${newsItem.link ? `<a href="${newsItem.link}" target="_blank" class="subscribe-btn">Ir para o site</a>` : ''}
+    `;
     } catch (e) {
         newsDiv.innerHTML = `<p>Erro ao carregar notícia.</p>`;
         console.error('Erro ao carregar notícia:', e);

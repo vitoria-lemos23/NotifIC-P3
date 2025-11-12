@@ -14,15 +14,13 @@ let currentTab = "geral";
 // Se o servidor injetou `window.APP_USER` no template, usamos isso como fonte de verdade.
 let usuarioLogado = (typeof window !== 'undefined' && !!window.APP_USER) ? true : false;
 let data = [];
-let isAdmin = true; // Simulação
+let isAdmin = false; // Será determinado a partir do usuário autenticado
 
 const adminBtn = document.getElementById("adminBtn");
 const adminMenu = document.getElementById("adminMenu");
 
-// Mostrar/ocultar botão admin
-if (isAdmin) {
-  adminBtn.style.display = "inline-block";
-}
+// Inicialmente oculta o botão admin; será mostrado quando soubermos o papel do usuário
+if (adminBtn) adminBtn.style.display = 'none';
 
 // Menu de admin
 adminBtn.addEventListener("click", (e) => {
@@ -109,14 +107,20 @@ function renderCarousel(newsData) {
     }
 
     slide.innerHTML = `
-      <a href="${item.link}" target="_blank" style="text-decoration: none;">
+        ${(() => {
+          const target = (item.id !== undefined && item.id !== null)
+            ? `/noticia?id=${encodeURIComponent(item.id)}`
+            : (item.link || '#');
+          const targetAttrs = (item.id !== undefined && item.id !== null) ? '' : ' target="_blank"';
+          return `<a href="${target}"${targetAttrs} style="text-decoration: none;">`;
+        })()}
         <img src="${item.imagem_banner}" alt="${item.title}" />
         <div class="carousel-gradient"></div> 
         <div class="carousel-text"> 
           <h2>${item.title}</h2> 
           <p>${item.content}</p> 
         </div>
-      </a>
+        </a>
     `;
     slidesWrapper.appendChild(slide);
 
@@ -281,6 +285,14 @@ function atualizarEstadoLogin() {
     profileButton.classList.add("logged");
     profileButton.classList.remove("not-logged");
     if (menuTitle) menuTitle.textContent = "./notifIC";
+    // determina se usuário é admin e mostra/esconde o botão de admin
+    try {
+      const userRole = (window.APP_USER && window.APP_USER.role) || null;
+      isAdmin = (userRole === 'ADMIN');
+      if (adminBtn) adminBtn.style.display = isAdmin ? 'inline-block' : 'none';
+    } catch (e) {
+      console.error('Erro ao determinar papel do usuário:', e);
+    }
     // mostra nome do usuário ao lado do ícone de perfil, se disponível
     try {
       const user = window.APP_USER || null;
@@ -849,7 +861,20 @@ function render(tab, query = "") {
           <h3>${item.title} ${statusHTML} ${tagsHTML}</h3>
           ${timerHTML}
         </div>
-        <p>${item.content}</p> <a href="${item.link}">Saiba mais...</a>
+        <p>${item.content}</p>
+        ${(() => {
+          // If the item exists in DB (has an id), link to internal detail page
+          if (item.id !== undefined && item.id !== null) {
+            return `<a href="/noticia?id=${encodeURIComponent(item.id)}">Saiba mais...</a>`;
+          }
+          // Otherwise fall back to external link (if provided)
+          if (item.link) {
+            const isAbsolute = item.link.startsWith('http://') || item.link.startsWith('https://');
+            const attrs = isAbsolute ? ' target="_blank"' : '';
+            return `<a href="${item.link}"${attrs}>Saiba mais...</a>`;
+          }
+          return `<span class="no-link">Saiba mais...</span>`;
+        })()}
       </div>
     `;
 

@@ -12,8 +12,8 @@
     "status": "ACEITA",
     "tags": ["EVENTO"],
     "link": "https://www.instagram.com/secomp.ufal/",
-    "img": "../img/logo_secomp.png",
-    "imagem_banner": "../img/banners/secomp.jpg"
+    "img": "/static/img/logo_secomp.png",
+    "imagem_banner": "/static/img/banners/secomp.jpg"
   },
   {
     "id": 2,
@@ -28,8 +28,8 @@
     "status": "ACEITA",
     "tags": ["PROJETO"],
     "link": "https://www.instagram.com/nees.ufal/",
-    "img": "../img/logo_nees.jpg",
-    "imagem_banner": "../img/banners/ness.jpg"
+    "img": "/static/img/logo_nees.jpg",
+    "imagem_banner": "/static/img/banners/ness.jpg"
   },
   {
     "id": 3,
@@ -44,8 +44,8 @@
     "status": "ACEITA",
     "tags": ["VAGA"],
     "link": "https://empresa.com/estagio-frontend",
-    "img": "../img/logo_pesquisa.jpeg",
-    "imagem_banner": "../img/banners/vaga_frontend.png"
+    "img": "/static/img/logo_pesquisa.jpeg",
+    "imagem_banner": "/static/img/banners/vaga_frontend.png"
   },
   {
     "id": 4,
@@ -60,7 +60,7 @@
     "status": "REJEITADA",
     "tags": ["PROJETO"],
     "link": "https://ufal.br/grupo-pesquisa-ranilson",
-    "img": "../img/logo_pesquisa.jpeg",
-    "imagem_banner": "../img/banners/grupo_pesquisa.png"
+    "img": "/static/img/logo_pesquisa.jpeg",
+    "imagem_banner": "/static/img/banners/grupo_pesquisa.png"
   }
 ]
