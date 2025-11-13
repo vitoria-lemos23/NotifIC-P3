@@ -26,8 +26,8 @@ async function loadNews() {
 
     const newsItem = await res.json();
 
-    // Prefer banner image then regular image
-    const imgSrc = newsItem.imagem_banner || newsItem.img || '';
+    // Prefer banner image (from static JSON enrichment) if available
+    const imgSrc = newsItem.imagem_banner || '';
     const metaDate = newsItem.created_at || newsItem.start_date || '';
 
     newsDiv.innerHTML = `

@@ -22,26 +22,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             .replace(/'/g, '&#39;');
     }
 
-    function extractFieldFromContent(content, variants) {
-        if (!content) return null;
-        // strip HTML tags to improve matching when content is HTML
-        const plain = String(content).replace(/<[^>]+>/g, ' ');
-        const lines = plain.split(/\r?\n/);
-        for (const line of lines) {
-            for (const v of variants) {
-                const re = new RegExp('\\b' + v + "\\s*[:\-]\\s*(.+)", 'iu');
-                const m = line.match(re);
-                if (m && m[1]) return m[1].trim();
-            }
-        }
-        // fallback: try to search anywhere in the content
-        for (const v of variants) {
-            const re2 = new RegExp('\\b' + v + "\\s*[:\-]\\s*([^\\n<]{4,80})", 'iu');
-            const m2 = plain.match(re2);
-            if (m2 && m2[1]) return m2[1].trim();
-        }
-        return null;
-    }
+    // Field extraction heuristics removed: `instituicao`, `contato`, `local` are not model-backed.
 
     function formatDate(iso) {
         if (!iso) return '';
@@ -54,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     function abrirModal(item) {
         if (!item) return;
         document.getElementById("modal-title").textContent = item.title || 'Detalhes';
-        document.getElementById("modal-img").src = item.imagem_banner || item.imagem || '/static/img/notific.svg';
+        document.getElementById("modal-img").src = item.imagem_banner || '/static/img/notific.svg';
         // requester: show name with link to profile if author_id present
         const requesterEl = document.getElementById("modal-requester");
         requesterEl.innerHTML = '';
@@ -102,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             card.className = 'pedido-card compact-card';
             card.dataset.id = item.id;
 
-            const imgSrc = item.imagem_banner || item.imagem || '/static/img/notific.svg';
+            const imgSrc = item.imagem_banner || '/static/img/notific.svg';
                         const authorBase = item.author_username || item.author || 'Desconhecido';
                         const authorEsc = escapeHTML(authorBase);
                         const author = item.author_id ? `${authorEsc} [${item.author_id}]` : authorEsc;
@@ -119,18 +100,15 @@ document.addEventListener("DOMContentLoaded", async function () {
                                                                         <div class="card-hot">
                                                                             <label><input type="checkbox" class="hot-checkbox" ${item.hotNews ? 'checked' : ''}/> Destaque</label>
                                                                         </div>
-                                                                        <div class="card-tag-selection">
-                                                                            <div class="card-tag-title">Tags:</div>
-                                                                            <label><input type="checkbox" class="tag-checkbox" value="PROJETO" ${(item.tags||[]).includes('PROJETO') ? 'checked' : ''}/> Projeto</label>
-                                                                            <label><input type="checkbox" class="tag-checkbox" value="EVENTO" ${(item.tags||[]).includes('EVENTO') ? 'checked' : ''}/> Evento</label>
-                                                                            <label><input type="checkbox" class="tag-checkbox" value="VAGA" ${(item.tags||[]).includes('VAGA') ? 'checked' : ''}/> Vaga</label>
-                                                                        </div>
-                                    <!-- Extra info shown directly on card (stacked) -->
-                                    <div class="card-extra">
-                                        <p class="extra-line"><strong>Instituição:</strong> <span class="extra-val">${escapeHTML((item.instituicao || item.institution || item.org || item.organization || item.emitter) || '—')}</span></p>
-                                        <p class="extra-line"><strong>Contato:</strong> <span class="extra-val">${escapeHTML((item.contato || item.contact || item.email || item.phone) || '—')}</span></p>
-                                        <p class="extra-line"><strong>Local:</strong> <span class="extra-val">${escapeHTML((item.local || item.location || item.city) || '—')}</span></p>
-                                    </div>
+                                                                                                                                                <div class="card-tag-selection">
+                                                                                                                                                        <div class="card-tag-title">Tags:</div>
+                                                                                                                                                        <div class="card-tag-list">
+                                                                                                                                                            <label><input type="checkbox" class="tag-checkbox" value="PROJETO" ${(item.tags||[]).includes('PROJETO') ? 'checked' : ''}/> Projeto</label>
+                                                                                                                                                            <label><input type="checkbox" class="tag-checkbox" value="EVENTO" ${(item.tags||[]).includes('EVENTO') ? 'checked' : ''}/> Evento</label>
+                                                                                                                                                            <label><input type="checkbox" class="tag-checkbox" value="VAGA" ${(item.tags||[]).includes('VAGA') ? 'checked' : ''}/> Vaga</label>
+                                                                                                                                                        </div>
+                                                                                                                                                </div>
+                                    <!-- Extra fields removed (instituicao/contato/local) -->
                                     <div class="card-tags">${(item.tags||[]).map(t => `<span class="tag">${t}</span>`).join(' ')}</div>
                   <div class="card-actions">
                     <button class="btn-detalhes">Ver</button>
@@ -174,22 +152,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     }
                 }));
             }
-            // Attempt to extract institution/contact/location from content when not provided by API
-            dadosDosPedidos.forEach(it => {
-                const content = it.content || it.description || '';
-                if (!it.instituicao && !it.institution && !it.org && !it.organization && !it.emitter) {
-                    const found = extractFieldFromContent(content, ['Instituição','Institui[cç]ao','Instituicao','Institution','Org','Organization','Empresa','Organiza[cç][aã]o']);
-                    if (found) it.instituicao = found;
-                }
-                if (!it.contato && !it.contact && !it.email && !it.phone) {
-                    const found = extractFieldFromContent(content, ['Contato','Contact','Email','E-?mail','Telefone','Phone']);
-                    if (found) it.contato = found;
-                }
-                if (!it.local && !it.location && !it.city) {
-                    const found = extractFieldFromContent(content, ['Local','Location','Cidade','City','Endere[cç]o','Address']);
-                    if (found) it.local = found;
-                }
-            });
+            // No extraction of non-model fields. Render as provided by API.
             renderizarPedidos();
         } catch (err) {
             console.error('Erro ao carregar pendentes', err);

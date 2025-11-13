@@ -99,19 +99,6 @@ body {
   box-sizing: border-box;
 }
 
-/* Extra info block on compact cards (stacked institution/contact/local) */
-.card-extra {
-  width: 100%;
-  text-align: left;
-  padding: 8px 6px;
-  box-sizing: border-box;
-  margin-top: 8px;
-}
-.card-extra .extra-line {
-  margin: 4px 0;
-  font-size: 0.95rem;
-  color: #444;
-}
 
 .card-tag-selection {
   width: 100%;
@@ -125,18 +112,7 @@ body {
 .card-tag-selection label { font-size: 0.9rem; color: #333; }
 .card-tag-title { font-weight: 700; color: #304b8a; margin-right: 8px; }
 
-.card-extra .extra-line strong {
-  display: inline-block;
-  width: 92px; /* label column width */
-  color: #304b8a;
-  font-weight: 700;
-}
-.card-extra .extra-val {
-  color: #333;
-}
-.card-extra .extra-val:empty {
-  color: #999;
-}
+/* Extra stacked fields removed (institution/contact/local not part of model) */
 
 /* Make card body contents left-aligned for better readability of stacked fields */
 .card-body {

@@ -23,11 +23,9 @@
     <h2>Anuncie seu evento</h2>
     <p>Preencha os dados abaixo para publicar no Notific.</p>
 
-    <label for="foto">Upload da foto do card de Notícia</label>
-    <input type="file" id="foto" accept=".png,.jpg,.jpeg">
+    <!-- Image upload removed: images are provided via static news JSON only -->
 
-    <label for="instituicao">Qual é a instituição que o anúncio está vinculado?</label>
-    <input type="text" id="instituicao" placeholder="Nome da instituição">
+    <!-- Institution field removed: not part of News model -->
 
     <label for="titulo">Título</label>
     <input type="text" id="titulo" placeholder="Título do evento">
@@ -53,8 +51,7 @@
     </div>
     <div class="form-row">
       <div>
-        <label for="local">Local</label>
-        <input type="text" id="local" placeholder="Cidade / Campus">
+        <!-- Local removed: use description/content to include location if needed -->
       </div>
       <div>
         <label for="site">Link para o site oficial</label>

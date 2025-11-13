@@ -7,14 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const submitBtn = form.querySelector('button[type="submit"]');
   const titleInput = form.querySelector('#titulo');
-  const instituicao = form.querySelector('#instituicao');
   const email = form.querySelector('#email');
   const descricao = form.querySelector('#descricao');
   const dataInicio = form.querySelector('#data-inicio');
   const dataFim = form.querySelector('#data-fim');
-  const local = form.querySelector('#local');
   const site = form.querySelector('#site');
-  const fotoInput = form.querySelector('#foto');
 
   submitBtn.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -32,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const payload = {
       title: title,
-      content: `Instituição: ${instituicao.value || ''}\nContato: ${email.value || ''}\nLocal: ${local.value || ''}\n\n${content}`,
+      content: content,
       link: link || null,
       start_date: start_date,
       end_date: end_date,
@@ -40,30 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       tags: ['EVENTO']
     };
 
-    // If a photo was selected, upload it first and include returned path
-    if (fotoInput && fotoInput.files && fotoInput.files.length > 0) {
-      const file = fotoInput.files[0];
-      const formData = new FormData();
-      formData.append('foto', file);
-      try {
-        const up = await fetch('/upload-image', {
-          method: 'POST',
-          credentials: 'same-origin',
-          body: formData
-        });
-        if (up.ok) {
-          const jb = await up.json();
-          if (jb && jb.path) {
-            payload.imagem_banner = jb.path;
-            payload.img = jb.path;
-          }
-        } else {
-          console.warn('Upload failed, continuing without image', up.status);
-        }
-      } catch (e) {
-        console.warn('Upload error, continuing without image', e);
-      }
-    }
+    // Image uploads have been disabled; clients should not send image fields.
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'Enviando...';
@@ -91,12 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
       alert(body.message || 'Submetido com sucesso. Sua notícia ficará pendente até revisão.');
       // optional: clear form
       titleInput.value = '';
-      instituicao.value = '';
       email.value = '';
       descricao.value = '';
       dataInicio.value = '';
       dataFim.value = '';
-      local.value = '';
       site.value = '';
     } catch (err) {
       console.error('Erro ao submeter notícia:', err);
