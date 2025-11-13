@@ -73,7 +73,7 @@ function alternarEstadoLogin() {
 // Função para ir ao Painel de Pendentes
 function Painel() {
   // ATENÇÃO: Verifique se o nome do arquivo é "pedidos.html" ou "pedidos_pendentes.html"
-  window.location.href = "pedidos_pendentes.html";
+  window.location.href = "/admin/news/pending/view";
 }
 
 /**
@@ -203,20 +203,37 @@ function initializeCarousel() {
 
 // Função para carregar as notícias
 async function loadNews() {
+  // Try to fetch accepted news from backend API first
   try {
-  // fetch from the Flask static path so absolute location works regardless of current URL
-  const res = await fetch('/static/json/noticias.json');
-    const raw = await res.json();
-    data = normalizeNewsData(raw);
-    render(currentTab, searchBar.value.toLowerCase());
-
-    // Inicializa o carrossel com os dados
-    renderCarousel(data);
-    initializeCarousel();
+    const res = await fetch('/news?status=ACEITA&per_page=50');
+    if (res.ok) {
+      const payload = await res.json();
+      const list = payload && Array.isArray(payload.news) ? payload.news : (payload || []);
+      data = normalizeNewsData(list);
+    } else {
+      // fallback to static JSON if backend returns error
+      console.warn('Backend /news returned', res.status, 'falling back to static JSON');
+      const fresp = await fetch('/static/json/noticias.json');
+      const raw = await fresp.json();
+      data = normalizeNewsData(raw);
+    }
   } catch (e) {
-    feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
-    console.error("Erro ao carregar notícias:", e);
+    console.warn('Failed to fetch backend news, using static JSON', e);
+    try {
+      const fresp = await fetch('/static/json/noticias.json');
+      const raw = await fresp.json();
+      data = normalizeNewsData(raw);
+    } catch (ee) {
+      console.error('Erro ao carregar notícias:', ee);
+      feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
+      return;
+    }
   }
+
+  // render feed and initialize carousel
+  render(currentTab, searchBar.value.toLowerCase());
+  renderCarousel(data);
+  initializeCarousel();
   renderFilterMenu();
 }
 
@@ -271,6 +288,13 @@ function normalizeImagePath(p) {
   if (p.startsWith('http://') || p.startsWith('https://') || p.startsWith('/')) return p;
   // Convert relative path like ../img/... to /static/img/...
   return p.replace(/^(\.\.\/)+img\//, '/static/img/');
+}
+
+// Utility: truncate a string to `n` chars and append ellipsis
+function truncate(s, n = 150) {
+  if (!s) return '';
+  const str = String(s);
+  return str.length > n ? str.slice(0, n).trim() + '…' : str;
 }
 
 let favoritos = [];
@@ -861,7 +885,7 @@ function render(tab, query = "") {
           <h3>${item.title} ${statusHTML} ${tagsHTML}</h3>
           ${timerHTML}
         </div>
-        <p>${item.content}</p>
+        <p>${truncate(item.content, 150)}</p>
         ${(() => {
           // If the item exists in DB (has an id), link to internal detail page
           if (item.id !== undefined && item.id !== null) {

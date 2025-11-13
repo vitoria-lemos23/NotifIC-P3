@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const dataFim = form.querySelector('#data-fim');
   const local = form.querySelector('#local');
   const site = form.querySelector('#site');
+  const fotoInput = form.querySelector('#foto');
 
   submitBtn.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -38,6 +39,31 @@ document.addEventListener('DOMContentLoaded', () => {
       // optional: include a tag for 'EVENTO' so it can be filtered
       tags: ['EVENTO']
     };
+
+    // If a photo was selected, upload it first and include returned path
+    if (fotoInput && fotoInput.files && fotoInput.files.length > 0) {
+      const file = fotoInput.files[0];
+      const formData = new FormData();
+      formData.append('foto', file);
+      try {
+        const up = await fetch('/upload-image', {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: formData
+        });
+        if (up.ok) {
+          const jb = await up.json();
+          if (jb && jb.path) {
+            payload.imagem_banner = jb.path;
+            payload.img = jb.path;
+          }
+        } else {
+          console.warn('Upload failed, continuing without image', up.status);
+        }
+      } catch (e) {
+        console.warn('Upload error, continuing without image', e);
+      }
+    }
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'Enviando...';

@@ -73,6 +73,12 @@ body {
   /* Alinha à esquerda */
 }
 
+/* Add breathing room from page edges */
+.pedidos-lista {
+  padding: 18px 24px 40px 24px;
+  box-sizing: border-box;
+}
+
 /* === CARD DE PEDIDO === */
 .pedido-card {
   display: flex;
@@ -83,10 +89,59 @@ body {
   border: 1px solid #ddd;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
+  align-items: flex-start;
+  /* left-align content for readability */
+  text-align: left;
+  /* make each card have a stable width */
+  width: 280px;
+  padding: 12px;
+  padding-bottom: 14px;
+  box-sizing: border-box;
+}
+
+/* Extra info block on compact cards (stacked institution/contact/local) */
+.card-extra {
+  width: 100%;
+  text-align: left;
+  padding: 8px 6px;
+  box-sizing: border-box;
+  margin-top: 8px;
+}
+.card-extra .extra-line {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.card-tag-selection {
+  width: 100%;
+  padding: 6px 6px 0 6px;
+  box-sizing: border-box;
+  display: flex;
+  gap: 8px;
   align-items: center;
-  /* centraliza a imagem e o conteúdo */
-  text-align: center;
-  /* centraliza textos também */
+  flex-wrap: wrap;
+}
+.card-tag-selection label { font-size: 0.9rem; color: #333; }
+.card-tag-title { font-weight: 700; color: #304b8a; margin-right: 8px; }
+
+.card-extra .extra-line strong {
+  display: inline-block;
+  width: 92px; /* label column width */
+  color: #304b8a;
+  font-weight: 700;
+}
+.card-extra .extra-val {
+  color: #333;
+}
+.card-extra .extra-val:empty {
+  color: #999;
+}
+
+/* Make card body contents left-aligned for better readability of stacked fields */
+.card-body {
+  text-align: left;
+  width: 100%;
 }
 
 .pedido-card:hover {
@@ -95,16 +150,16 @@ body {
 }
 
 .pedido-imagem {
-  padding-top: 20px ;
-  width: 200px;
-  height: 180px;
+  padding-top: 12px ;
+  width: 100%;
+  height: 150px;
   object-fit: cover;
   flex-shrink: 0;
   
 }
 
 .pedido-conteudo {
-  padding: 20px;
+  padding: 12px 8px 8px 8px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -127,21 +182,41 @@ body {
 .pedido-acoes {
   display: flex;
   gap: 10px;
-  margin-top: auto;
-  padding-top: 15px;
+  margin-top: 12px;
+  padding: 10px 8px 0 8px;
   border-top: 1px solid #f0f0f0;
+  width: 100%;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
 .btn-detalhes,
 .btn-aceitar,
 .btn-rejeitar {
-  flex: 1;
-  padding: 12px;
-  border-radius: 5px;
+  flex: 0 1 auto;
+  min-width: 74px;
+  padding: 8px 10px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: 0.2s;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: 0.18s;
+}
+
+/* ensure buttons have spacing from card edges when they wrap */
+.pedido-acoes .btn-detalhes { margin-right: 6px; }
+.pedido-acoes .btn-aceitar { margin-right: 6px; }
+
+@media (min-width: 900px) {
+  /* slightly increase card width on larger screens for better fit */
+  .pedido-card { width: 300px; }
+  .pedido-imagem { height: 160px; }
+}
+
+@media (max-width: 480px) {
+  .pedido-card { width: 95%; }
+  .pedido-acoes { justify-content: space-between; }
+  .btn-detalhes, .btn-aceitar, .btn-rejeitar { flex: 1 1 100%; min-width: 0; }
 }
 
 .btn-detalhes {

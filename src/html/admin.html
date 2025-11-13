@@ -13,11 +13,11 @@
 <body>
 
   <nav class="navbar">
-    <a href="{{ url_for('static', filename='html/home.html') }}">
+    <a href="{{ url_for('home_routes.home') }}">
       <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-ic">
     </a>
     <h1 class="navbar-title">Administrador</h1>
-    <a href="{{ url_for('static', filename='html/home.html') }}" class="nav-back-link">Voltar</a>
+    <a href="{{ url_for('home_routes.home') }}" class="nav-back-link">Voltar</a>
   </nav>
 
   <main class="conteudo-principal">
