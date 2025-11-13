@@ -1,6 +1,8 @@
 function toggleMenu() {
-    const dropdownMenu = document.getElementById("dropdownMenu");
-    const isActive = dropdownMenu.classList.toggle("active");
+    const sideMenu = document.getElementById("sideMenu");
+    const backdrop = document.getElementById("sideMenuBackdrop");
+    const isActive = sideMenu.classList.toggle("active");
+    if (backdrop) backdrop.classList.toggle('active', isActive);
 
     // Fecha o menu ao clicar fora dele
     if (isActive) {
@@ -9,20 +11,22 @@ function toggleMenu() {
         document.removeEventListener("click", closeMenuOnClickOutside);
     }
 
-    dropdownMenu.setAttribute("aria-hidden", !isActive);
+    sideMenu.setAttribute("aria-hidden", !isActive);
 }
 
 function closeMenuOnClickOutside(event) {
-    const dropdownMenu = document.getElementById("dropdownMenu");
+    const sideMenu = document.getElementById("sideMenu");
     const profileButton = document.getElementById("profileButton");
 
     // Se o clique foi fora do menu e fora do botão, fecha o menu
     if (
-        !dropdownMenu.contains(event.target) &&
+        !sideMenu.contains(event.target) &&
         !profileButton.contains(event.target)
     ) {
-        dropdownMenu.classList.remove("active");
-        dropdownMenu.setAttribute("aria-hidden", "true");
+        sideMenu.classList.remove("active");
+        sideMenu.setAttribute("aria-hidden", "true");
+        const backdrop = document.getElementById('sideMenuBackdrop');
+        if (backdrop) backdrop.classList.remove('active');
         document.removeEventListener("click", closeMenuOnClickOutside);
     }
 }
@@ -36,9 +40,10 @@ document.getElementById("profileButton").addEventListener("click", function (eve
 // Fecha o menu ao pressionar ESC
 document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
-        const dropdownMenu = document.getElementById("dropdownMenu");
-        dropdownMenu.classList.remove("active");
-        dropdownMenu.setAttribute("aria-hidden", "true");
+        const sideMenu = document.getElementById("sideMenu");
+        if (sideMenu) sideMenu.classList.remove("active");
+        const backdrop = document.getElementById('sideMenuBackdrop');
+        if (backdrop) backdrop.classList.remove('active');
         document.removeEventListener("click", closeMenuOnClickOutside);
     }
 });

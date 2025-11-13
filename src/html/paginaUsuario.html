@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Perfil do Usuário</title>
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}" />
     <link
       rel="stylesheet"
@@ -37,29 +38,22 @@
       </div>
     </header>
 
-    <!-- Menu Dropdown -->
-    <div class="dropdown-menu" id="dropdownMenu" aria-hidden="true">
-      <nav class="dropdown-nav">
-        <a href="{{ url_for('home_routes.home') }}">
-          <i class="fas fa-home" style="margin-right: 10px"></i>
-          Página Inicial
-        </a>
-
-        <a href="{{ url_for('news_routes.news_page') }}">
-          <i class="fas fa-plus" style="margin-right: 20px"></i>
-          Cadastrar Notícia
-        </a>
-
-        <a href="{{ url_for('user_routes.perfil') }}" class="active">
-          <i class="fas fa-user" style="margin-right: 10px"></i>
-          Perfil
-        </a>
-        <a href="#" class="logout-link">
-          <i class="fas fa-sign-out-alt" style="margin-right: 10px"></i>
-          Sair
-        </a>
+    <!-- Side menu (same format as home.html) -->
+    <aside class="side-menu" id="sideMenu">
+      <header>
+        <button class="close-btn" onclick="toggleMenu()">→</button>
+        <span class="menu-title">./notif<span style="color: deepskyblue">IC</span></span>
+      </header>
+      <nav>
+        <a href="{{ url_for('home_routes.home') }}">Página Inicial</a>
+        <a href="{{ url_for('user_routes.perfil') }}" class="active">Perfil</a>
+        <a href="{{ url_for('news_routes.news_page') }}">Cadastrar Notícia</a>
+        <a href="#" class="logout-link">Sair</a>
       </nav>
-    </div>
+      <footer>© 2025 ./notifIC</footer>
+    </aside>
+
+    <div class="side-menu-backdrop" id="sideMenuBackdrop" onclick="toggleMenu()"></div>
 
     <!-- Conteúdo principal -->
     <main class="profile-container">

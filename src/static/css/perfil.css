@@ -38,13 +38,21 @@ body {
   box-sizing: border-box;
   border-radius: 50%;
   transition: all 0.3s ease;
+  overflow: hidden; /* garantir que a imagem fique recortada em círculo */
 }
 
 #profileButton img {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  border-radius: 50%;
+  /* force the avatar to be 40x40 and circular like on the home page */
+  display: block !important;
+  width: 46px !important;
+  height: 46px !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+}
+
+/* Também forçar o botão a ser circular independentemente de classes */
+#profileButton {
+  border-radius: 50% !important;
 }
 
 .home-link {
@@ -153,11 +161,7 @@ body {
   border-color: #0d8cff;
 }
 
-/* Remove as regras antigas do side-menu */
-.side-menu,
-.side-menu-backdrop {
-  display: none;
-}
+/* side-menu styles are provided by the shared header/side CSS (home.css) or by the site-wide styles */
 /* ==========================
    CONTEÚDO DO PERFIL
    ========================== */
