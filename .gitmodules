@@ -1,3 +1,0 @@
-[submodule "src/backend"]
-	path = src/backend
-	url = https://github.com/byClev/Notific-backend.git
