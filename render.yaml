@@ -8,8 +8,10 @@ services:
     repo: "https://github.com/vitoria-lemos23/NotifIC-P3"
     branch: Deploy
     rootDir: src/backend
+    # Build from the backend rootDir (src/backend). If Render doesn't respect rootDir,
+    # the buildCommand below installs the requirements by path as a fallback.
     buildCommand: python -m pip install -r requirements.txt
-    # Start command: run gunicorn only. Run migrations manually via a one-off job.
+    # Start command: gunicorn will use the app exported by src/backend/wsgi.py
     startCommand: gunicorn --bind 0.0.0.0:$PORT wsgi:app
     plan: starter
     envVars:
