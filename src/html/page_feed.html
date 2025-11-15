@@ -13,7 +13,7 @@
 
   <!-- Navbar -->
   <nav class="navbar">
-    <a href="{{ url_for('static', filename='html/home.html') }}">
+    <a href="/">
       <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="logo do notific" class="logo-ic">
     </a>
   </nav>
@@ -23,14 +23,12 @@
     <h2>Anuncie seu evento</h2>
     <p>Preencha os dados abaixo para publicar no Notific.</p>
 
-    <label for="foto">Upload da foto do que irá anunciar</label>
-    <input type="file" id="foto" accept=".png,.jpg,.jpeg">
+    <!-- Image upload removed: images are provided via static news JSON only -->
 
-    <label for="instituicao">Qual é a instituição que o anúncio está vinculado?</label>
-    <input type="text" id="instituicao" placeholder="Nome da instituição">
+    <!-- Institution field removed: not part of News model -->
 
-    <label for="nome">Nome completo</label>
-    <input type="text" id="nome" placeholder="Seu nome">
+    <label for="titulo">Título</label>
+    <input type="text" id="titulo" placeholder="Título do evento">
 
     <label for="email">Email</label>
     <input type="email" id="email" placeholder="voce@email.com">
@@ -53,8 +51,7 @@
     </div>
     <div class="form-row">
       <div>
-        <label for="local">Local</label>
-        <input type="text" id="local" placeholder="Cidade / Campus">
+        <!-- Local removed: use description/content to include location if needed -->
       </div>
       <div>
         <label for="site">Link para o site oficial</label>
@@ -73,7 +70,9 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <!-- Script externo -->
-<script src="{{ url_for('static', filename='javascript/preview.js') }}"></script>
+  <script src="{{ url_for('static', filename='javascript/preview.js') }}"></script>
+  <!-- Script para submissão de notícias -->
+  <script src="{{ url_for('static', filename='javascript/submit_news.js') }}" defer></script>
 
 </body>
 

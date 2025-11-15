@@ -14,15 +14,13 @@ let currentTab = "geral";
 // Se o servidor injetou `window.APP_USER` no template, usamos isso como fonte de verdade.
 let usuarioLogado = (typeof window !== 'undefined' && !!window.APP_USER) ? true : false;
 let data = [];
-let isAdmin = true; // Simulação
+let isAdmin = false; // Será determinado a partir do usuário autenticado
 
 const adminBtn = document.getElementById("adminBtn");
 const adminMenu = document.getElementById("adminMenu");
 
-// Mostrar/ocultar botão admin
-if (isAdmin) {
-  adminBtn.style.display = "inline-block";
-}
+// Inicialmente oculta o botão admin; será mostrado quando soubermos o papel do usuário
+if (adminBtn) adminBtn.style.display = 'none';
 
 // Menu de admin
 adminBtn.addEventListener("click", (e) => {
@@ -75,7 +73,7 @@ function alternarEstadoLogin() {
 // Função para ir ao Painel de Pendentes
 function Painel() {
   // ATENÇÃO: Verifique se o nome do arquivo é "pedidos.html" ou "pedidos_pendentes.html"
-  window.location.href = "pedidos_pendentes.html";
+  window.location.href = "/admin/news/pending/view";
 }
 
 /**
@@ -109,14 +107,20 @@ function renderCarousel(newsData) {
     }
 
     slide.innerHTML = `
-      <a href="${item.link}" target="_blank" style="text-decoration: none;">
+        ${(() => {
+          const target = (item.id !== undefined && item.id !== null)
+            ? `/noticia?id=${encodeURIComponent(item.id)}`
+            : (item.link || '#');
+          const targetAttrs = (item.id !== undefined && item.id !== null) ? '' : ' target="_blank"';
+          return `<a href="${target}"${targetAttrs} style="text-decoration: none;">`;
+        })()}
         <img src="${item.imagem_banner}" alt="${item.title}" />
         <div class="carousel-gradient"></div> 
         <div class="carousel-text"> 
           <h2>${item.title}</h2> 
           <p>${item.content}</p> 
         </div>
-      </a>
+        </a>
     `;
     slidesWrapper.appendChild(slide);
 
@@ -199,20 +203,37 @@ function initializeCarousel() {
 
 // Função para carregar as notícias
 async function loadNews() {
+  // Try to fetch accepted news from backend API first
   try {
-  // fetch from the Flask static path so absolute location works regardless of current URL
-  const res = await fetch('/static/json/noticias.json');
-    const raw = await res.json();
-    data = normalizeNewsData(raw);
-    render(currentTab, searchBar.value.toLowerCase());
-
-    // Inicializa o carrossel com os dados
-    renderCarousel(data);
-    initializeCarousel();
+    const res = await fetch('/news?status=ACEITA&per_page=50');
+    if (res.ok) {
+      const payload = await res.json();
+      const list = payload && Array.isArray(payload.news) ? payload.news : (payload || []);
+      data = normalizeNewsData(list);
+    } else {
+      // fallback to static JSON if backend returns error
+      console.warn('Backend /news returned', res.status, 'falling back to static JSON');
+      const fresp = await fetch('/static/json/noticias.json');
+      const raw = await fresp.json();
+      data = normalizeNewsData(raw);
+    }
   } catch (e) {
-    feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
-    console.error("Erro ao carregar notícias:", e);
+    console.warn('Failed to fetch backend news, using static JSON', e);
+    try {
+      const fresp = await fetch('/static/json/noticias.json');
+      const raw = await fresp.json();
+      data = normalizeNewsData(raw);
+    } catch (ee) {
+      console.error('Erro ao carregar notícias:', ee);
+      feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
+      return;
+    }
   }
+
+  // render feed and initialize carousel
+  render(currentTab, searchBar.value.toLowerCase());
+  renderCarousel(data);
+  initializeCarousel();
   renderFilterMenu();
 }
 
@@ -269,7 +290,15 @@ function normalizeImagePath(p) {
   return p.replace(/^(\.\.\/)+img\//, '/static/img/');
 }
 
+// Utility: truncate a string to `n` chars and append ellipsis
+function truncate(s, n = 150) {
+  if (!s) return '';
+  const str = String(s);
+  return str.length > n ? str.slice(0, n).trim() + '…' : str;
+}
+
 let favoritos = [];
+const headerUsername = document.getElementById('headerUsername');
 
 // Função para atualizar o estado visual do login
 function atualizarEstadoLogin() {
@@ -280,12 +309,40 @@ function atualizarEstadoLogin() {
     profileButton.classList.add("logged");
     profileButton.classList.remove("not-logged");
     if (menuTitle) menuTitle.textContent = "./notifIC";
+    // determina se usuário é admin e mostra/esconde o botão de admin
+    try {
+      const userRole = (window.APP_USER && window.APP_USER.role) || null;
+      isAdmin = (userRole === 'ADMIN');
+      if (adminBtn) adminBtn.style.display = isAdmin ? 'inline-block' : 'none';
+    } catch (e) {
+      console.error('Erro ao determinar papel do usuário:', e);
+    }
+    // mostra nome do usuário ao lado do ícone de perfil, se disponível
+    try {
+      const user = window.APP_USER || null;
+      if (headerUsername) {
+        if (user && (user.username || user.name)) {
+          headerUsername.textContent = user.username || user.name;
+          headerUsername.style.display = 'flex';
+          headerUsername.style.alignItems = 'center';
+          headerUsername.style.marginRight = '8px';
+          headerUsername.style.color = '#fff';
+          headerUsername.style.fontWeight = '600';
+        } else {
+          headerUsername.textContent = '';
+          headerUsername.style.display = 'none';
+        }
+      }
+    } catch (e) {
+      console.error('Erro ao exibir nome do usuário:', e);
+    }
   } else {
     profileButton.classList.remove("logged");
     profileButton.classList.add("not-logged");
     if (menuTitle) menuTitle.textContent = "Login";
     favoritos = [];
     render(currentTab, searchBar.value.toLowerCase());
+    if (headerUsername) headerUsername.style.display = 'none';
   }
 }
 
@@ -614,7 +671,7 @@ style.textContent = `
 document.head.appendChild(style);
 
 // Para testar: adicionar uma notificação a cada 30 segundos (remover em produção)
-setInterval(() => notificationSystem.simulateNotification(), 10000);
+// setInterval(() => notificationSystem.simulateNotification(), 10000);
 
 // Evento de clique no botão de filtro
 if (filterBtn) {
@@ -664,16 +721,19 @@ function renderFilterMenu() {
 }
 
 // Simular verificação de login
-function verificarLogin() {
+async function verificarLogin() {
   // Se o servidor já injetou a variável window.APP_USER (render-time), usamos isso
   if (typeof window !== 'undefined' && window.APP_USER) {
     usuarioLogado = true;
     atualizarEstadoLogin();
+    // garantir que, mesmo quando o servidor injetou o usuário no template,
+    // carregamos os favoritos do servidor para sincronizar o estado
+    await loadFavoritesFromServer();
     return;
   }
 
   // Caso contrário, tentamos perguntar ao servidor (cookie HttpOnly enviado via fetch)
-  fetchServerUser();
+  await fetchServerUser();
 }
 
 
@@ -726,31 +786,35 @@ async function loadFavoritesFromServer() {
 
 
 // Toggle favorito no servidor (adiciona ou remove)
-async function toggleFavoriteServer(newsId) {
+async function toggleFavoriteServer(news) {
   try {
+    // send full news object as fallback so server can create DB record when necessary
+    const payload = (typeof news === 'object') ? news : { news_id: news };
     const res = await fetch('/user/favorites', {
       method: 'POST',
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ news_id: newsId })
+      body: JSON.stringify(payload)
     });
     if (!res.ok) {
       console.error('Falha ao alternar favorito', await res.text());
       return null;
     }
-    const text = await res.json();
+    const body = await res.json();
+    const returnedNewsId = body.news_id;
     // atualiza lista local: se foi removido, filtra; se adicionado, adiciona
     if (res.status === 200) {
       // removed
-      favoritos = favoritos.filter((f) => f.id !== newsId);
+      favoritos = favoritos.filter((f) => f.id !== returnedNewsId);
     } else if (res.status === 201) {
       // added
-      // find news in data
-      const newsItem = data.find((d) => d.id === newsId);
-      if (newsItem) favoritos.push({ id: newsItem.id, title: newsItem.title });
+      // find news in data by id if present, otherwise use payload
+      const newsItem = data.find((d) => d.id === returnedNewsId) || (typeof news === 'object' ? news : null);
+      if (newsItem) favoritos.push({ id: returnedNewsId, title: newsItem.title || 'Sem título' });
+      else favoritos.push({ id: returnedNewsId, title: 'Sem título' });
     }
     localStorage.setItem('favoriteNews', JSON.stringify(favoritos));
-    return text;
+    return body;
   } catch (err) {
     console.error('Erro ao alternar favorito no servidor:', err);
     return null;
@@ -765,7 +829,7 @@ function render(tab, query = "") {
 
   if (tab === "pessoal") {
     // map stored favorites to the full news objects when possible
-    items = favoritos.map(f => data.find(d => d.id === f.id) || f);
+    items = favoritos.map(f => data.find(d => String(d.id) === String(f.id)) || f);
   } else if (tab === "geral") {
     items = [...data];
   } else if (tab === "vagas") {
@@ -792,7 +856,7 @@ function render(tab, query = "") {
     const card = document.createElement("div");
     card.className = "card";
 
-  const isFav = favoritos.some((f) => f.id === item.id);
+  const isFav = favoritos.some((f) => String(f.id) === String(item.id));
 
     let statusHTML = "";
     let timerHTML = "";
@@ -821,7 +885,20 @@ function render(tab, query = "") {
           <h3>${item.title} ${statusHTML} ${tagsHTML}</h3>
           ${timerHTML}
         </div>
-        <p>${item.content}</p> <a href="${item.link}">Saiba mais...</a>
+        <p>${truncate(item.content, 150)}</p>
+        ${(() => {
+          // If the item exists in DB (has an id), link to internal detail page
+          if (item.id !== undefined && item.id !== null) {
+            return `<a href="/noticia?id=${encodeURIComponent(item.id)}">Saiba mais...</a>`;
+          }
+          // Otherwise fall back to external link (if provided)
+          if (item.link) {
+            const isAbsolute = item.link.startsWith('http://') || item.link.startsWith('https://');
+            const attrs = isAbsolute ? ' target="_blank"' : '';
+            return `<a href="${item.link}"${attrs}>Saiba mais...</a>`;
+          }
+          return `<span class="no-link">Saiba mais...</span>`;
+        })()}
       </div>
     `;
 
@@ -885,6 +962,14 @@ function toggleMenu() {
     : "";
 }
 
-// Inicializar
-loadNews();
-verificarLogin();
+// Inicializar a aplicação: garantir que carregamos o estado de login/favoritos
+// antes de buscar e renderizar as notícias, assim as estrelinhas já aparecem ativadas.
+async function initApp() {
+  // garante que o estado de login/favoritos é carregado primeiro
+  await verificarLogin();
+  // depois carrega notícias (render será chamado no final de loadNews)
+  await loadNews();
+}
+
+// Inicializa
+initApp();

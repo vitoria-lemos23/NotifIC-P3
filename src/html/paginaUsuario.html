@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Perfil do Usuário</title>
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}" />
     <link
       rel="stylesheet"
@@ -12,7 +13,20 @@
     />
   </head>
 
-  <body>
+  <body data-app-user='{{ usuario | default(None) | tojson | safe }}'>
+    <script>
+      // Lê o JSON injetado no atributo data-app-user do body
+      (function () {
+        try {
+          const raw = document.body.getAttribute('data-app-user');
+          window.APP_USER = raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          // Em caso de parse inválido, garante que não quebre o JS do cliente
+          console.error('Erro ao parsear data-app-user:', e);
+          window.APP_USER = null;
+        }
+      })();
+    </script>
     <!-- Header principal -->
     <header class="main-header">
       <a href="{{ url_for('home_routes.home') }}">
@@ -24,36 +38,29 @@
       </div>
     </header>
 
-    <!-- Menu Dropdown -->
-    <div class="dropdown-menu" id="dropdownMenu" aria-hidden="true">
-      <nav class="dropdown-nav">
-        <a href="{{ url_for('home_routes.home') }}">
-          <i class="fas fa-home" style="margin-right: 10px"></i>
-          Página Inicial
-        </a>
-
-        <a href="{{ url_for('news_routes.news_page') }}">
-          <i class="fas fa-plus" style="margin-right: 20px"></i>
-          Cadastrar Notícia
-        </a>
-
-        <a href="{{ url_for('user_routes.perfil') }}" class="active">
-          <i class="fas fa-user" style="margin-right: 10px"></i>
-          Perfil
-        </a>
-        <a href="#" class="logout-link">
-          <i class="fas fa-sign-out-alt" style="margin-right: 10px"></i>
-          Sair
-        </a>
+    <!-- Side menu (same format as home.html) -->
+    <aside class="side-menu" id="sideMenu">
+      <header>
+        <button class="close-btn" onclick="toggleMenu()">→</button>
+        <span class="menu-title">./notif<span style="color: deepskyblue">IC</span></span>
+      </header>
+      <nav>
+        <a href="{{ url_for('home_routes.home') }}">Página Inicial</a>
+        <a href="{{ url_for('user_routes.perfil') }}" class="active">Perfil</a>
+        <a href="{{ url_for('news_routes.news_page') }}">Cadastrar Notícia</a>
+        <a href="#" class="logout-link">Sair</a>
       </nav>
-    </div>
+      <footer>© 2025 ./notifIC</footer>
+    </aside>
+
+    <div class="side-menu-backdrop" id="sideMenuBackdrop" onclick="toggleMenu()"></div>
 
     <!-- Conteúdo principal -->
     <main class="profile-container">
       <div class="profile-content">
         <!-- Informações do usuário -->
         <section class="section-container profile-info-section">
-          <h2>Minhas Informações</h2>
+          <h2>Informações</h2>
           <div class="profile-details">
             <div class="profile-avatar">
               <img
@@ -85,6 +92,7 @@
                   id="username"
                   name="username"
                   placeholder="Nome"
+                  disabled
                 />
               </div>
               <div class="info-group">
@@ -94,7 +102,12 @@
                   id="email"
                   name="email"
                   placeholder="Email"
+                  disabled
                 />
+              </div>
+              <div class="info-group">
+                <label for="role">Cargo</label>
+                <input type="text" id="role" name="role" disabled />
               </div>
             </form>
           </div>
@@ -130,28 +143,26 @@
       </div>
     </main>
 
-    <script>
-      // Server-provided user object for client-side initialization
-      window.APP_USER = {{ usuario|tojson }};
-    </script>
     <script src="{{ url_for('static', filename='javascript/perfil.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascript/perfil_page.js') }}"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
         const logoutEls = document.querySelectorAll('.logout-link');
         logoutEls.forEach(function (el) {
           el.addEventListener('click', async function (e) {
-            e.preventDefault();
-            try {
-              await fetch("{{ url_for('auth_routes.logout') }}", {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/json' },
-              });
-            } catch (err) {
-              // ignore network errors
-            }
-            window.location = "{{ url_for('auth_routes.login_page') }}";
-          });
+              e.preventDefault();
+              try {
+                await fetch("{{ url_for('auth_routes.logout') }}", {
+                  method: 'POST',
+                  credentials: 'same-origin',
+                  headers: { 'Content-Type': 'application/json' },
+                });
+              } catch (err) {
+                // ignore network errors
+              }
+              // Redirect to home page after logout
+              window.location = "{{ url_for('home_routes.home') }}";
+            });
         });
       });
     </script>

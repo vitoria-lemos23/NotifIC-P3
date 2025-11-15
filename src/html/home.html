@@ -57,9 +57,13 @@
         </div>
       </div>
 
-      <div id="profileButton">
-        <span class="profile-icon">👤</span>
-        <img src="https://i.pravatar.cc/40" alt="Perfil" />
+      <!-- Agrupa nome do usuário e ícone de perfil para posicionamento correto -->
+      <div class="header-user-area">
+        <div id="headerUsername" aria-live="polite"></div>
+        <div id="profileButton">
+          <span class="profile-icon">👤</span>
+          <img src="https://i.pravatar.cc/40" alt="Perfil" />
+        </div>
       </div>
     </header>
     <section class="hero-carousel">
@@ -164,17 +168,13 @@
       </div>
     </footer>
 
-  <script>
-    // Server-provided user object for client-side initialization
-    window.APP_USER = {{ usuario|tojson }};
-  </script>
   <script src="{{ url_for('static', filename='javascript/home.js') }}" defer></script>
   <script>
     // Logout via POST to clear HttpOnly cookie, then redirect to login page
     document.addEventListener('DOMContentLoaded', function () {
       const logoutEls = document.querySelectorAll('.logout-link');
       logoutEls.forEach(function (el) {
-        el.addEventListener('click', async function (e) {
+          el.addEventListener('click', async function (e) {
           e.preventDefault();
           try {
             await fetch("{{ url_for('auth_routes.logout') }}", {
@@ -185,7 +185,8 @@
           } catch (err) {
             // ignore network errors, still redirect
           }
-          window.location = "{{ url_for('auth_routes.login_page') }}";
+          // Redirect to home page after logout (instead of login page)
+          window.location = "{{ url_for('home_routes.home') }}";
         });
       });
     });

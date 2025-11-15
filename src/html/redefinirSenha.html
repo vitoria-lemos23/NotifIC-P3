@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
+    <meta name="description" content="Redefina sua senha no NotifIC." />
+    <title>Redefinir Senha - Notific</title>
+  </head>
+  <body data-page="reset">
+    <div class="auth-container">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-img" />
+        <p>Seu sistema de notificações eficiente</p>
+      </div>
+
+      <div id="message-container"></div>
+
+      <div class="auth-form">
+        <h2>Redefinir Senha</h2>
+        <form id="resetForm">
+          <label for="nova_senha">Nova Senha</label>
+          <input
+            type="password"
+            id="nova_senha"
+            name="nova_senha"
+            placeholder="Digite sua nova senha"
+            required
+            minlength="6"
+          />
+
+          <label for="confirm_senha">Confirme a Senha</label>
+          <input
+            type="password"
+            id="confirm_senha"
+            name="confirm_senha"
+            placeholder="Confirme a nova senha"
+            required
+            minlength="6"
+          />
+
+          <input type="hidden" id="token" name="token" value="{{ token or '' }}" />
+
+          <div class="links">
+            <a href="/login">Voltar ao login</a>
+            <a href="/">Tela inicial</a>
+          </div>
+          <button type="submit">Redefinir Senha</button>
+        </form>
+      </div>
+    </div>
+
+  <script src="{{ url_for('static', filename='javascript/auth.js') }}"></script>
+  <script>
+    // Ensure token is present in hidden field if provided as query param
+    (function(){
+      try {
+        const tokenEl = document.getElementById('token');
+        if (tokenEl && !tokenEl.value) {
+          const params = new URLSearchParams(window.location.search);
+          const t = params.get('token');
+          if (t) tokenEl.value = t;
+        }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+  </body>
+</html>

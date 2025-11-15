@@ -11,11 +11,11 @@
 <body>
 
   <nav class="navbar">
-    <a href="{{ url_for('static', filename='html/home.html') }}">
+    <a href="{{ url_for('home_routes.home') }}">
       <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-ic">
     </a>
     <h1 class="navbar-title">Administrador</h1>
-    <a href="{{ url_for('static', filename='html/admin.html') }}" class="nav-back-link">Controle</a>
+    <a href="{{ url_for('admin_panel.list_pending_news_view') }}" class="nav-back-link">Controle</a>
   </nav>
 
   <main>
@@ -30,10 +30,16 @@
       <button class="modal-close-btn">&times;</button>
       <h2 id="modal-title">Detalhes do Anúncio</h2>
       <img id="modal-img" src="" alt="Imagem do Anúncio" class="modal-imagem">
-      <p><strong>Requerente:</strong> <span id="modal-requester"></span></p>
-      <p><strong>Data:</strong> <span id="modal-date"></span></p>
-      <p><strong>Descrição Completa:</strong></p>
-      <p id="modal-desc"></p>
+      <div class="modal-meta">
+        <p><strong>Requerente:</strong> <span id="modal-requester"></span></p>
+        <p><strong>Data:</strong> <span id="modal-date"></span></p>
+      </div>
+      <section class="modal-body">
+        <h3>Descrição</h3>
+        <div id="modal-desc" class="modal-desc"></div>
+
+      <!-- extra details removed — keep modal focused on description and metadata -->
+      </section>
     </div>
   </div>
 
