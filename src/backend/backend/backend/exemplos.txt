@@ -1,0 +1,19 @@
+///////////////CADASTRO////////////////////
+
+{
+  "username": "maria_santos",
+  "email": "maria.santos@example.com",
+  "password": "SenhaSegura456!"
+}
+
+////////////////login//////////
+{
+    "username": "joao_silva",
+    "password": "SenhaForte123!"
+}
+
+///////trocar role (ex: do usuario de id 2)///////////
+{
+    "user_id": 2,
+    "new_role":"USUARIO"
+}
