@@ -12,7 +12,8 @@ services:
     # the buildCommand below installs the requirements by path as a fallback.
     buildCommand: python -m pip install -r requirements.txt
     # Start command: gunicorn will use the app exported by src/backend/wsgi.py
-    startCommand: gunicorn --bind 0.0.0.0:$PORT wsgi:app
+    # Use --chdir as a fallback so the process runs with the backend as cwd
+    startCommand: gunicorn --chdir src/backend --bind 0.0.0.0:$PORT wsgi:app
     plan: starter
     envVars:
       - key: DATABASE_URL
