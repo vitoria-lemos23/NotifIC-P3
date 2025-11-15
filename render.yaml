@@ -1,31 +1,29 @@
-# Example Render manifest for NotifIC-P3 backend
-# Adjust `repo`, `branch`, `name`, and environment variables before using.
+# Render manifest for NotifIC-P3 backend
+# Edit `repo` and `branch` if necessary, and add secrets in the Render dashboard.
 
 services:
   - type: web
     name: notific-p3-backend
     env: python
-    repo: "https://github.com/YOUR_USER/YOUR_REPO"  # replace with your repo URL
-    branch: FULLSTACK-07112025
+    repo: "https://github.com/vitoria-lemos23/NotifIC-P3"
+    branch: Deploy
     rootDir: src/backend
     buildCommand: python -m pip install -r requirements.txt
-    startCommand: python -m alembic -c migrations/alembic.ini upgrade head && gunicorn --bind 0.0.0.0:$PORT wsgi:app
+    # Start command: run gunicorn only. Run migrations manually via a one-off job.
+    startCommand: gunicorn --bind 0.0.0.0:$PORT wsgi:app
     plan: starter
     envVars:
       - key: DATABASE_URL
-        value: ""   # leave empty to attach Render Postgres or set to your DB URL
+        value: ""   # set in Render dashboard (preferred) or attach a managed Postgres
         sync: true
       - key: SECRET_KEY
-        value: ""   # set a secure secret in Render dashboard
+        value: ""
       - key: MAIL_USERNAME
         value: ""
       - key: MAIL_PASSWORD
         value: ""
 
-# Optional: if you want Render to create a managed Postgres database as part of the
-# manifest, you can add a `databases` section. Many teams prefer creating the DB
-# separately in the Render dashboard and then setting DATABASE_URL in env vars.
-
+# If you prefer Render to create a managed Postgres, uncomment and adjust below.
 # databases:
 #  - name: notific-p3-db
 #    plan: starter
