@@ -8,7 +8,9 @@ from models.userModel import User
 from app import db, mail
 from flask_mail import Message
 from flask import render_template
-from threading import Thread
+from redis import Redis
+from rq import Queue
+from tasks.email_tasks import send_recovery_email
 
 auth_routes = Blueprint('auth_routes', __name__)
 
@@ -102,24 +104,16 @@ def recuperar_senha():
         body=f'Use este link para redefinir sua senha: {reset_link}'
     )
 
-    def _send_async_email(app, message):
-        try:
-            with app.app_context():
-                mail.send(message)
-        except Exception:
-            # Log exceptions that happen inside the background thread
-            current_app.logger.exception('Falha ao enviar e-mail de recuperação (thread)')
-
     try:
-        # Start background thread to send email so the request won't block the worker.
-        current_app.logger.info('Starting background thread to send recovery email for %s', email)
-        app_obj = current_app._get_current_object()
-        thr = Thread(target=_send_async_email, args=(app_obj, msg), daemon=True)
-        thr.start()
-        current_app.logger.info('Background thread started (daemon=%s)', thr.daemon)
+        # Enqueue the send task to RQ so a separate worker handles SMTP
+        redis_url = current_app.config.get('REDIS_URL') or os.getenv('REDIS_URL') or 'redis://localhost:6379/0'
+        redis_conn = Redis.from_url(redis_url)
+        q = Queue('default', connection=redis_conn)
+        # enqueue the callable; RQ will import tasks.email_tasks.send_recovery_email
+        job = q.enqueue(send_recovery_email, token, email)
+        current_app.logger.info('Enqueued recovery email job id=%s for %s', job.id, email)
     except Exception:
-        # If starting the thread fails, log and return a 502 so the client knows the send failed.
-        current_app.logger.exception('Falha ao iniciar thread de envio de e-mail')
+        current_app.logger.exception('Falha ao enfileirar e-mail de recuperação')
         return jsonify({'error': 'Falha ao enviar e-mail de recuperação'}), 502
 
     return jsonify({'message': 'E-mail de recuperação enfileirado para envio'}), 200
