@@ -22,4 +22,5 @@ waitress==2.1.2
 redis>=4.6.0,<5
 rq==1.11.1
 requests>=2.31.0
-cloudinary>=2.0.0
+# cloudinary 2.0.0 não está disponível no PyPI; usar a última 1.x conhecida
+cloudinary>=1.44.1,<2
