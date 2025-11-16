@@ -2,6 +2,8 @@ import os
 from datetime import datetime as _dt
 from flask import Flask
 from flask_mail import Mail, Message
+import requests
+import json
 
 
 def _build_minimal_mail_app():
@@ -33,7 +35,7 @@ def send_recovery_email(token: str, recipient: str):
     """
     app = _build_minimal_mail_app()
     mail = Mail(app)
-        with app.app_context():
+    with app.app_context():
             # Prefer SendGrid API when SENDGRID_API_KEY is provided — it's easier
             # to configure for students and avoids SMTP complexity.
             sendgrid_key = os.getenv('SENDGRID_API_KEY')
