@@ -24,6 +24,39 @@
     <p>Preencha os dados abaixo para publicar no Notific.</p>
 
     <!-- Image upload removed: images are provided via static news JSON only -->
+    <!-- Image upload (Cloudinary) -->
+    <label for="file">Imagem (opcional)</label>
+    <input type="file" id="file" name="file" accept="image/*">
+    <input type="hidden" id="upload_news_id" name="news_id" value="">
+    <button id="uploadImageBtn" type="button">Enviar Imagem</button>
+    <div id="uploadResult" style="margin-top:8px;color:green;"></div>
+
+    <script>
+    document.getElementById('uploadImageBtn').addEventListener('click', async function(){
+      const f = document.getElementById('file').files[0];
+      if(!f) return alert('Escolha um arquivo');
+      const form = new FormData();
+      form.append('file', f);
+      const newsId = document.getElementById('upload_news_id').value;
+      if(newsId) form.append('news_id', newsId);
+
+      // Try to get token from localStorage or cookies
+      const token = localStorage.getItem('access_token') || '';
+      try{
+        const resp = await fetch('/upload-image', { method: 'POST', headers: token ? { 'Authorization': 'Bearer ' + token } : {}, body: form });
+        const data = await resp.json();
+        if(resp.ok){
+          document.getElementById('uploadResult').textContent = 'Upload OK';
+        } else {
+          document.getElementById('uploadResult').textContent = 'Erro: ' + (data.error || JSON.stringify(data));
+          document.getElementById('uploadResult').style.color = 'red';
+        }
+      }catch(e){
+        document.getElementById('uploadResult').textContent = 'Erro de rede';
+        document.getElementById('uploadResult').style.color = 'red';
+      }
+    });
+    </script>
 
     <!-- Institution field removed: not part of News model -->
 

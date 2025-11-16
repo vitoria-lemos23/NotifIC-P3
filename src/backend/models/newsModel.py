@@ -36,7 +36,8 @@ class News(db.Model):
     status = db.Column(db.Enum(StatusEnum, name='status_enum'), default=StatusEnum.PENDENTE)
     tags = db.Column(db.ARRAY(db.Enum(TagEnum, name='tag_enum')), nullable=True)
     link = db.Column(db.String(200), nullable=True)
-    # note: image paths handled by static JSON enrichment, not persisted on model
+    # persisted image URL (Cloudinary or external CDN)
+    image_url = db.Column(db.String(1024), nullable=True)
 
     author = db.relationship('User', backref=db.backref('news', lazy=True))
 
@@ -58,7 +59,7 @@ class News(db.Model):
             'tags': [t.value for t in self.tags] if self.tags else [],
             'link': self.link
             ,
-            # image fields removed from model; API may still enrich responses from static JSON
+            'image_url': self.image_url
         }
 
     def __repr__(self) -> str:

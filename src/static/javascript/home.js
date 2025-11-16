@@ -275,8 +275,9 @@ function normalizeNewsData(raw) {
       status: status,
       tags: normalizedTags,
       link: item.link || null,
-      img: normalizeImagePath(item.img),
-      imagem_banner: normalizeImagePath(item.imagem_banner),
+      // prefer explicit image fields, but fall back to image_url returned by the API
+      img: normalizeImagePath(item.image_url || item.img),
+      imagem_banner: normalizeImagePath(item.imagem_banner || item.image_url),
     };
   });
 }

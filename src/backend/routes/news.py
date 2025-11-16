@@ -12,6 +12,9 @@ from datetime import datetime, timezone, timedelta
 import json
 import os
 from werkzeug.utils import secure_filename
+import cloudinary
+import cloudinary.uploader
+from models.newsModel import News
 
 news_routes = Blueprint('news_routes', __name__)
 
@@ -92,9 +95,9 @@ def create_news():
 
     tags = parse_tags(tags_raw)
 
-    # Se for admin, publica diretamente
     user = getattr(request, 'user', None)
-    if user and user.role.value == 'ADMIN':
+    # Se for admin ou moderador, publica diretamente
+    if user and user.role.value in ('ADMIN', 'MODERADOR'):
         status = StatusEnum.ACEITA
         active = True
     else:
@@ -261,8 +264,49 @@ def upload_image():
         f = request.files['foto']
     else:
         return jsonify({'error': 'No file part'}), 400
+    # Basic validations
+    filename = secure_filename(f.filename or '')
+    if not filename:
+        return jsonify({'error': 'Invalid filename'}), 400
 
-    return jsonify({'error': 'Image uploads are disabled in this deployment.'}), 410
+    # Optional: size limit (5MB)
+    f.seek(0, os.SEEK_END)
+    size = f.tell()
+    f.seek(0)
+    max_size = int(os.environ.get('MAX_UPLOAD_SIZE', 5 * 1024 * 1024))
+    if size > max_size:
+        return jsonify({'error': 'File too large'}), 413
+
+    # Configure cloudinary from env var CLOUDINARY_URL if present
+    cloudinary_url = os.environ.get('CLOUDINARY_URL')
+    if not cloudinary_url:
+        return jsonify({'error': 'Image uploads not configured on server'}), 503
+    cloudinary.config(cloudinary_url=cloudinary_url)
+
+    try:
+        res = cloudinary.uploader.upload(f, folder=os.environ.get('CLOUDINARY_FOLDER', 'notific/uploads'))
+    except Exception as e:
+        current_app.logger.exception('Cloudinary upload failed')
+        return jsonify({'error': 'Upload failed', 'detail': str(e)}), 500
+
+    url = res.get('secure_url') or res.get('url')
+    if not url:
+        return jsonify({'error': 'Upload did not return URL'}), 500
+
+    # If the client provided a `news_id`, persist the image_url on that record
+    news_id = request.form.get('news_id') or request.args.get('news_id')
+    if news_id:
+        try:
+            nid = int(news_id)
+            n = News.query.get(nid)
+            if n:
+                n.image_url = url
+                db.session.commit()
+        except Exception:
+            current_app.logger.exception('Failed to attach image_url to News')
+            # not fatal for upload; continue returning the URL
+
+    return jsonify({'ok': True, 'image_url': url}), 201
 
 
 @news_routes.route('/news/<int:news_id>', methods=['PUT'])
@@ -320,8 +364,8 @@ def update_news(news_id):
     if n.start_date and n.end_date and n.end_date < n.start_date:
         return jsonify({'error': 'end_date não pode ser anterior a start_date'}), 400
 
-    # Se admin atualizar, aceita diretamente. Se autor atualizar, volta para PENDENTE para revisão.
-    if user.role.value == 'ADMIN':
+    # Se admin ou moderador atualizar, aceita diretamente. Se autor atualizar, volta para PENDENTE para revisão.
+    if user.role.value in ('ADMIN', 'MODERADOR'):
         n.status = StatusEnum.ACEITA
         n.active = True
     else:

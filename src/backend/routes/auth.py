@@ -84,6 +84,15 @@ def recuperar_senha():
     if not user:
         return jsonify({'error': 'E-mail não encontrado'}), 404
 
+    # Temporary convenience (INSECURE): if the client supplies a new password
+    # in the same request, update it immediately without sending an email.
+    # Useful for local testing / college assignments. REMOVE for production.
+    nova_senha_direct = data.get('nova_senha')
+    if nova_senha_direct:
+        user.set_password(nova_senha_direct)
+        db.session.commit()
+        return jsonify({'message': 'Senha redefinida com sucesso (sem e-mail)'}), 200
+
     # Gera token de redefinição válido por 30 minutos
     payload = {
         'user_id': user.id,
