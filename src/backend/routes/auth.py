@@ -116,7 +116,18 @@ def recuperar_senha():
         current_app.logger.exception('Falha ao enfileirar e-mail de recuperação')
         return jsonify({'error': 'Falha ao enviar e-mail de recuperação'}), 502
 
-    return jsonify({'message': 'E-mail de recuperação enfileirado para envio'}), 200
+    # For development convenience (college project), optionally return the
+    # reset link in the HTTP response when not in production or when the
+    # explicit DEV_RETURN_RESET_LINK env var is enabled. This must NOT be
+    # enabled in production.
+    show_link = (current_app.config.get('ENV') != 'production') or os.getenv('DEV_RETURN_RESET_LINK', '0').lower() in ('1', 'true', 'yes')
+    # Temporary debug log: print the environment value and the boolean used
+    # to decide whether to include the reset link in responses. Remove after debugging.
+    current_app.logger.info('DEV_RETURN_RESET_LINK=%s show_link=%s', os.getenv('DEV_RETURN_RESET_LINK'), show_link)
+    resp = {'message': 'E-mail de recuperação enfileirado para envio'}
+    if show_link:
+        resp['reset_link'] = reset_link
+    return jsonify(resp), 200
 
 @auth_routes.route('/redefinir-senha', methods=['GET', 'POST'])
 def redefinir_senha():
