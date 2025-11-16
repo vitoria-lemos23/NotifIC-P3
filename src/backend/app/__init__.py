@@ -13,7 +13,14 @@ migrate = Migrate()
 mail = Mail()
 
 def create_app():
+    # Preserve any DATABASE_URL already set in the environment (e.g. passed
+    # in the shell for one-off migrations). Some dotenv setups include a
+    # templated DATABASE_URL in `.env` which can unintentionally overwrite
+    # a real URL passed at runtime, so keep the pre-existing value.
+    prev_database_url = os.environ.get('DATABASE_URL')
     load_dotenv()
+    if prev_database_url:
+        os.environ['DATABASE_URL'] = prev_database_url
 
     app = Flask(__name__, template_folder='../../html', static_folder='../../static')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
