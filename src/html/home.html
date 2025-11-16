@@ -31,6 +31,7 @@
       </div>
 
       <!-- Botão de Notificações -->
+      {% if usuario %}
       <div class="header-notifications-wrapper">
         <button
           id="notificationsButton"
@@ -56,14 +57,20 @@
           </div>
         </div>
       </div>
+      {% endif %}
 
       <!-- Agrupa nome do usuário e ícone de perfil para posicionamento correto -->
       <div class="header-user-area">
-        <div id="headerUsername" aria-live="polite"></div>
+        {% if usuario %}
+        <div id="headerUsername" aria-live="polite">{{ usuario.username }}</div>
         <div id="profileButton">
           <span class="profile-icon">👤</span>
           <img src="https://i.pravatar.cc/40" alt="Perfil" />
         </div>
+        {% else %}
+        <a href="{{ url_for('auth_routes.login_page') }}" class="header-button">Entrar</a>
+        <a href="{{ url_for('auth_routes.registrar_page') }}" class="header-button">Registrar</a>
+        {% endif %}
       </div>
     </header>
     <section class="hero-carousel">
@@ -168,6 +175,9 @@
       </div>
     </footer>
 
+  <script>
+    const USER_ROLE = "{{ usuario.role if usuario else '' }}";
+  </script>
   <script src="{{ url_for('static', filename='javascript/home.js') }}" defer></script>
   <script>
     // Logout via POST to clear HttpOnly cookie, then redirect to login page

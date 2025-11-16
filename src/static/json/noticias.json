@@ -2,7 +2,7 @@
   {
     "id": 1,
     "title": "SECOMP 2025",
-    "content": "A Semana de Computação da UFAL está chegando! Serão palestras, minicursos, hackathons e muito networking com profissionais renomados...",
+    "content": "A Semana de Computa\u00e7\u00e3o da UFAL est\u00e1 chegando! Ser\u00e3o palestras, minicursos, hackathons e muito networking com profissionais renomados...",
     "author_id": 1,
     "created_at": "2025-08-31T12:00:00Z",
     "updated_at": "2025-08-31T12:00:00Z",
@@ -10,15 +10,17 @@
     "start_date": null,
     "end_date": null,
     "status": "ACEITA",
-    "tags": ["EVENTO"],
+    "tags": [
+      "EVENTO"
+    ],
     "link": "https://www.instagram.com/secomp.ufal/",
     "img": "/static/img/logo_secomp.png",
     "imagem_banner": "/static/img/banners/secomp.jpg"
   },
   {
     "id": 2,
-    "title": "NEES Inscrições 2025",
-    "content": "O Núcleo de Excelência em Engenharia de Software está com inscrições abertas para novos membros! Se você tem interesse em desenvolvimento...",
+    "title": "NEES Inscri\u00e7\u00f5es 2025",
+    "content": "O N\u00facleo de Excel\u00eancia em Engenharia de Software est\u00e1 com inscri\u00e7\u00f5es abertas para novos membros! Se voc\u00ea tem interesse em desenvolvimento...",
     "author_id": 1,
     "created_at": "2025-09-01T10:00:00Z",
     "updated_at": "2025-09-01T10:00:00Z",
@@ -26,15 +28,17 @@
     "start_date": null,
     "end_date": null,
     "status": "PENDENTE",
-    "tags": ["PROJETO"],
+    "tags": [
+      "PROJETO"
+    ],
     "link": "https://www.instagram.com/nees.ufal/",
     "img": "/static/img/logo_nees.jpg",
     "imagem_banner": "/static/img/banners/ness.jpg"
   },
   {
     "id": 3,
-    "title": "Vaga de Estágio - Dev Frontend",
-    "content": "Empresa parceira da UFAL está oferecendo vaga de estágio para estudantes de Computação com foco em desenvolvimento Frontend...",
+    "title": "Vaga de Est\u00e1gio - Dev Frontend",
+    "content": "Empresa parceira da UFAL est\u00e1 oferecendo vaga de est\u00e1gio para estudantes de Computa\u00e7\u00e3o com foco em desenvolvimento Frontend...",
     "author_id": 2,
     "created_at": "2025-09-01T14:00:00Z",
     "updated_at": "2025-09-01T14:00:00Z",
@@ -42,7 +46,9 @@
     "start_date": "2025-09-01T14:00:00Z",
     "end_date": "2025-10-01T23:59:59Z",
     "status": "PENDENTE",
-    "tags": ["VAGA"],
+    "tags": [
+      "VAGA"
+    ],
     "link": "https://empresa.com/estagio-frontend",
     "img": "/static/img/logo_pesquisa.jpeg",
     "imagem_banner": "/static/img/banners/vaga_frontend.png"
@@ -50,7 +56,7 @@
   {
     "id": 4,
     "title": "Grupo de Pesquisa do Professor Ranilson",
-    "content": "O grupo de pesquisa coordenado pelo Prof. Ranilson está selecionando alunos de pós-graduação para atuar em projetos de Inteligência Artificial...",
+    "content": "O grupo de pesquisa coordenado pelo Prof. Ranilson est\u00e1 selecionando alunos de p\u00f3s-gradua\u00e7\u00e3o para atuar em projetos de Intelig\u00eancia Artificial...",
     "author_id": 2,
     "created_at": "2025-09-01T15:00:00Z",
     "updated_at": "2025-09-01T15:00:00Z",
@@ -58,9 +64,65 @@
     "start_date": null,
     "end_date": null,
     "status": "PENDENTE",
-    "tags": ["PROJETO"],
+    "tags": [
+      "PROJETO"
+    ],
     "link": "https://ufal.br/grupo-pesquisa-ranilson",
     "img": "/static/img/logo_pesquisa.jpeg",
     "imagem_banner": "/static/img/banners/grupo_pesquisa.png"
+  },
+  {
+    "id": 12,
+    "title": "Teste admin via curl",
+    "content": "Corpo de teste via curl",
+    "author_id": 2,
+    "created_at": "2025-11-15T20:52:48.481069",
+    "updated_at": "2025-11-15T20:52:48.481083",
+    "hotNews": false,
+    "start_date": null,
+    "end_date": null,
+    "status": "ACEITA",
+    "tags": [
+      "PROJETO"
+    ],
+    "link": null,
+    "img": null,
+    "imagem_banner": null
+  },
+  {
+    "id": 13,
+    "title": "Teste admin com imagem",
+    "content": "Teste com upload de imagem via curl",
+    "author_id": 2,
+    "created_at": "2025-11-15T20:59:55.127183",
+    "updated_at": "2025-11-15T20:59:55.127198",
+    "hotNews": false,
+    "start_date": null,
+    "end_date": null,
+    "status": "ACEITA",
+    "tags": [
+      "PROJETO"
+    ],
+    "link": null,
+    "img": "/static/img/news/13_feed.png",
+    "imagem_banner": "/static/img/news/13_carousel.png"
+  },
+  {
+    "id": 14,
+    "title": "alannnn",
+    "content": "sdgbwerggretgfgbtegr4gre",
+    "author_id": 2,
+    "created_at": "2025-11-15T21:02:46.461918",
+    "updated_at": "2025-11-15T21:02:46.461934",
+    "hotNews": true,
+    "start_date": "2025-11-22T20:35:00",
+    "end_date": "2025-11-29T20:35:00",
+    "status": "ACEITA",
+    "tags": [
+      "EVENTO"
+    ],
+    "link": null,
+    "img": "/static/img/news/14_feed.png",
+    "imagem_banner": "/static/img/news/14_carousel.webp"
   }
 ]

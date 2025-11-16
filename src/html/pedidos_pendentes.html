@@ -15,7 +15,16 @@
       <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-ic">
     </a>
     <h1 class="navbar-title">Administrador</h1>
-    <a href="{{ url_for('admin_panel.list_pending_news_view') }}" class="nav-back-link">Controle</a>
+    <div class="navbar-actions">
+      <a href="{{ url_for('admin_panel.list_pending_news_view') }}" class="nav-back-link">Controle</a>
+      <!-- Manage news button (go to admin manage page) -->
+      <a href="{{ url_for('admin_panel.manage_news_view') }}" title="Gerenciar Notícias" style="margin-left:12px; text-decoration:none; color:#fff; font-weight:600">Gerenciar Notícias</a>
+      <!-- Create post icon -->
+      <a href="{{ url_for('admin_panel.create_post_view') }}" title="Create post" style="margin-left:12px; text-decoration:none; color:#fff; display:inline-flex; align-items:center;">
+        <span style="display:inline-block;width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-weight:700;">+</span>
+        <span style="margin-left:8px;color:#fff;font-weight:600">Create</span>
+      </a>
+    </div>
   </nav>
 
   <main>
@@ -28,21 +37,31 @@
   <div id="modal-overlay" class="modal-overlay">
     <div class="modal-content">
       <button class="modal-close-btn">&times;</button>
-      <h2 id="modal-title">Detalhes do Anúncio</h2>
-      <img id="modal-img" src="" alt="Imagem do Anúncio" class="modal-imagem">
-      <div class="modal-meta">
-        <p><strong>Requerente:</strong> <span id="modal-requester"></span></p>
-        <p><strong>Data:</strong> <span id="modal-date"></span></p>
+      <div class="modal-main">
+        <div class="modal-media">
+          <img id="modal-img" src="" alt="Imagem do Anúncio" class="modal-imagem">
+        </div>
+        <div class="modal-info">
+          <h2 id="modal-title">Detalhes do Anúncio</h2>
+          <div class="modal-meta">
+            <p><strong>Requerente:</strong> <span id="modal-requester"></span></p>
+            <p><strong>Data:</strong> <span id="modal-date"></span></p>
+          </div>
+          <section class="modal-body">
+            <h3>Descrição</h3>
+            <div id="modal-desc" class="modal-desc"></div>
+          </section>
+        </div>
       </div>
-      <section class="modal-body">
-        <h3>Descrição</h3>
-        <div id="modal-desc" class="modal-desc"></div>
-
-      <!-- extra details removed — keep modal focused on description and metadata -->
-      </section>
+      <div class="modal-actions">
+        <button id="modal-accept" class="btn-aceitar">Aceitar</button>
+        <button id="modal-reject" class="btn-rejeitar">Rejeitar</button>
+        <button id="modal-close" class="btn-detalhes">Fechar</button>
+      </div>
     </div>
   </div>
 
-  <script src="{{ url_for('static', filename='javascript/pedidos_pendentes.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_notifications.css') }}">
+  <script src="{{ url_for('static', filename='javascript/pedidos_pendentes.js') }}" defer></script>
 </body>
 </html>

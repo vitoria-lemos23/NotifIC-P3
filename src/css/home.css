@@ -79,9 +79,29 @@ header #searchBar:focus {
   box-shadow: 0 0 0 2px rgba(48, 75, 138, 0.2);
 }
 
-/* 3. Estilo do Botão de Perfil */
-#profileButton {
+/* 3. Estilo do Botão de Perfil e Área do Usuário */
+.header-user-area {
   justify-self: end; /* Alinha à direita na coluna do grid */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-button {
+  padding: 8px 16px;
+  background-color: #4a90e2; /* Cor de fundo azul */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.header-button:hover {
+  background-color: #357abd; /* Cor de fundo mais escura no hover */
+}
+
+#profileButton {
   margin-right: 0;
 
   /* Seus estilos antigos de ícone (logado/deslogado) */

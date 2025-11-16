@@ -62,8 +62,51 @@ document.addEventListener("DOMContentLoaded", async function () {
         const escaped = rawDesc.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         descEl.innerHTML = escaped.replace(/\n/g, '<br>');
 
-        // No extra fields; modal shows only description and metadata (date, requester)
+        // show modal
         modalOverlay.classList.add("active");
+
+        // wire accept/reject buttons in modal
+        const acceptBtn = document.getElementById('modal-accept');
+        const rejectBtn = document.getElementById('modal-reject');
+        const closeBtn = document.getElementById('modal-close');
+
+        // remove previous listeners by cloning
+        function replaceHandler(el, handler) {
+            if (!el) return;
+            const n = el.cloneNode(true);
+            el.parentNode.replaceChild(n, el);
+            n.addEventListener('click', handler);
+            return n;
+        }
+
+        replaceHandler(acceptBtn, async () => {
+            if (!confirm('Confirma aceitar essa notícia?')) return;
+            try {
+                const r = await fetch(`/admin/news/${item.id}/approve`, { method: 'POST', credentials: 'same-origin', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({}) });
+                if (!r.ok) throw new Error('Status ' + r.status);
+                // remove item and refresh list
+                dadosDosPedidos = dadosDosPedidos.filter(x => String(x.id) !== String(item.id));
+                renderizarPedidos();
+                fecharModal();
+            } catch (e) {
+                alert('Falha ao aceitar: ' + e.message);
+            }
+        });
+
+        replaceHandler(rejectBtn, async () => {
+            if (!confirm('Confirma rejeitar essa notícia?')) return;
+            try {
+                const r = await fetch(`/admin/news/${item.id}/reject`, { method: 'POST', credentials: 'same-origin' });
+                if (!r.ok) throw new Error('Status ' + r.status);
+                dadosDosPedidos = dadosDosPedidos.filter(x => String(x.id) !== String(item.id));
+                renderizarPedidos();
+                fecharModal();
+            } catch (e) {
+                alert('Falha ao rejeitar: ' + e.message);
+            }
+        });
+
+        replaceHandler(closeBtn, () => { fecharModal(); });
     }
 
     function fecharModal() {
@@ -164,6 +207,24 @@ document.addEventListener("DOMContentLoaded", async function () {
     container.addEventListener('click', async function (ev) {
         const target = ev.target;
         const card = target.closest('.pedido-card');
+                // Se query param 'focus' estiver presente, abrir modal para o id correspondente
+                try {
+                    const params = new URLSearchParams(window.location.search);
+                    const focus = params.get('focus');
+                    if (focus) {
+                        // tentar achar o item carregado
+                        const target = dadosDosPedidos.find(x => String(x.id) === String(focus));
+                        if (target) {
+                            // abrir modal para o item
+                            abrirModal(target);
+                            // opcional: rolar até o cartão correspondente
+                            const cardEl = document.querySelector(`.pedido-card[data-id="${focus}"]`);
+                            if (cardEl) cardEl.scrollIntoView({behavior: 'smooth', block: 'center'});
+                        }
+                    }
+                } catch (e) {
+                    // silencioso
+                }
         if (!card) return;
         const id = card.dataset.id;
         const item = dadosDosPedidos.find(x => String(x.id) === String(id));

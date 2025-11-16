@@ -274,12 +274,78 @@ body {
   display: block;
 }
 
+/* New modal two-column layout */
+.modal-main {
+  display: grid;
+  /* make media column a bit smaller so image doesn't dominate */
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.modal-media .modal-imagem {
+  width: 100%;
+  /* reduce default image height to be less dominant */
+  height: 160px;
+  max-height: 220px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.modal-info h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.6rem;
+  color: #18335a;
+}
+
+.modal-meta p {
+  margin: 6px 0;
+  color: #444;
+}
+
+.modal-body h3 {
+  margin-top: 14px;
+  font-size: 1.05rem;
+  color: #18335a;
+}
+
+.modal-desc {
+  margin-top: 8px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  /* center the action buttons */
+  justify-content: center;
+  margin-top: 18px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 12px;
+}
+
+.modal-actions .btn-aceitar { padding: 10px 14px; }
+.modal-actions .btn-rejeitar { padding: 10px 14px; }
+.modal-actions .btn-detalhes { padding: 10px 12px; background: #fff; border: 1px solid #ccc; }
+
+/* Make modal content a bit larger on desktop */
+@media (min-width: 900px) {
+  .modal-content { max-width: 900px; padding: 28px; }
+  /* slightly increase media column but still keep image moderate */
+  .modal-main { grid-template-columns: 280px 1fr; }
+  .modal-media .modal-imagem { height: 220px; }
+}
+
 /* === RESPONSIVIDADE === */
 @media (max-width: 768px) {
   .pedido-card {
     flex-direction: column;
     width: 95%;
   }
+
+  .modal-main { grid-template-columns: 1fr; }
+  .modal-media .modal-imagem { height: 140px; }
 
   .pedido-imagem {
     width: 100%;

@@ -10,17 +10,17 @@ const sideMenuBackdrop = document.getElementById("sideMenuBackdrop");
 
 let activeTags = [];
 let currentTab = "geral";
-// Define estado inicial de login a partir da variável server-driven `window.APP_USER`.
-// Se o servidor injetou `window.APP_USER` no template, usamos isso como fonte de verdade.
-let usuarioLogado = (typeof window !== 'undefined' && !!window.APP_USER) ? true : false;
+let usuarioLogado = false;
 let data = [];
-let isAdmin = false; // Será determinado a partir do usuário autenticado
+let isAdmin = (typeof USER_ROLE !== 'undefined' && USER_ROLE && (USER_ROLE === 'ADMIN' || USER_ROLE === 'MODERATOR' || USER_ROLE === 'MODERADOR'));
 
 const adminBtn = document.getElementById("adminBtn");
 const adminMenu = document.getElementById("adminMenu");
 
-// Inicialmente oculta o botão admin; será mostrado quando soubermos o papel do usuário
-if (adminBtn) adminBtn.style.display = 'none';
+// Mostrar/ocultar botão admin
+if (isAdmin) {
+  adminBtn.style.display = "inline-block";
+}
 
 // Menu de admin
 adminBtn.addEventListener("click", (e) => {
@@ -73,7 +73,7 @@ function alternarEstadoLogin() {
 // Função para ir ao Painel de Pendentes
 function Painel() {
   // ATENÇÃO: Verifique se o nome do arquivo é "pedidos.html" ou "pedidos_pendentes.html"
-  window.location.href = "/admin/news/pending/view";
+  window.location.href = "/admin/news/pending/view"
 }
 
 /**
@@ -92,9 +92,10 @@ function renderCarousel(newsData) {
   slidesWrapper.innerHTML = "";
   dotsWrapper.innerHTML = "";
 
-  // Filtra apenas os itens que TÊM uma imagem_banner e são marcados como hotNews
+  // Filtra apenas os itens que TÊM uma imagem_banner e estão marcados como `hotNews`
+  // (mais confiável que procurar uma tag literal "destaque" que não existe nas entradas atuais)
   const carouselItems = newsData
-    .filter((item) => item.imagem_banner && (item.hotNews === true || (item.tags || []).includes('DESTAQUE')))
+    .filter((item) => item.imagem_banner && (item.hotNews === true || String(item.hotNews).toLowerCase() === 'true'))
     .slice(0, 5);
 
   carouselItems.forEach((item, index) => {
@@ -107,20 +108,14 @@ function renderCarousel(newsData) {
     }
 
     slide.innerHTML = `
-        ${(() => {
-          const target = (item.id !== undefined && item.id !== null)
-            ? `/noticia?id=${encodeURIComponent(item.id)}`
-            : (item.link || '#');
-          const targetAttrs = (item.id !== undefined && item.id !== null) ? '' : ' target="_blank"';
-          return `<a href="${target}"${targetAttrs} style="text-decoration: none;">`;
-        })()}
+      <a href="${item.link}" target="_blank" style="text-decoration: none;">
         <img src="${item.imagem_banner}" alt="${item.title}" />
         <div class="carousel-gradient"></div> 
         <div class="carousel-text"> 
           <h2>${item.title}</h2> 
           <p>${item.content}</p> 
         </div>
-        </a>
+      </a>
     `;
     slidesWrapper.appendChild(slide);
 
@@ -203,146 +198,71 @@ function initializeCarousel() {
 
 // Função para carregar as notícias
 async function loadNews() {
-  // Try to fetch accepted news from backend API first
   try {
-    const res = await fetch('/news?status=ACEITA&per_page=50');
-    if (res.ok) {
-      const payload = await res.json();
-      const list = payload && Array.isArray(payload.news) ? payload.news : (payload || []);
-      data = normalizeNewsData(list);
-    } else {
-      // fallback to static JSON if backend returns error
-      console.warn('Backend /news returned', res.status, 'falling back to static JSON');
-      const fresp = await fetch('/static/json/noticias.json');
-      const raw = await fresp.json();
-      data = normalizeNewsData(raw);
-    }
-  } catch (e) {
-    console.warn('Failed to fetch backend news, using static JSON', e);
-    try {
-      const fresp = await fetch('/static/json/noticias.json');
-      const raw = await fresp.json();
-      data = normalizeNewsData(raw);
-    } catch (ee) {
-      console.error('Erro ao carregar notícias:', ee);
-      feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
-      return;
-    }
-  }
+    // Load static noticias.json from the Flask `static` folder
+    const res = await fetch("/static/json/noticias.json");
+    data = await res.json();
+    console.debug('loadNews: loaded', data && data.length, 'items');
+    render(currentTab, searchBar.value.toLowerCase());
 
-  // render feed and initialize carousel
-  render(currentTab, searchBar.value.toLowerCase());
-  renderCarousel(data);
-  initializeCarousel();
+    // Inicializa o carrossel com os dados
+    renderCarousel(data);
+    initializeCarousel();
+  } catch (e) {
+    feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
+    console.error("Erro ao carregar notícias:", e);
+  }
   renderFilterMenu();
 }
 
-
-// Normaliza os objetos do JSON para o shape esperado pelo front/back
-function normalizeNewsData(raw) {
-  if (!Array.isArray(raw)) return [];
-  return raw.map((item) => {
-    const tags = (item.tags || []).map((t) => String(t).toUpperCase());
-    // map common synonyms to tag enum values if needed
-    const normalizedTags = tags.map((t) => {
-      if (t === 'VAGAS' || t === 'VAGA') return 'VAGA';
-      if (t === 'EVENTO' || t === 'EVENTOS' || t === 'DESTAQUE') return 'EVENTO';
-      if (t === 'PROJETO' || t === 'PROJETOS' || t === 'PESQUISA') return 'PROJETO';
-      if (t === 'GERAL') return 'PROJETO';
-      return t;
-    });
-
-    // normalize status to model values (ACEITA/PENDENTE/REJEITADA)
-    let status = (item.status || '').toString().toUpperCase();
-    if (status === 'PUBLICADO' || status === 'ABERTA' || status === 'ABERTO' || status === 'ACEITA') {
-      status = 'ACEITA';
-    } else if (status === 'FECHADA' || status === 'FECHADO' || status === 'REJEITADA') {
-      status = 'REJEITADA';
-    } else {
-      status = 'PENDENTE';
-    }
-
-    return {
-      id: item.id,
-      title: item.title,
-      content: item.content || item.desc || '',
-      author_id: item.author_id || null,
-      created_at: item.created_at || null,
-      updated_at: item.updated_at || null,
-      hotNews: item.hotNews === true || normalizedTags.includes('DESTAQUE') || false,
-      start_date: item.start_date || null,
-      end_date: item.end_date || null,
-      status: status,
-      tags: normalizedTags,
-      link: item.link || null,
-      img: normalizeImagePath(item.img),
-      imagem_banner: normalizeImagePath(item.imagem_banner),
-    };
-  });
-}
-
-
-function normalizeImagePath(p) {
-  if (!p) return null;
-  // If it's already an absolute URL, return as-is
-  if (p.startsWith('http://') || p.startsWith('https://') || p.startsWith('/')) return p;
-  // Convert relative path like ../img/... to /static/img/...
-  return p.replace(/^(\.\.\/)+img\//, '/static/img/');
-}
-
-// Utility: truncate a string to `n` chars and append ellipsis
-function truncate(s, n = 150) {
-  if (!s) return '';
-  const str = String(s);
-  return str.length > n ? str.slice(0, n).trim() + '…' : str;
-}
-
 let favoritos = [];
-const headerUsername = document.getElementById('headerUsername');
+
+// Legacy client-side favorites (persisted in localStorage)
+try {
+  const raw = localStorage.getItem('favoritos');
+  if (raw) {
+    favoritos = JSON.parse(raw) || [];
+  }
+} catch (e) {
+  favoritos = [];
+}
 
 // Função para atualizar o estado visual do login
 function atualizarEstadoLogin() {
-  if (!profileButton) return;
   const menuTitle = document.querySelector("#sideMenu .menu-title");
+  const notificationsButton = document.getElementById("notificationsButton");
+  const sideMenuEl = document.getElementById("sideMenu");
+  const sideMenuBackdropEl = document.getElementById("sideMenuBackdrop");
+
+  if (profileButton) {
+    if (usuarioLogado) {
+      profileButton.classList.add("logged");
+      profileButton.classList.remove("not-logged");
+    } else {
+      profileButton.classList.remove("logged");
+      profileButton.classList.add("not-logged");
+    }
+  }
 
   if (usuarioLogado) {
-    profileButton.classList.add("logged");
-    profileButton.classList.remove("not-logged");
     if (menuTitle) menuTitle.textContent = "./notifIC";
-    // determina se usuário é admin e mostra/esconde o botão de admin
-    try {
-      const userRole = (window.APP_USER && window.APP_USER.role) || null;
-      isAdmin = (userRole === 'ADMIN');
-      if (adminBtn) adminBtn.style.display = isAdmin ? 'inline-block' : 'none';
-    } catch (e) {
-      console.error('Erro ao determinar papel do usuário:', e);
-    }
-    // mostra nome do usuário ao lado do ícone de perfil, se disponível
-    try {
-      const user = window.APP_USER || null;
-      if (headerUsername) {
-        if (user && (user.username || user.name)) {
-          headerUsername.textContent = user.username || user.name;
-          headerUsername.style.display = 'flex';
-          headerUsername.style.alignItems = 'center';
-          headerUsername.style.marginRight = '8px';
-          headerUsername.style.color = '#fff';
-          headerUsername.style.fontWeight = '600';
-        } else {
-          headerUsername.textContent = '';
-          headerUsername.style.display = 'none';
-        }
-      }
-    } catch (e) {
-      console.error('Erro ao exibir nome do usuário:', e);
-    }
+    if (notificationsButton) notificationsButton.style.display = "block";
+    if (sideMenuEl) sideMenuEl.style.display = "flex"; // mantém disponível quando logado
+    // mostrar botão admin quando aplicável
+    if (isAdmin && adminBtn) adminBtn.style.display = 'inline-block';
   } else {
-    profileButton.classList.remove("logged");
-    profileButton.classList.add("not-logged");
     if (menuTitle) menuTitle.textContent = "Login";
+    if (notificationsButton) notificationsButton.style.display = "none";
+    // Esconde completamente o menu lateral e o backdrop quando não logado
+    if (sideMenuEl) {
+      sideMenuEl.classList.remove("active");
+      sideMenuEl.style.display = "none";
+    }
+    if (sideMenuBackdropEl) {
+      sideMenuBackdropEl.classList.remove("active");
+    }
     favoritos = [];
     render(currentTab, searchBar.value.toLowerCase());
-    if (headerUsername) headerUsername.style.display = 'none';
   }
 }
 
@@ -372,7 +292,7 @@ if (profileButton) {
       sideMenu.classList.add("active");
       sideMenuBackdrop.classList.add("active");
     } else {
-      window.location.href = "/login";
+      window.location.href = "login.html";
     }
   });
 }
@@ -380,15 +300,19 @@ if (profileButton) {
 // Sistema de Notificações
 class NotificationSystem {
   constructor() {
-    this.notifications =
-      JSON.parse(localStorage.getItem("userNotifications")) || [];
+    this.notifications = JSON.parse(localStorage.getItem("userNotifications")) || [];
     this.init();
   }
 
   init() {
     this.renderNotifications();
     this.setupEventListeners();
-    this.checkForNewNotifications();
+    // Carrega do servidor se usuário estiver logado
+    if (usuarioLogado) {
+      this.fetchFromServer();
+      // Polling leve para badge (unread) a cada 15s
+      this._badgePoll = setInterval(() => this.pollUnreadCount(), 15000);
+    }
   }
 
   // Adicione esta função à classe NotificationSystem
@@ -442,7 +366,7 @@ class NotificationSystem {
 
         // Verifica se o usuário está logado
         if (!usuarioLogado) {
-          window.location.href = "/login";
+          window.location.href = "login.html";
           return;
         }
 
@@ -450,8 +374,8 @@ class NotificationSystem {
       });
 
     // Marcar todas notificações como lidas
-    document.getElementById("markAllRead").addEventListener("click", () => {
-      this.markAllAsRead();
+    document.getElementById("markAllRead").addEventListener("click", async () => {
+      await this.markAllAsRead();
     });
 
     document.getElementById("markAllRead").addEventListener("click", () => {
@@ -531,6 +455,11 @@ class NotificationSystem {
       }
     });
 
+    // Notifica o backend para marcar como lidas (se logado)
+    if (usuarioLogado) {
+      fetch('/notifications/mark-all-viewed', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+    }
+
     if (updated) {
       this.saveToLocalStorage();
       this.renderNotifications();
@@ -578,22 +507,56 @@ class NotificationSystem {
     }
 
     container.innerHTML = this.notifications
-      .map(
-        (notification) => `
-      <div class="notification-item ${notification.read ? "read" : "unread"}" 
-           onclick="notificationSystem.markAsRead(${notification.id})">
+      .map((notification) => {
+        const title = notification.title || (notification.message ? notification.message.slice(0, 40) : 'Notificação');
+        const message = notification.message || '';
+        const time = this.formatTime(notification.timestamp || notification.sent_at || new Date().toISOString());
+        const nid = notification.newsId || notification.news_id || '';
+        return `
+      <div class="notification-item ${notification.read ? "read" : "unread"}" data-id="${notification.id}" data-news-id="${nid}">
         ${this.getNotificationIcon(notification.type)}
         <div class="notification-content">
-          <div class="notification-title">${notification.title}</div>
-          <div class="notification-message">${notification.message}</div>
-          <div class="notification-time">${this.formatTime(
-            notification.timestamp
-          )}</div>
+          <div class="notification-title">${title}</div>
+          <div class="notification-message">${message}</div>
+          <div class="notification-time">${time}</div>
         </div>
       </div>
-    `
-      )
+    `;
+      })
       .join("");
+
+    // add click delegation to notification items to handle navigation
+    container.querySelectorAll('.notification-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = item.dataset.id;
+        const newsId = item.dataset.newsId || null;
+        this.handleNotificationClick(id, newsId);
+      });
+    });
+  }
+
+  async handleNotificationClick(id, newsId) {
+    try {
+      // mark read locally
+      this.markAsRead(Number(id));
+    } catch (e) {
+      // ignore
+    }
+
+    // If newsId present, redirect to appropriate page where the item can be accepted/rejected
+    if (newsId) {
+      // If current user is admin/moderator, go to admin pending view and focus the item
+      if (isAdmin) {
+        window.location.href = `/admin/news/pending/view?focus=${encodeURIComponent(newsId)}`;
+        return;
+      }
+      // otherwise open news detail page
+      window.location.href = `/news?id=${encodeURIComponent(newsId)}`;
+      return;
+    }
+
+    // default: do nothing else (could open a generic notifications page)
   }
 
   updateBadge() {
@@ -617,42 +580,58 @@ class NotificationSystem {
   }
 
   checkForNewNotifications() {
-    // Simular notificações baseadas em notícias favoritadas
-    const favoriteNews = JSON.parse(localStorage.getItem("favoriteNews")) || [];
-
-    favoriteNews.forEach((news) => {
-      // Simular atualizações ocasionais
-      if (
-        Math.random() < 0.3 &&
-        !this.notifications.some((n) => n.newsId === news.id)
-      ) {
-        this.addNotification({
-          type: "update",
-          title: "Atualização na notícia",
-          message: `"${news.title}" recebeu uma atualização`,
-          newsId: news.id,
-        });
-      }
-    });
+    // Mantido vazio: simulações removidas. As notificações reais virão do backend.
   }
 
   // Método para simular notificações (para teste)
-  simulateNotification() {
-    const types = ["update", "reminder", "expiry", "favorite"];
-    const messages = [
-      "Nova oportunidade disponível na sua área",
-      "Lembrete: Prazo se aproximando",
-      "Atualização importante na vaga que você favoritou",
-      "Novo conteúdo adicionado",
-      "A sua notícia favorita está quase expirando",
-    ];
+  simulateNotification() {}
 
-    this.addNotification({
-      type: types[Math.floor(Math.random() * types.length)],
-      title: "Nova notificação",
-      message: messages[Math.floor(Math.random() * messages.length)],
-      newsId: Date.now(),
-    });
+  async fetchFromServer() {
+    try {
+      const resp = await fetch('/notifications', { credentials: 'same-origin' });
+      if (!resp.ok) return;
+      const data = await resp.json();
+      const serverItems = (data.notifications || []).map(n => ({
+        id: n.id,
+        notification_id: n.notification_id,
+        type: 'info',
+        title: n.news_title || n.message.slice(0, 40) || 'Notificação',
+        message: n.message,
+        newsId: n.news_id,
+        sent_at: n.sent_at,
+        timestamp: n.sent_at || new Date().toISOString(),
+        read: !!n.viewed,
+      }));
+
+      // Mesclar com as existentes evitando duplicadas por notification_id
+      const existingByNotif = new Map(this.notifications.map(x => [x.notification_id || x.id, x]));
+      serverItems.forEach(item => {
+        const key = item.notification_id || item.id;
+        existingByNotif.set(key, { ...existingByNotif.get(key), ...item });
+      });
+      this.notifications = Array.from(existingByNotif.values()).sort((a,b) => (new Date(b.timestamp) - new Date(a.timestamp)));
+      this.saveToLocalStorage();
+      this.renderNotifications();
+      this.updateBadge();
+    } catch (e) {
+      // silencioso
+    }
+  }
+
+  async pollUnreadCount() {
+    try {
+      const r = await fetch('/notifications/unread-count', { credentials: 'same-origin' });
+      if (!r.ok) return;
+      const data = await r.json();
+      const badge = document.getElementById('notificationBadge');
+      if (badge) {
+        const unread = data.unread || 0;
+        badge.textContent = unread > 99 ? '99+' : String(unread);
+        badge.style.animation = unread > 0 ? 'pulse 2s infinite' : 'none';
+      }
+    } catch (e) {
+      // silencioso
+    }
   }
 }
 
@@ -670,8 +649,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Para testar: adicionar uma notificação a cada 30 segundos (remover em produção)
-// setInterval(() => notificationSystem.simulateNotification(), 10000);
+// Removida simulação automática; backend passa a ser a fonte de verdade.
 
 // Evento de clique no botão de filtro
 if (filterBtn) {
@@ -721,103 +699,44 @@ function renderFilterMenu() {
 }
 
 // Simular verificação de login
-async function verificarLogin() {
-  // Se o servidor já injetou a variável window.APP_USER (render-time), usamos isso
-  if (typeof window !== 'undefined' && window.APP_USER) {
-    usuarioLogado = true;
-    atualizarEstadoLogin();
-    // garantir que, mesmo quando o servidor injetou o usuário no template,
-    // carregamos os favoritos do servidor para sincronizar o estado
-    await loadFavoritesFromServer();
-    return;
-  }
-
-  // Caso contrário, tentamos perguntar ao servidor (cookie HttpOnly enviado via fetch)
-  await fetchServerUser();
-}
-
-
-// Pergunta ao servidor se há um usuário autenticado (lê cookie HttpOnly no servidor)
-async function fetchServerUser() {
+async function checkLoginStatus() {
   try {
-    const res = await fetch('/auth/me', { credentials: 'same-origin' });
-    if (!res.ok) {
+    // Include credentials so HttpOnly cookie is sent to the server
+    const response = await fetch('/status', { credentials: 'same-origin' });
+    if (response.ok) {
+      const data = await response.json();
+      if (data.status === 'ok') {
+        usuarioLogado = true;
+      } else {
+        usuarioLogado = false;
+      }
+    } else {
       usuarioLogado = false;
-      atualizarEstadoLogin();
-      return null;
     }
-    const user = await res.json();
-    // Ajusta estado e disponibiliza para outros scripts
-    window.APP_USER = user;
-    usuarioLogado = true;
-    atualizarEstadoLogin();
-    // após confirmar usuário, carregamos favoritos do servidor
-    await loadFavoritesFromServer();
-    return user;
-  } catch (err) {
-    console.error('Erro ao verificar usuário no servidor:', err);
+  } catch (error) {
     usuarioLogado = false;
-    atualizarEstadoLogin();
-    return null;
   }
-}
-
-
-// Busca favoritos do servidor para o usuário autenticado
-async function loadFavoritesFromServer() {
-  try {
-    const res = await fetch('/user/favorites', { credentials: 'same-origin' });
-    if (!res.ok) {
-      favoritos = [];
-      localStorage.removeItem('favoriteNews');
-      return [];
+  atualizarEstadoLogin();
+  // Se o usuário estava deslogado no momento em que a NotificationSystem foi inicializada,
+  // precisamos acionar a sincronização com o backend agora que sabemos que está logado.
+  if (usuarioLogado) {
+    try {
+      // buscar notificações do servidor
+      if (typeof notificationSystem !== 'undefined' && notificationSystem) {
+        await notificationSystem.fetchFromServer();
+        if (!notificationSystem._badgePoll) {
+          notificationSystem._badgePoll = setInterval(() => notificationSystem.pollUnreadCount(), 15000);
+        }
+      }
+    } catch (e) {
+      // silencioso
     }
-    const body = await res.json();
-    // body: { favorites: [newsObj,...] }
-    favoritos = (body.favorites || []).map((n) => ({ id: n.id, title: n.title }));
-    // store minimal info in localStorage as fallback for offline
-    localStorage.setItem('favoriteNews', JSON.stringify(favoritos));
-    return favoritos;
-  } catch (err) {
-    console.error('Erro ao carregar favoritos do servidor:', err);
-    return [];
-  }
-}
-
-
-// Toggle favorito no servidor (adiciona ou remove)
-async function toggleFavoriteServer(news) {
-  try {
-    // send full news object as fallback so server can create DB record when necessary
-    const payload = (typeof news === 'object') ? news : { news_id: news };
-    const res = await fetch('/user/favorites', {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      console.error('Falha ao alternar favorito', await res.text());
-      return null;
+  } else {
+    // se deslogou, pare o polling
+    if (typeof notificationSystem !== 'undefined' && notificationSystem && notificationSystem._badgePoll) {
+      clearInterval(notificationSystem._badgePoll);
+      notificationSystem._badgePoll = null;
     }
-    const body = await res.json();
-    const returnedNewsId = body.news_id;
-    // atualiza lista local: se foi removido, filtra; se adicionado, adiciona
-    if (res.status === 200) {
-      // removed
-      favoritos = favoritos.filter((f) => f.id !== returnedNewsId);
-    } else if (res.status === 201) {
-      // added
-      // find news in data by id if present, otherwise use payload
-      const newsItem = data.find((d) => d.id === returnedNewsId) || (typeof news === 'object' ? news : null);
-      if (newsItem) favoritos.push({ id: returnedNewsId, title: newsItem.title || 'Sem título' });
-      else favoritos.push({ id: returnedNewsId, title: 'Sem título' });
-    }
-    localStorage.setItem('favoriteNews', JSON.stringify(favoritos));
-    return body;
-  } catch (err) {
-    console.error('Erro ao alternar favorito no servidor:', err);
-    return null;
   }
 }
 
@@ -828,21 +747,21 @@ function render(tab, query = "") {
   let items;
 
   if (tab === "pessoal") {
-    // map stored favorites to the full news objects when possible
-    items = favoritos.map(f => data.find(d => String(d.id) === String(f.id)) || f);
+    items = [...favoritos];
   } else if (tab === "geral") {
     items = [...data];
   } else if (tab === "vagas") {
-    items = data.filter((item) => (item.tags || []).includes("VAGA"));
+    // tags in the JSON are uppercase (e.g. "VAGA"); perform case-insensitive match
+    items = data.filter((item) => (item.tags || []).some(t => t && t.toString().toUpperCase() === 'VAGA'));
   }
 
   // filtro por busca
   if (query) {
-    items = items.filter(
-      (item) =>
-        item.title.toLowerCase().includes(query) ||
-        (item.content || '').toLowerCase().includes(query)
-    );
+    items = items.filter((item) => {
+      const title = (item.title || '').toString().toLowerCase();
+      const content = (item.content || '').toString().toLowerCase();
+      return title.includes(query) || content.includes(query);
+    });
   }
 
   // filtro por tags
@@ -856,13 +775,13 @@ function render(tab, query = "") {
     const card = document.createElement("div");
     card.className = "card";
 
-  const isFav = favoritos.some((f) => String(f.id) === String(item.id));
+    const isFav = favoritos.some((f) => f.title === item.title);
 
     let statusHTML = "";
     let timerHTML = "";
 
-      if (item.tags && item.tags.includes("VAGA")) {
-      if (item.status === "ACEITA") {
+    if (item.tags && item.tags.includes("vagas")) {
+      if (item.status === "aberta") {
         statusHTML = `<span class="status aberta">ABERTA</span>`;
         timerHTML = `<div class="timer" data-deadline="${item.end_date}"></div>`;
       } else {
@@ -885,32 +804,26 @@ function render(tab, query = "") {
           <h3>${item.title} ${statusHTML} ${tagsHTML}</h3>
           ${timerHTML}
         </div>
-        <p>${truncate(item.content, 150)}</p>
-        ${(() => {
-          // If the item exists in DB (has an id), link to internal detail page
-          if (item.id !== undefined && item.id !== null) {
-            return `<a href="/noticia?id=${encodeURIComponent(item.id)}">Saiba mais...</a>`;
-          }
-          // Otherwise fall back to external link (if provided)
-          if (item.link) {
-            const isAbsolute = item.link.startsWith('http://') || item.link.startsWith('https://');
-            const attrs = isAbsolute ? ' target="_blank"' : '';
-            return `<a href="${item.link}"${attrs}>Saiba mais...</a>`;
-          }
-          return `<span class="no-link">Saiba mais...</span>`;
-        })()}
+        <p>${item.content}</p> <a href="${item.link}">Saiba mais...</a>
       </div>
     `;
 
-    card.querySelector(".favorite").addEventListener("click", async () => {
+    card.querySelector(".favorite").addEventListener("click", () => {
       if (!usuarioLogado) {
         mostrarModalLogin();
         return;
       }
 
-      // usa endpoint do servidor para alternar favorito
-      const res = await toggleFavoriteServer(item.id);
-      // re-renderiza para atualizar estado visual
+      if (isFav) {
+        favoritos = favoritos.filter((f) => f.title !== item.title);
+      } else {
+        favoritos.push(item);
+      }
+      try {
+        localStorage.setItem('favoritos', JSON.stringify(favoritos));
+      } catch (e) {
+        // ignore localStorage errors
+      }
       render(tab, searchBar.value.toLowerCase());
     });
 
@@ -962,14 +875,6 @@ function toggleMenu() {
     : "";
 }
 
-// Inicializar a aplicação: garantir que carregamos o estado de login/favoritos
-// antes de buscar e renderizar as notícias, assim as estrelinhas já aparecem ativadas.
-async function initApp() {
-  // garante que o estado de login/favoritos é carregado primeiro
-  await verificarLogin();
-  // depois carrega notícias (render será chamado no final de loadNews)
-  await loadNews();
-}
-
-// Inicializa
-initApp();
+// Inicializar
+loadNews();
+checkLoginStatus();

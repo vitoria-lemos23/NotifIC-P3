@@ -1,21 +1,19 @@
-// Espera o HTML ser totalmente carregado
-document.addEventListener("DOMContentLoaded", async function() {
+// Painel de pedidos pendentes (admin)
+// Usa cookie HttpOnly para autenticação; não tenta ler token via JS.
 
-    // --- Pegar os elementos do HTML ---
+document.addEventListener("DOMContentLoaded", function() {
     const container = document.getElementById("pedidos-container");
     const modalOverlay = document.getElementById("modal-overlay");
     const modalCloseBtn = document.querySelector(".modal-close-btn");
 
-    // --- Variável para guardar os dados ---
-    let dadosDosPedidos = []; 
+    let dadosDosPedidos = [];
 
-    // --- Funções do Modal ---
     function abrirModal(item) {
         document.getElementById("modal-title").textContent = item.title;
-        document.getElementById("modal-img").src = item.img;
-        document.getElementById("modal-requester").textContent = item.requester;
-        document.getElementById("modal-date").textContent = item.date;
-        document.getElementById("modal-desc").textContent = item.full_description;
+        document.getElementById("modal-img").src = item.img || '/static/img/notific.svg';
+        document.getElementById("modal-requester").textContent = item.author_username || 'Desconhecido';
+        document.getElementById("modal-date").textContent = item.created_at ? new Date(item.created_at).toLocaleString() : '—';
+        document.getElementById("modal-desc").textContent = item.content || '(sem descrição)';
         modalOverlay.classList.add("active");
     }
 
@@ -23,20 +21,17 @@ document.addEventListener("DOMContentLoaded", async function() {
         modalOverlay.classList.remove("active");
     }
 
-    // --- Função para desenhar os cards na tela ---
     function renderizarPedidos() {
-        container.innerHTML = ""; // Limpa o container
-        
+        container.innerHTML = '';
         dadosDosPedidos.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "pedido-card";
-            card.dataset.id = item.id; // Guarda o ID no card
-
+            const card = document.createElement('div');
+            card.className = 'pedido-card';
+            card.dataset.id = item.id;
             card.innerHTML = `
-                <img src="${item.img}" alt="Imagem para ${item.title}" class="pedido-imagem">
+                <img src="${item.img || '/static/img/notific.svg'}" alt="Imagem para ${item.title}" class="pedido-imagem">
                 <div class="pedido-conteudo">
-                    <h3 class="pedido-titulo">${item.requester}</h3>
-                    <p class="pedido-info"><strong>Data:</strong> ${item.date}</p>
+                    <h3 class="pedido-titulo">${item.author_username || 'Desconhecido'}</h3>
+                    <p class="pedido-info"><strong>Data:</strong> ${item.created_at ? new Date(item.created_at).toLocaleString() : '—'}</p>
                     <p class="pedido-info"><strong>Item:</strong> ${item.title}</p>
                     <div class="pedido-acoes">
                         <button class="btn-detalhes">Ver Detalhes</button>
@@ -49,59 +44,48 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // --- Função para Carregar os Dados do JSON ---
     async function carregarDados() {
         try {
-            // Caminho para o seu JSON, relativo ao ARQUIVO HTML
-            const response = await fetch("../json/controle.json");
-            
-            if (!response.ok) {
-                throw new Error(`Erro HTTP! Status: ${response.status}`);
-            }
-            
-            dadosDosPedidos = await response.json(); 
-            renderizarPedidos(); // Desenha os cards na tela
-
-        } catch (error) {
-            console.error("Não foi possível carregar os pedidos:", error);
-            container.innerHTML = "<p style='color: red;'>Erro ao carregar dados. Verifique o console (F12) para mais detalhes.</p>";
+            const response = await fetch('/admin/news/pending', { credentials: 'same-origin' });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            dadosDosPedidos = Array.isArray(data) ? data : [];
+            renderizarPedidos();
+        } catch (e) {
+            console.error('Falha ao carregar pedidos pendentes', e);
+            container.innerHTML = "<p style='color:red;'>Erro ao carregar pedidos pendentes.</p>";
         }
     }
 
-    // --- Event Listeners (Ouvintes de Clique) ---
-    
-    // Para fechar o modal
-    modalCloseBtn.addEventListener("click", fecharModal);
-    modalOverlay.addEventListener("click", function(event) {
-        if (event.target === modalOverlay) {
-            fecharModal();
-        }
+    container.addEventListener('click', function(e) {
+        const target = e.target;
+        const card = target.closest('.pedido-card');
+        if (!card) return;
+        const id = parseInt(card.dataset.id, 10);
+        const item = dadosDosPedidos.find(p => p.id === id);
+        if (target.classList.contains('btn-detalhes')) abrirModal(item);
+        if (target.classList.contains('btn-aceitar')) updateNewsStatus(id, 'ACEITA', card);
+        if (target.classList.contains('btn-rejeitar')) updateNewsStatus(id, 'REJEITADA', card);
     });
 
-    // Para os botões "Detalhes", "Aceitar", "Rejeitar"
-    container.addEventListener("click", function(event) {
-        const target = event.target; 
-        const card = target.closest(".pedido-card");
-        if (!card) return; // Sai se o clique não foi em um card
-
-        const itemId = parseInt(card.dataset.id);
-        const item = dadosDosPedidos.find(p => p.id === itemId);
-
-        if (target.classList.contains("btn-detalhes")) {
-            abrirModal(item);
+    async function updateNewsStatus(id, status, card) {
+        const endpoint = status === 'ACEITA' ? `/admin/news/${id}/approve` : `/admin/news/${id}/reject`;
+        try {
+            const resp = await fetch(endpoint, { method: 'POST', credentials: 'same-origin' });
+            if (resp.ok) {
+                card.remove();
+            } else {
+                const err = await resp.json().catch(()=>({error:'Erro desconhecido'}));
+                alert(`Falha: ${err.error || 'Não foi possível atualizar.'}`);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Erro de rede ao atualizar status');
         }
-        
-        if (target.classList.contains("btn-aceitar")) {
-            alert("Pedido " + itemId + " aceito!");
-            card.style.opacity = '0.5'; 
-        }
+    }
 
-        if (target.classList.contains("btn-rejeitar")) {
-            alert("Pedido " + itemId + " rejeitado!");
-            card.style.opacity = '0.5'; 
-        }
-    });
+    modalCloseBtn.addEventListener('click', fecharModal);
+    modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) fecharModal(); });
 
-    // --- Inicia o processo ---
     carregarDados();
 });

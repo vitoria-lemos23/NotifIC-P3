@@ -63,11 +63,8 @@
     <button type="submit">Enviar Anúncio</button>
   </div>
 
-  <!-- Biblioteca para Markdown -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-  <!-- Biblioteca para Markdown -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Markdown parser: using local vendor copy to avoid CDN tracking prevention blocks -->
+  <script src="{{ url_for('static', filename='javascript/vendor/marked.min.js') }}"></script>
 
   <!-- Script externo -->
   <script src="{{ url_for('static', filename='javascript/preview.js') }}"></script>

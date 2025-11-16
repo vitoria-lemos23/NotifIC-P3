@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gerenciar Notícias - Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="{{ url_for('home_routes.home') }}"><img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo" class="logo-ic"></a>
+    <h1 class="navbar-title">Gerenciar Notícias</h1>
+    <div class="navbar-actions">
+      <a href="{{ url_for('admin_panel.list_pending_news_view') }}" class="nav-back-link">Voltar</a>
+    </div>
+  </nav>
+
+  <main>
+    <div id="manage-container">
+      <h2>Todas as Notícias</h2>
+      <table id="news-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Status</th>
+            <th>Tags</th>
+            <th class="actions-cell">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="news-tbody">
+          <!-- As linhas serão preenchidas via JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="{{ url_for('static', filename='javascript/admin_manage.js') }}" defer></script>
+</body>
+</html>

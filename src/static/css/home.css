@@ -106,7 +106,7 @@ header #searchBar:focus {
 }
 
 #headerUsername {
-  display: none; /* visível somente quando usuário logado */
+  display: block;
   color: #ffffff;
   font-weight: 600;
 }
@@ -140,6 +140,39 @@ header #searchBar:focus {
 #profileButton:not(.logged) .profile-icon {
   display: block;
 }
+
+.header-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.header-button:first-of-type {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.header-button:first-of-type:hover {
+  background-color: #bbdefb;
+}
+
+.header-button:last-of-type {
+  background-color: #304b8a;
+  color: #ffffff;
+  border: 1px solid #304b8a;
+}
+
+.header-button:last-of-type:hover {
+  background-color: #223a70;
+}
+
 
 /* NOTIFICAÇÕES */
 .header-notifications-wrapper {

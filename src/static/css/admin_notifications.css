@@ -1,0 +1,13 @@
+.navbar-actions{display:flex;align-items:center;gap:12px}
+.notif-wrapper{position:relative}
+.notif-btn{background:#fff;border:1px solid #ddd;border-radius:6px;padding:6px 10px;cursor:pointer}
+#notificationBadge{display:inline-block;min-width:16px;padding:0 6px;background:#e11d48;color:#fff;border-radius:10px;margin-left:6px;font-size:12px;text-align:center}
+.notif-dropdown{position:absolute;right:0;top:36px;width:320px;max-height:60vh;overflow:auto;background:#fff;border:1px solid #ddd;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.12);display:none;z-index:1000}
+.notif-dropdown.active{display:block}
+.notif-actions{display:flex;gap:8px;padding:8px;border-bottom:1px solid #eee}
+.notif-list{padding:8px}
+.notification-item{padding:8px;border-bottom:1px solid #f0f0f0}
+.notification-item.unread{background:#fff7f7}
+.notification-title{font-weight:600;margin-bottom:4px}
+.notification-message{font-size:14px;color:#333}
+.notification-time{font-size:12px;color:#666;margin-top:4px}

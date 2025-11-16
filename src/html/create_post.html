@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Criar postagem</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/create_post.css') }}" />
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="{{ url_for('home_routes.home') }}">
+            <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="logo do notific" class="logo-ic">
+        </a>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="topbar">
+                <a href="{{ url_for('admin_panel.list_pending_news_view') }}" style="text-decoration:none;color:#18335a">← Voltar</a>
+                <h1 class="create-title">Criar postagem</h1>
+            </div>
+
+            <div class="control-row">
+                <label for="community">Selecionar tipo</label>
+                <div id="categoryList" class="category-list" role="list">
+                    {% for c in categories %}
+                    <button type="button" class="category-btn" data-value="{{ c }}">{{ c }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="text-content">Texto</div>
+                <div class="tab" data-tab="images-content">Imagens</div>
+                <div class="tab" data-tab="link-content">Link</div>
+            </div>
+
+            <div id="text-content" class="tab-content active">
+                <div class="field">
+                    <input id="title" type="text" placeholder="Título*" maxlength="300" />
+                </div>
+                <div class="field">
+                    <textarea id="content" placeholder="Corpo do texto (opcional)"></textarea>
+                </div>
+                <div class="field">
+                    <label>
+                        <input type="checkbox" id="featured" />
+                        Notícia em destaque
+                    </label>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label for="start-date">Data / Hora de início</label>
+                        <input id="start-date" type="datetime-local">
+                    </div>
+                    <div>
+                        <label for="end-date">Data / Hora de término</label>
+                        <input id="end-date" type="datetime-local">
+                    </div>
+                </div>
+            </div>
+
+            <div id="images-content" class="tab-content">
+                <div class="form-group">
+                    <label for="carousel-image">Imagem do carrossel</label>
+                    <input type="file" id="carousel-image" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="feed-icon">Ícone do feed</label>
+                    <input type="file" id="feed-icon" accept="image/*">
+                </div>
+            </div>
+
+            <div id="link-content" class="tab-content">
+                <div class="field">
+                    <input id="link-title" type="text" placeholder="Título*" maxlength="300" />
+                </div>
+                <div class="field">
+                    <label for="link-url">Link URL *</label>
+                    <input id="link-url" type="url" placeholder="Link URL *" />
+                </div>
+            </div>
+
+            <div id="previewContainer">
+                <h3 style="margin-top:18px">Pré-visualização</h3>
+                <div id="preview" class="preview"> </div>
+            </div>
+
+            
+
+            <div class="actions">
+                <button id="postBtn" class="btn btn-primary">Postar</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    const target = document.getElementById(tab.dataset.tab);
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    if (target) target.classList.add('active');
+                    // hide preview for images tab
+                    const previewContainer = document.getElementById('previewContainer');
+                    if (previewContainer) {
+                        if (tab.dataset.tab === 'images-content') previewContainer.style.display = 'none';
+                        else previewContainer.style.display = '';
+                    }
+                });
+            });
+
+            // category button toggle (multi-select)
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(btn => {
+                // initialize aria-pressed
+                btn.setAttribute('aria-pressed', 'false');
+                btn.addEventListener('click', () => {
+                    btn.classList.toggle('active');
+                    btn.setAttribute('aria-pressed', btn.classList.contains('active'));
+                });
+            });
+
+            const POST_URL = '/admin/create-post';
+            document.getElementById('postBtn').addEventListener('click', async () => {
+                // determine active tab first so we read the correct title field
+                const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'text-content';
+                const title = activeTab === 'link-content'
+                    ? document.getElementById('link-title').value.trim()
+                    : document.getElementById('title').value.trim();
+                const content = document.getElementById('content').value.trim();
+
+                // gather selected categories from buttons
+                const selected = Array.from(document.querySelectorAll('.category-btn.active')).map(b => b.dataset.value).filter(Boolean);
+                const featured = document.getElementById('featured').checked;
+
+                let linkUrl = null;
+
+                if (activeTab === 'link-content') {
+                    linkUrl = document.getElementById('link-url').value.trim();
+                    if (!title || !linkUrl) {
+                        alert('Título e Link são obrigatórios');
+                        return;
+                    }
+                } else {
+                    if (!title || !content) {
+                        alert('Título e corpo do texto são obrigatórios');
+                        return;
+                    }
+                }
+
+                // read scheduling fields (datetime-local) and convert to ISO
+                const startVal = document.getElementById('start-date')?.value || '';
+                const endVal = document.getElementById('end-date')?.value || '';
+                const startIso = startVal ? new Date(startVal).toISOString() : '';
+                const endIso = endVal ? new Date(endVal).toISOString() : '';
+
+                // Build FormData so backend (which expects form/files) receives fields
+                const formData = new FormData();
+                formData.append('title', title);
+                formData.append('content', activeTab === 'link-content' ? '' : content);
+                formData.append('tags', selected.join(','));
+                formData.append('featured', featured ? 'true' : 'false');
+                if (linkUrl) formData.append('link', linkUrl);
+                if (startIso) formData.append('start_date', startIso);
+                if (endIso) formData.append('end_date', endIso);
+
+                // include file inputs if present
+                const carousel = document.getElementById('carousel-image');
+                if (carousel && carousel.files && carousel.files[0]) formData.append('carousel_image', carousel.files[0]);
+                const feed = document.getElementById('feed-icon');
+                if (feed && feed.files && feed.files[0]) formData.append('feed_icon', feed.files[0]);
+
+                try {
+                    console.debug('Creating news — POST URL:', POST_URL);
+                    // log FormData entries for debugging
+                    for (const pair of formData.entries()) {
+                        console.debug('formData', pair[0], pair[1]);
+                    }
+                    const r = await fetch(POST_URL, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        body: formData
+                    });
+
+                    if (!r.ok) {
+                        const txt = await r.text();
+                        console.error('Publish failed', r.status, txt);
+                        alert('Falha ao publicar: ' + r.status + ' ' + txt);
+                        return;
+                    }
+
+                    const data = await r.json();
+                    console.info('Publish success', data);
+                    alert('Publicado com sucesso');
+                    window.location.href = '/admin/news/pending/view';
+                } catch (e) {
+                    alert('Erro de rede: ' + e.message);
+                }
+            });
+        });
+    </script>
+    <script src="{{ url_for('static', filename='javascript/vendor/marked.min.js') }}"></script>
+    <script>
+        // preview handler: render title + content using marked
+        (function(){
+            const preview = document.getElementById('preview');
+            if (!preview) return;
+            const contentEl = document.getElementById('content');
+            const titleEl = document.getElementById('title');
+            const linkTitleEl = document.getElementById('link-title');
+
+            function renderPreview(){
+                const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'text-content';
+                const title = activeTab === 'link-content' ? (linkTitleEl?.value || '') : (titleEl?.value || '');
+                const content = contentEl?.value || '';
+                let html = '';
+                if (title) html += `<h2>${escapeHtml(title)}</h2>`;
+                if (activeTab === 'link-content'){
+                    const url = document.getElementById('link-url')?.value || '';
+                    if (url) html += `<p><a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(url)}</a></p>`;
+                } else {
+                    html += marked.parse(content || '');
+                }
+                preview.innerHTML = html;
+            }
+
+            function escapeHtml(s){
+                return String(s).replace(/[&<>"']/g, function(m){
+                    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m];
+                });
+            }
+
+            [contentEl, titleEl, linkTitleEl, document.getElementById('link-url')].forEach(el=>{
+                if (el) el.addEventListener('input', renderPreview);
+            });
+            // also update preview on tab switch
+            document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=> setTimeout(renderPreview, 0)));
+            renderPreview();
+        })();
+    </script>
+</body>
+</html>
