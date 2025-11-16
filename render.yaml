@@ -1,4 +1,22 @@
-# Render manifest for NotifIC-P3 backend
+# Render manifest: Background Worker to run the RQ worker
+#
+# After pushing this file you still need to set secrets in the Render
+# Dashboard: add `REDIS_URL` and the `MAIL_*` vars as Environment Secrets
+# for both the Web Service and this Worker.
+
+services:
+  - type: worker
+    name: notific-rq-worker
+    env: python
+    region: oregon
+    branch: Deploy
+    plan: free
+    buildCommand: pip install -r src/backend/requirements.txt
+    startCommand: python -u src/backend/rq_worker.py
+    # Do NOT put secrets here. Configure them in the Render dashboard:
+    # - REDIS_URL
+    # - MAIL_USERNAME, MAIL_PASSWORD, MAIL_SERVER, MAIL_PORT, MAIL_USE_TLS
+    # - SECRET_KEY (if needed)# Render manifest for NotifIC-P3 backend
 # Edit `repo` and `branch` if necessary, and add secrets in the Render dashboard.
 
 services:
