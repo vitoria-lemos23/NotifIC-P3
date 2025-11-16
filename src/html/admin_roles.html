@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão de Cargos</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_roles.css') }}">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="{{ url_for('home_routes.home') }}">
+      <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-ic">
+    </a>
+    <h1 class="navbar-title">Gestão de Cargos</h1>
+    <a href="{{ url_for('home_routes.home') }}" class="nav-back-link">Voltar</a>
+  </nav>
+
+  <main class="conteudo-principal">
+    <h1 class="titulo-principal">Painel de Controle de Cargos</h1>
+
+    <section class="secao-gestao">
+      <h2 class="subtitulo-gestao">Pedidos Pendentes</h2>
+      <div id="lista-pedidos-container" class="lista-cards-container">
+        <p>Carregando pedidos...</p>
+      </div>
+    </section>
+
+    <section class="secao-gestao">
+      <h2 class="subtitulo-gestao">Moderadores Atuais</h2>
+      <div id="lista-mods-container" class="lista-cards-container">
+        <p>Carregando moderadores...</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="{{ url_for('static', filename='javascript/admin_roles.js') }}"></script>
+</body>
+
+</html>

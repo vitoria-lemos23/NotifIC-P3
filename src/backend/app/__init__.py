@@ -38,12 +38,13 @@ def create_app():
     from routes.news import news_routes
     from routes.notification import notification_routes
     from routes.admin_panel import admin_panel
-
+    from routes.admin_roles_panel import admin_roles_panel
+    
     app.register_blueprint(home_routes)
     app.register_blueprint(user_routes)
     app.register_blueprint(auth_routes)
     app.register_blueprint(news_routes)
     app.register_blueprint(notification_routes)
     app.register_blueprint(admin_panel)
-
+    app.register_blueprint(admin_roles_panel)
     return app
