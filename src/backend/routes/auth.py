@@ -77,6 +77,7 @@ def logout():
 def recuperar_senha():
     data = request.get_json()
     email = data.get('email')
+    current_app.logger.info('recuperar_senha called for email: %s', email)
     user = User.query.filter_by(email=email).first()
     if not user:
         return jsonify({'error': 'E-mail não encontrado'}), 404
@@ -111,9 +112,11 @@ def recuperar_senha():
 
     try:
         # Start background thread to send email so the request won't block the worker.
+        current_app.logger.info('Starting background thread to send recovery email for %s', email)
         app_obj = current_app._get_current_object()
         thr = Thread(target=_send_async_email, args=(app_obj, msg), daemon=True)
         thr.start()
+        current_app.logger.info('Background thread started (daemon=%s)', thr.daemon)
     except Exception:
         # If starting the thread fails, log and return a 502 so the client knows the send failed.
         current_app.logger.exception('Falha ao iniciar thread de envio de e-mail')
