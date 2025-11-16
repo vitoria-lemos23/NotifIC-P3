@@ -88,13 +88,25 @@ def recuperar_senha():
     token = jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256')
 
     # Monta e envia o e-mail
+    # Build a reset link that works in production. Prefer a configured frontend URL,
+    # otherwise fall back to the current request host (which will be the backend URL).
+    base_url = current_app.config.get('FRONTEND_URL') or request.host_url.rstrip('/')
+    reset_link = f"{base_url}/redefinir-senha?token={token}"
+
     msg = Message(
         subject='Recuperação de senha',
-        sender=current_app.config['MAIL_USERNAME'],
+        sender=current_app.config.get('MAIL_USERNAME'),
         recipients=[email],
-        body=f'Use este link para redefinir sua senha: http://localhost:5000/redefinir-senha?token={token}'
+        body=f'Use este link para redefinir sua senha: {reset_link}'
     )
-    mail.send(msg)
+
+    try:
+        mail.send(msg)
+    except Exception as e:
+        # Log the exception for debugging (avoiding leaking secrets to the client)
+        current_app.logger.exception('Falha ao enviar e-mail de recuperação')
+        return jsonify({'error': 'Falha ao enviar e-mail de recuperação'}), 502
+
     return jsonify({'message': 'E-mail de recuperação enviado'}), 200
 
 @auth_routes.route('/redefinir-senha', methods=['GET', 'POST'])
