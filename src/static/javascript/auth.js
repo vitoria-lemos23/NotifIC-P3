@@ -236,20 +236,25 @@ function initRecovery() {
 }
 
 function initReset() {
-    // If you have a reset page with token param and a form, implement hookup here.
     const resetForm = document.getElementById('resetForm');
     if (!resetForm) return;
 
     resetForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         const token = document.getElementById('token').value;
-        const nova_senha = document.getElementById('nova_senha').value;
+        const newPassword = document.getElementById('nova_senha').value;
+        const confirmPassword = document.getElementById('confirm_senha').value;
         const button = this.querySelector('button[type="submit"]');
+
+        if (newPassword !== confirmPassword) {
+            UIManager.showMessage('As senhas não coincidem!', 'error');
+            return;
+        }
 
         button.setAttribute('data-original-text', button.innerHTML);
         UIManager.setLoading(button, true);
 
-        const result = await resetPassword(token, nova_senha);
+        const result = await resetPassword(token, newPassword);
 
         UIManager.setLoading(button, false);
         if (result.success) {
