@@ -8,6 +8,7 @@ from models.userModel import User
 from app import db, mail
 from flask_mail import Message
 from flask import render_template
+from threading import Thread
 
 auth_routes = Blueprint('auth_routes', __name__)
 
@@ -100,14 +101,25 @@ def recuperar_senha():
         body=f'Use este link para redefinir sua senha: {reset_link}'
     )
 
+    def _send_async_email(app, message):
+        try:
+            with app.app_context():
+                mail.send(message)
+        except Exception:
+            # Log exceptions that happen inside the background thread
+            current_app.logger.exception('Falha ao enviar e-mail de recuperação (thread)')
+
     try:
-        mail.send(msg)
-    except Exception as e:
-        # Log the exception for debugging (avoiding leaking secrets to the client)
-        current_app.logger.exception('Falha ao enviar e-mail de recuperação')
+        # Start background thread to send email so the request won't block the worker.
+        app_obj = current_app._get_current_object()
+        thr = Thread(target=_send_async_email, args=(app_obj, msg), daemon=True)
+        thr.start()
+    except Exception:
+        # If starting the thread fails, log and return a 502 so the client knows the send failed.
+        current_app.logger.exception('Falha ao iniciar thread de envio de e-mail')
         return jsonify({'error': 'Falha ao enviar e-mail de recuperação'}), 502
 
-    return jsonify({'message': 'E-mail de recuperação enviado'}), 200
+    return jsonify({'message': 'E-mail de recuperação enfileirado para envio'}), 200
 
 @auth_routes.route('/redefinir-senha', methods=['GET', 'POST'])
 def redefinir_senha():
