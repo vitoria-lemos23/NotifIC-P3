@@ -8,12 +8,15 @@ set -euo pipefail
 
 echo "Starting render build helper..."
 
-if [ -f requirements.txt ]; then
-  REQ=requirements.txt
-elif [ -f src/backend/requirements.txt ]; then
-  REQ=src/backend/requirements.txt
-elif [ -f backend/requirements.txt ]; then
-  REQ=backend/requirements.txt
+# Resolve the directory containing this script (repo root when script is in repo root)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [ -f "$SCRIPT_DIR/requirements.txt" ]; then
+  REQ="$SCRIPT_DIR/requirements.txt"
+elif [ -f "$SCRIPT_DIR/src/backend/requirements.txt" ]; then
+  REQ="$SCRIPT_DIR/src/backend/requirements.txt"
+elif [ -f "$SCRIPT_DIR/backend/requirements.txt" ]; then
+  REQ="$SCRIPT_DIR/backend/requirements.txt"
 else
   echo "ERROR: No requirements file found in repo root, src/backend or backend" >&2
   exit 1
