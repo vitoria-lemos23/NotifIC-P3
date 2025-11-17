@@ -1,0 +1,248 @@
+/* === ESTILO GERAL === */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #222;
+}
+
+/* === NAVBAR === */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #304b8a;
+  color: #fff;
+  padding: 10px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+.logo-ic {
+  height: 40px;
+}
+
+.navbar-title {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #fff;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-back-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 12px;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+
+.nav-back-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* === CONTEÚDO PRINCIPAL === */
+.conteudo-principal {
+  margin-top: 100px;
+  padding: 20px 40px;
+}
+
+.titulo-principal {
+  text-align: center;
+  color: #304b8a;
+  font-size: 2.2rem;
+  margin-bottom: 40px;
+}
+
+/* === CARD DE USUÁRIO (Reutilizado) === */
+.pedido-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.pedido-conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pedido-titulo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #304b8a;
+}
+
+/* === BOTÕES (Reutilizado) === */
+.pedido-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pedido-acoes button {
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+  transition: 0.2s;
+}
+
+.btn-aceitar {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-rejeitar {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-rejeitar:hover,
+.btn-aceitar:hover {
+  opacity: 0.85;
+}
+
+/* === NOVOS ESTILOS PARA A PÁGINA DE GESTÃO === */
+
+.secao-gestao {
+  max-width: 1200px;
+  margin: 0 auto 40px auto;
+}
+
+.subtitulo-gestao {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+/* Container para os cards em grid */
+.lista-cards-container {
+  display: grid;
+  /* Layout em grid responsivo */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Ajustes nos cards para o modo de lista */
+.lista-cards-container .pedido-card {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  text-align: left;
+}
+
+.lista-cards-container .pedido-acoes {
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+/* === ADIÇÕES PARA A BUSCA === */
+
+.secao-busca {
+  max-width: 800px;
+  margin: 0 auto 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.busca-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+#campoBusca {
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 70%;
+  outline-color: #304b8a;
+}
+
+#btnBuscar {
+  padding: 10px 15px;
+  font-size: 1rem;
+  background-color: #304b8a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+#btnBuscar:hover {
+  background-color: #25386b;
+}
+
+/* Card de Resultado da Busca */
+.resultado-usuario {
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 25px;
+  max-width: 600px;
+  margin: 20px auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.oculto {
+  display: none;
+}
+
+/* Ações do Card de Busca */
+.titulo-acoes {
+    width: 100%;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #555;
+    margin: 10px 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#acoesBusca {
+    justify-content: center;
+}
+
+#acoesBusca button {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+}
+
+.btn-acao-admin { background-color: #dc3545; color: white; } /* Vermelho */
+.btn-acao-mod { background-color: #007bff; color: white; } /* Azul */
+.btn-acao-user { background-color: #6c757d; color: white; } /* Cinza */
+.btn-acao-pendente { background-color: #ffc107; color: #333; } /* Amarelo */
+
+/* Separa as seções de Busca e Lista */
+.secao-listas {
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 2px solid #ddd;
+}
+

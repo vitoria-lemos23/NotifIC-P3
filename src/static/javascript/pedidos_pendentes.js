@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     function abrirModal(item) {
         if (!item) return;
         document.getElementById("modal-title").textContent = item.title || 'Detalhes';
-        document.getElementById("modal-img").src = item.imagem_banner || '/static/img/notific.svg';
+        document.getElementById("modal-img").src = item.imagem_banner || '/static/img/placeholder_banner.png';
         // requester: show name with link to profile if author_id present
         const requesterEl = document.getElementById("modal-requester");
         requesterEl.innerHTML = '';
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             card.className = 'pedido-card compact-card';
             card.dataset.id = item.id;
 
-            const imgSrc = item.imagem_banner || '/static/img/notific.svg';
+            const imgSrc = item.imagem_banner || '/static/img/placeholder_icon.png';
                         const authorBase = item.author_username || item.author || 'Desconhecido';
                         const authorEsc = escapeHTML(authorBase);
                         const author = item.author_id ? `${authorEsc} [${item.author_id}]` : authorEsc;

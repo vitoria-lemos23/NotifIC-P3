@@ -37,6 +37,106 @@ document.getElementById("profileButton").addEventListener("click", function (eve
     toggleMenu();
 });
 
+// Tornar o botão de notificações funcional no perfil (fallback robusto)
+function bindProfileNotifications() {
+    try {
+        const nb = document.getElementById('notificationsButton');
+        const dd = document.getElementById('notificationsDropdown');
+        if (!nb) return;
+
+        function onNotifClick(e) {
+            console.log('[perfil.js] notificationsButton clicked');
+            e.stopPropagation();
+            try {
+                if (typeof notificationSystem !== 'undefined' && notificationSystem && typeof notificationSystem.toggleDropdown === 'function') {
+                    notificationSystem.toggleDropdown();
+                    return;
+                }
+            } catch (err) {
+                console.error('notificationSystem error:', err);
+            }
+            // fallback: toggle class on dropdown
+            if (dd) dd.classList.toggle('active');
+        }
+
+        nb.removeEventListener('click', onNotifClick);
+        nb.addEventListener('click', onNotifClick);
+
+        // close dropdown on outside click (fallback)
+        document.addEventListener('click', function (ev) {
+            const dropdown = document.getElementById('notificationsDropdown');
+            if (dropdown && dropdown.classList.contains('active')) {
+                if (ev.target.closest && (ev.target.closest('#notificationsDropdown') || ev.target.closest('#notificationsButton'))) return;
+                dropdown.classList.remove('active');
+            }
+        });
+    } catch (e) {
+        console.error('bindProfileNotifications error', e);
+    }
+}
+
+// Bind notifications on DOMContentLoaded (perfil.js runs early)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindProfileNotifications);
+} else {
+    bindProfileNotifications();
+}
+
+// Sincroniza o badge de notificações a partir do localStorage
+function syncNotificationsFromStorage() {
+    try {
+        // Prefere usar a instância global se disponível
+        if (typeof notificationSystem !== 'undefined' && notificationSystem) {
+            notificationSystem.renderNotifications && notificationSystem.renderNotifications();
+            notificationSystem.updateBadge && notificationSystem.updateBadge();
+            return;
+        }
+
+        const raw = localStorage.getItem('userNotifications');
+        const list = raw ? JSON.parse(raw) : [];
+        const unread = Array.isArray(list) ? list.filter(n => !n.read).length : 0;
+        const badge = document.getElementById('notificationBadge');
+        if (badge) badge.textContent = unread > 99 ? '99+' : String(unread);
+    } catch (e) {
+        console.error('Erro ao sincronizar notificações do storage:', e);
+    }
+}
+
+// Atualiza badge quando outro script modificar as notificações
+window.addEventListener('notifications:updated', function (ev) {
+    try {
+        // ev.detail é a lista atualizada
+        const list = ev && ev.detail ? ev.detail : JSON.parse(localStorage.getItem('userNotifications') || '[]');
+        const unread = Array.isArray(list) ? list.filter(n => !n.read).length : 0;
+        const badge = document.getElementById('notificationBadge');
+        if (badge) badge.textContent = unread > 99 ? '99+' : String(unread);
+    } catch (e) {
+        console.error('notifications:updated handler error', e);
+    }
+});
+
+// Escuta alterações de localStorage vindas de outras abas/janelas
+window.addEventListener('storage', function (e) {
+    if (!e || e.key !== 'userNotifications') return;
+    syncNotificationsFromStorage();
+});
+
+// Sincroniza no carregamento inicial
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncNotificationsFromStorage);
+} else {
+    syncNotificationsFromStorage();
+}
+
+// Se a instância global existir e o usuário estiver autenticado, pede sincronização direta
+try {
+    if (typeof window !== 'undefined' && window.APP_USER && window.notificationSystem && typeof window.notificationSystem.syncWithServer === 'function') {
+        window.notificationSystem.syncWithServer();
+    }
+} catch (e) {
+    // ignore
+}
+
 // Fecha o menu ao pressionar ESC
 document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {

@@ -15,7 +15,9 @@
       <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-ic">
     </a>
     <h1 class="navbar-title">Administrador</h1>
-    <a href="{{ url_for('admin_panel.list_pending_news_view') }}" class="nav-back-link">Controle</a>
+    {%- if usuario and usuario.role == 'ADMIN' -%}
+    <a href="{{ url_for('admin_roles_panel.admin_roles_view') }}" class="nav-back-link">Controle de Cargos</a>
+    {%- endif -%}
   </nav>
 
   <main>

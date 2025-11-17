@@ -169,6 +169,21 @@ header #searchBar:focus {
   background: #f8f9fa;
 }
 
+/* Estilo específico para o botão de notificações: usa o mesmo azul do header */
+.header-notifications-wrapper .header-icon-btn {
+  background: #304b8a; /* azul do header */
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 6px 14px rgba(48,75,138,0.12);
+}
+.header-notifications-wrapper .header-icon-btn .notifications-icon {
+  color: #ffffff;
+}
+.header-notifications-wrapper .header-icon-btn:hover {
+  background: #243b66;
+  border-color: #ffffff;
+}
+
 .notifications-icon {
   font-size: 20px;
 }
@@ -787,6 +802,25 @@ header {
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   position: relative;
 }
+/* Admin action buttons overlay (top-right of card) */
+.card-admin-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+  z-index: 5;
+}
+.card-admin-actions button {
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.card-admin-actions button:hover { background: rgba(0,0,0,0.8); }
 .card img {
   width: 80px;
   height: 80px;
@@ -901,22 +935,52 @@ footer a {
 
 /* Responsividade */
 @media (max-width: 768px) {
-  /* Ajusta o header para mobile */
+  /* Ajusta o header para mobile: coloca logo + ícones na primeira linha
+     e a busca numa segunda linha inteira. Usa colunas automáticas para
+     evitar que o ícone quebre linha quando o logo é largo. */
   header {
-    grid-template-columns: 1fr 1fr; /* Logo | Perfil */
+    grid-template-columns: auto auto 1fr;
     height: auto; /* Altura automática */
-    padding: 10px 15px;
+    padding: 10px 12px;
+    align-items: center;
   }
+
+  /* Logo e ícones menores para caber na mesma linha */
+  #logo-img {
+    height: 32px;
+  }
+
+  /* Garante que a barra de busca ocupe a segunda linha por completo */
   .header-search-wrapper {
-    /* Move a busca para a próxima linha */
     grid-column: 1 / -1; /* Ocupa todas as colunas */
     order: 3; /* Joga para baixo */
     max-width: none;
     justify-self: stretch;
+    width: 100%;
   }
+
+  /* Ajustes para evitar quebra/overflow dos ícones */
+  .header-notifications-wrapper {
+    margin-right: 4px;
+    justify-self: center;
+  }
+
   #profileButton {
     /* Mantém o perfil no canto */
     justify-self: end;
+    width: 40px;
+    height: 40px;
+  }
+
+  .header-user-area {
+    justify-self: end;
+  }
+
+  /* Reduz o tamanho dos botões para evitar que ocupem muita largura */
+  .header-icon-btn {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
   }
 
   /* Ajusta o carrossel */

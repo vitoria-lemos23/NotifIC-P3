@@ -27,14 +27,46 @@
         }
       })();
     </script>
-    <!-- Header principal -->
-    <header class="main-header">
-      <a href="{{ url_for('home_routes.home') }}">
-        <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Ícone do notifIC" class="logo-IC" />
-      </a>
+    <!-- Header principal (mesma estrutura do home para manter layout) -->
+    <header>
+      <div class="header-logo">
+        <a href="{{ url_for('home_routes.home') }}">
+          <img id="logo-img" src="{{ url_for('static', filename='img/notific.svg') }}" alt="Ícone do notifIC" />
+        </a>
+      </div>
 
-      <div id="profileButton" aria-label="Abrir menu lateral">
-        <img src="https://i.pravatar.cc/150" alt="Foto do perfil" />
+      <!-- Espaço central (busca no home). Mantemos a wrapper vazia para o grid funcionar -->
+      <div class="header-search-wrapper"></div>
+
+      <!-- Botão de Notificações (posicionado à esquerda do perfil) -->
+      <div class="header-notifications-wrapper">
+        <button id="notificationsButton" class="header-icon-btn" title="Notificações"
+          onclick="(function(e){console.log('notificationsButton clicked'); e.stopPropagation(); try{ if(typeof notificationSystem!=='undefined' && notificationSystem && typeof notificationSystem.toggleDropdown==='function'){ notificationSystem.toggleDropdown(); } else { const dd=document.getElementById('notificationsDropdown'); if(dd) dd.classList.toggle('active'); } }catch(err){console.error(err);} })(event)">
+          <span class="notifications-icon">🔔</span>
+          <span id="notificationBadge" class="notification-badge">0</span>
+        </button>
+        <div id="notificationsDropdown" class="notifications-dropdown">
+          <div class="notifications-header">
+            <h3>Notificações</h3>
+            <div class="notification-actions">
+              <button id="markAllRead">Marcar como lidas</button>
+              <button id="clearAllNotifications">Limpar todas</button>
+            </div>
+          </div>
+          <div id="notificationsList" class="notifications-list">
+            <!-- Notificações serão inseridas aqui via JavaScript -->
+          </div>
+          <div class="notifications-footer">
+            <a href="#" class="view-all-link">Ver todas</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-user-area">
+        <div id="headerUsername" aria-live="polite"></div>
+        <div id="profileButton" aria-label="Abrir menu lateral">
+          <img src="https://i.pravatar.cc/150" alt="Foto do perfil" />
+        </div>
       </div>
     </header>
 
@@ -145,26 +177,75 @@
 
     <script src="{{ url_for('static', filename='javascript/perfil.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/perfil_page.js') }}"></script>
+    <!-- Reutiliza o sistema de notificações implementado em home.js -->
+    <script src="{{ url_for('static', filename='javascript/home.js') }}" defer></script>
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const logoutEls = document.querySelectorAll('.logout-link');
-        logoutEls.forEach(function (el) {
-          el.addEventListener('click', async function (e) {
-              e.preventDefault();
-              try {
-                await fetch("{{ url_for('auth_routes.logout') }}", {
-                  method: 'POST',
-                  credentials: 'same-origin',
-                  headers: { 'Content-Type': 'application/json' },
-                });
-              } catch (err) {
-                // ignore network errors
-              }
-              // Redirect to home page after logout
-              window.location = "{{ url_for('home_routes.home') }}";
-            });
-        });
-      });
+      (function initProfilePage() {
+        function bindHandlers() {
+          console.log('[profile] bindHandlers()');
+          // Logout links
+          const logoutEls = document.querySelectorAll('.logout-link');
+          logoutEls.forEach(function (el) {
+            el.removeEventListener('click', logoutHandler);
+            el.addEventListener('click', logoutHandler);
+          });
+
+          // Notification button handler (robust to load order)
+          const nb = document.getElementById('notificationsButton');
+          const dd = document.getElementById('notificationsDropdown');
+
+          function notifClick(e) {
+            console.log('[profile] notifClick');
+            e.stopPropagation();
+            if (typeof notificationSystem !== 'undefined' && notificationSystem && typeof notificationSystem.toggleDropdown === 'function') {
+              try { notificationSystem.toggleDropdown(); } catch (err) { console.error(err); }
+            } else if (dd) {
+              dd.classList.toggle('active');
+            }
+          }
+
+          if (nb) {
+            nb.removeEventListener('click', notifClick);
+            nb.addEventListener('click', notifClick);
+          }
+
+          // Close dropdown when clicking outside (fallback)
+          document.removeEventListener('click', docClickClose);
+          document.addEventListener('click', docClickClose);
+
+          function docClickClose(ev) {
+            const dropdown = document.getElementById('notificationsDropdown');
+            if (dropdown && dropdown.classList.contains('active')) {
+              // if click was inside dropdown or on button, ignore
+              if (ev.target.closest && (ev.target.closest('#notificationsDropdown') || ev.target.closest('#notificationsButton'))) return;
+              dropdown.classList.remove('active');
+            }
+          }
+        }
+
+        function logoutHandler(e) {
+          e.preventDefault();
+          (async function() {
+            try {
+              await fetch("{{ url_for('auth_routes.logout') }}", {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+              });
+            } catch (err) {
+              // ignore network errors
+            }
+            window.location = "{{ url_for('home_routes.home') }}";
+          })();
+        }
+
+        // Bind immediately if DOM already ready, otherwise wait for DOMContentLoaded
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', bindHandlers);
+        } else {
+          bindHandlers();
+        }
+      })();
     </script>
   </body>
 </html>

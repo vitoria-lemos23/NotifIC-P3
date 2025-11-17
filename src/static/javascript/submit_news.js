@@ -27,14 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Collect selected tags from the form (name="tags")
+    const selectedTags = Array.from(form.querySelectorAll('input[name="tags"]:checked')).map(cb => cb.value);
+
     const payload = {
       title: title,
       content: content,
       link: link || null,
       start_date: start_date,
       end_date: end_date,
-      // optional: include a tag for 'EVENTO' so it can be filtered
-      tags: ['EVENTO']
+      tags: selectedTags.length ? selectedTags : []
     };
 
     // Image uploads have been disabled; clients should not send image fields.

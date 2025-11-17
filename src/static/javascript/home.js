@@ -92,9 +92,10 @@ function renderCarousel(newsData) {
   slidesWrapper.innerHTML = "";
   dotsWrapper.innerHTML = "";
 
-  // Filtra apenas os itens que TÊM uma imagem_banner e são marcados como hotNews
+  // Seleciona itens marcados como hotNews (ou com tag DESTAQUE).
+  // Mesmo que não tenham banner, exibimos um slide usando o placeholder.
   const carouselItems = newsData
-    .filter((item) => item.imagem_banner && (item.hotNews === true || (item.tags || []).includes('DESTAQUE')))
+    .filter((item) => (item.hotNews === true || (item.tags || []).includes('DESTAQUE')))
     .slice(0, 5);
 
   carouselItems.forEach((item, index) => {
@@ -114,7 +115,7 @@ function renderCarousel(newsData) {
           const targetAttrs = (item.id !== undefined && item.id !== null) ? '' : ' target="_blank"';
           return `<a href="${target}"${targetAttrs} style="text-decoration: none;">`;
         })()}
-        <img src="${item.imagem_banner}" alt="${item.title}" />
+        <img src="${item.imagem_banner || '/static/img/placeholder_banner.png'}" alt="${item.title}" />
         <div class="carousel-gradient"></div> 
         <div class="carousel-text"> 
           <h2>${item.title}</h2> 
@@ -312,8 +313,12 @@ function atualizarEstadoLogin() {
     // determina se usuário é admin e mostra/esconde o botão de admin
     try {
       const userRole = (window.APP_USER && window.APP_USER.role) || null;
-      isAdmin = (userRole === 'ADMIN');
-      if (adminBtn) adminBtn.style.display = isAdmin ? 'inline-block' : 'none';
+      const role = (userRole && String(userRole).toUpperCase()) || '';
+      // Mostrar o botão admin para usuários com papel ADMIN ou variantes de moderador
+      // Inclui 'ADMIN', 'MODERATOR', 'MOD', e a variante em português 'MODERADOR'
+      const privileged = ['ADMIN', 'MODERATOR', 'MOD', 'MODERADOR'].includes(role);
+      isAdmin = privileged; // tratamos moderadores como privilegiados para fins de UI
+      if (adminBtn) adminBtn.style.display = privileged ? 'inline-block' : 'none';
     } catch (e) {
       console.error('Erro ao determinar papel do usuário:', e);
     }
@@ -382,13 +387,61 @@ class NotificationSystem {
   constructor() {
     this.notifications =
       JSON.parse(localStorage.getItem("userNotifications")) || [];
+    // expõe a instância para outras páginas/scripts
+    try {
+      window.notificationSystem = this;
+    } catch (e) {
+      // ambiente restrito, ignora
+    }
+
     this.init();
+    // sincroniza alterações vindas de outras abas/janelas
+    window.addEventListener('storage', this.handleStorageEvent.bind(this));
   }
 
   init() {
     this.renderNotifications();
     this.setupEventListeners();
     this.checkForNewNotifications();
+  }
+
+  // Sincroniza notificações com o servidor se o usuário estiver autenticado
+  async syncWithServer() {
+    if (!usuarioLogado) return;
+    try {
+      const res = await fetch('/notifications?per_page=100', { credentials: 'same-origin' });
+      if (!res.ok) return;
+      const body = await res.json();
+      const serverList = Array.isArray(body.notifications) ? body.notifications : [];
+
+      // Mapear notificações do servidor para o formato local e mesclar sem duplicatas
+      const mapped = serverList.map(s => ({
+        id: s.id,
+        notification_id: s.notification_id || null,
+        type: 'update',
+        title: s.news_title || 'Atualização',
+        message: s.message || '',
+        newsId: s.news_id || s.newsId || null,
+        sent_at: s.sent_at || null,
+        timestamp: s.sent_at || new Date().toISOString(),
+        read: !!s.viewed
+      }));
+
+      // Merge: manter notificações locais que não existam no servidor e adicionar/replace as do servidor
+      const byKey = new Map();
+      mapped.forEach(n => byKey.set(String(n.id), n));
+      this.notifications.forEach(n => {
+        const key = n.id ? String(n.id) : `local-${n.timestamp}`;
+        if (!byKey.has(String(n.id))) byKey.set(key, n);
+      });
+
+      this.notifications = Array.from(byKey.values()).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+      this.saveToLocalStorage();
+      this.renderNotifications();
+      this.updateBadge();
+    } catch (e) {
+      console.error('Erro ao sincronizar notificações com o servidor:', e);
+    }
   }
 
   // Adicione esta função à classe NotificationSystem
@@ -404,6 +457,9 @@ class NotificationSystem {
 
     // Opcional: Mostrar feedback visual
     this.showClearFeedback();
+    if (usuarioLogado) {
+      fetch('/notifications/clear', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+    }
   }
 
   // Método auxiliar para mostrar feedback (opcional)
@@ -435,9 +491,9 @@ class NotificationSystem {
 
   setupEventListeners() {
     // Toggle dropdown
-    document
-      .getElementById("notificationsButton")
-      .addEventListener("click", (e) => {
+    const notifBtn = document.getElementById("notificationsButton");
+    if (notifBtn) {
+      notifBtn.addEventListener("click", (e) => {
         e.stopPropagation();
 
         // Verifica se o usuário está logado
@@ -448,22 +504,15 @@ class NotificationSystem {
 
         this.toggleDropdown();
       });
+    }
 
     // Marcar todas notificações como lidas
-    document.getElementById("markAllRead").addEventListener("click", () => {
-      this.markAllAsRead();
-    });
-
-    document.getElementById("markAllRead").addEventListener("click", () => {
-      this.markAllAsRead();
-    });
+    const markAllBtn = document.getElementById("markAllRead");
+    if (markAllBtn) markAllBtn.addEventListener("click", () => this.markAllAsRead());
 
     // Limpar todas as notificações (NOVO)
-    document
-      .getElementById("clearAllNotifications")
-      .addEventListener("click", () => {
-        this.clearAllNotifications();
-      });
+    const clearAllBtn = document.getElementById("clearAllNotifications");
+    if (clearAllBtn) clearAllBtn.addEventListener("click", () => this.clearAllNotifications());
 
     // Fechar dropdown ao clicar fora
     document.addEventListener("click", () => {
@@ -471,11 +520,20 @@ class NotificationSystem {
     });
 
     // Prevenir fechamento ao clicar dentro do dropdown
-    document
-      .getElementById("notificationsDropdown")
-      .addEventListener("click", (e) => {
-        e.stopPropagation();
-      });
+    const dropdown = document.getElementById("notificationsDropdown");
+    if (dropdown) dropdown.addEventListener("click", (e) => e.stopPropagation());
+  }
+
+  handleStorageEvent(event) {
+    if (!event || event.key !== 'userNotifications') return;
+    try {
+      const newVal = event.newValue ? JSON.parse(event.newValue) : [];
+      this.notifications = Array.isArray(newVal) ? newVal : [];
+      this.renderNotifications();
+      this.updateBadge();
+    } catch (e) {
+      console.error('Erro ao aplicar alterações de storage:', e);
+    }
   }
 
   toggleDropdown() {
@@ -519,6 +577,10 @@ class NotificationSystem {
       this.saveToLocalStorage();
       this.renderNotifications();
       this.updateBadge();
+      // sincroniza com servidor
+      if (usuarioLogado) {
+        fetch(`/notifications/${notificationId}/viewed`, { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+      }
     }
   }
 
@@ -535,6 +597,9 @@ class NotificationSystem {
       this.saveToLocalStorage();
       this.renderNotifications();
       this.updateBadge();
+      if (usuarioLogado) {
+        fetch('/notifications/mark_all_read', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+      }
     }
   }
 
@@ -610,10 +675,13 @@ class NotificationSystem {
   }
 
   saveToLocalStorage() {
-    localStorage.setItem(
-      "userNotifications",
-      JSON.stringify(this.notifications)
-    );
+    localStorage.setItem("userNotifications", JSON.stringify(this.notifications));
+    try {
+      // notifica outras listeners na mesma janela (storage não dispara na mesma janela)
+      window.dispatchEvent(new CustomEvent('notifications:updated', { detail: this.notifications }));
+    } catch (e) {
+      // ignore
+    }
   }
 
   checkForNewNotifications() {
@@ -729,6 +797,8 @@ async function verificarLogin() {
     // garantir que, mesmo quando o servidor injetou o usuário no template,
     // carregamos os favoritos do servidor para sincronizar o estado
     await loadFavoritesFromServer();
+    // sincroniza notificações do servidor
+    try { if (window.notificationSystem && typeof window.notificationSystem.syncWithServer === 'function') window.notificationSystem.syncWithServer(); } catch(e) {}
     return;
   }
 
@@ -753,6 +823,8 @@ async function fetchServerUser() {
     atualizarEstadoLogin();
     // após confirmar usuário, carregamos favoritos do servidor
     await loadFavoritesFromServer();
+    // sincroniza notificações do servidor
+    try { if (window.notificationSystem && typeof window.notificationSystem.syncWithServer === 'function') window.notificationSystem.syncWithServer(); } catch(e) {}
     return user;
   } catch (err) {
     console.error('Erro ao verificar usuário no servidor:', err);
@@ -879,6 +951,12 @@ function render(tab, query = "") {
 
     card.innerHTML = `
       <span class="favorite ${isFav ? "active" : ""}">★</span>
+      ${isAdmin ? `<div class="card-admin-actions">
+          <button class="admin-edit-tags" title="Alterar tags">🏷️</button>
+          <button class="admin-toggle-hot" title="Alternar destaque">✨</button>
+          <button class="admin-set-pending" title="Voltar para pendente">⏪</button>
+          <button class="admin-delete" title="Excluir notícia">🗑️</button>
+        </div>` : ''}
       <img src="${item.img}" alt="">
       <div>
         <div class="card-header">
@@ -913,6 +991,86 @@ function render(tab, query = "") {
       // re-renderiza para atualizar estado visual
       render(tab, searchBar.value.toLowerCase());
     });
+
+    // fallback para ícone/thumbnail quando não houver imagem definida
+    if (!item.img) {
+      const imgEl = card.querySelector('img');
+      if (imgEl) imgEl.src = '/static/img/placeholder_icon.png';
+    }
+
+      // Admin/moderator actions
+      if (isAdmin && item.id !== undefined && item.id !== null) {
+        const btnEditTags = card.querySelector('.admin-edit-tags');
+        const btnToggleHot = card.querySelector('.admin-toggle-hot');
+        const btnSetPending = card.querySelector('.admin-set-pending');
+        const btnDelete = card.querySelector('.admin-delete');
+
+        if (btnEditTags) btnEditTags.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const current = (item.tags || []).join(', ');
+          const res = prompt('Informe as tags separadas por vírgula (PROJETO, EVENTO, VAGA)', current);
+          if (res === null) return;
+          const tags = res.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+          try {
+            const r = await fetch(`/admin/news/${item.id}/update-tags`, {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ tags })
+            });
+            if (!r.ok) throw new Error('Status ' + r.status);
+            await loadNews();
+          } catch (err) {
+            alert('Falha ao atualizar tags: ' + err.message);
+          }
+        });
+
+        if (btnToggleHot) btnToggleHot.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          try {
+            const r = await fetch(`/admin/news/${item.id}/set_hot`, {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ hot: !item.hotNews })
+            });
+            if (!r.ok) throw new Error('Status ' + r.status);
+            await loadNews();
+          } catch (err) {
+            alert('Falha ao alternar destaque: ' + err.message);
+          }
+        });
+
+        if (btnSetPending) btnSetPending.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (!confirm('Deseja mover esta notícia para PENDENTE?')) return;
+          try {
+            const r = await fetch(`/admin/news/${item.id}/set_pending`, {
+              method: 'POST',
+              credentials: 'same-origin'
+            });
+            if (!r.ok) throw new Error('Status ' + r.status);
+            await loadNews();
+          } catch (err) {
+            alert('Falha ao alterar status: ' + err.message);
+          }
+        });
+
+        if (btnDelete) btnDelete.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (!confirm('Confirma exclusão desta notícia? Esta operação é irreversível.')) return;
+          try {
+            const r = await fetch(`/admin/news/${item.id}/delete`, {
+              method: 'DELETE',
+              credentials: 'same-origin'
+            });
+            if (!r.ok) throw new Error('Status ' + r.status);
+            await loadNews();
+          } catch (err) {
+            alert('Falha ao excluir notícia: ' + err.message);
+          }
+        });
+      }
 
     feed.appendChild(card);
   });

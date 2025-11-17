@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão de Cargos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_roles.css') }}">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="{{ url_for('home_routes.home') }}">
+      <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo Notific" class="logo-ic">
+    </a>
+    <h1 class="navbar-title">Gestão de Cargos</h1>
+    <a href="{{ url_for('home_routes.home') }}" class="nav-back-link">Voltar</a>
+  </nav>
+
+  <main class="conteudo-principal">
+    
+    <section class="secao-busca">
+      <h1 class="titulo-principal">Buscar e Alterar Cargo</h1>
+      <div class="busca-container">
+        <input type="text" id="campoBusca" placeholder="Buscar por ID, username ou e-mail">
+        <button id="btnBuscar">Buscar</button>
+      </div>
+
+      <section id="resultadoUsuario" class="resultado-usuario oculto">
+        <h2>Informações do Usuário</h2>
+        <div class="pedido-card">
+          <div class="pedido-conteudo">
+            <h3 class="pedido-titulo" id="infoUsername"></h3>
+            <p class="pedido-info"><strong>ID:</strong> <span id="infoId"></span></p>
+            <p class="pedido-info"><strong>Email:</strong> <span id="infoEmail"></span></p>
+            <p class="pedido-info"><strong>Status Atual:</strong> <span id="infoStatus"></span></p>
+          </div>
+        </div>
+
+        <div class="pedido-acoes" id="acoesBusca">
+            <h4 class="titulo-acoes">Definir Cargo:</h4>
+            <button id="btnSetAdmin" class="btn-acao-admin">Admin</button>
+            <button id="btnSetMod" class="btn-acao-mod">Moderador</button>
+            <button id="btnSetUser" class="btn-acao-user">Usuário</button>
+            <button id="btnSetPendente" class="btn-acao-pendente">Pendente</button>
+        </div>
+      </section>
+    </section>
+
+    <section class="secao-listas">
+      <h1 class="titulo-principal">Listas de Cargos</h1>
+
+      <section class="secao-gestao">
+        <h2 class="subtitulo-gestao">Administradores</h2>
+        <div id="lista-admins-container" class="lista-cards-container">
+          <p>Carregando...</p>
+        </div>
+      </section>
+
+      <section class="secao-gestao">
+        <h2 class="subtitulo-gestao">Moderadores Atuais</h2>
+        <div id="lista-moderadores-container" class="lista-cards-container">
+          <p>Carregando...</p>
+        </div>
+      </section>
+      
+      <!-- <section class="secao-gestao">
+        <h2 class="subtitulo-gestao">Pedidos Pendentes</h2>
+        <div id="lista-pendentes-container" class="lista-cards-container">
+          <p>Carregando...</p>
+        </div>
+      </section> -->
+
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='javascript/admin_roles.js') }}"></script>
+</body>
+</html>
