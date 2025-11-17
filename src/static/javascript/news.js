@@ -27,13 +27,13 @@ async function loadNews() {
     const newsItem = await res.json();
 
     // Prefer banner image (from static JSON enrichment) if available
-    const imgSrc = newsItem.imagem_banner || '';
+    const imgSrc = newsItem.imagem_banner || '/static/img/placeholder_banner.png';
     const metaDate = newsItem.created_at || newsItem.start_date || '';
 
     newsDiv.innerHTML = `
         <h2 class="news-title">${newsItem.title || 'Sem título'}</h2>
         <div class="news-meta">${metaDate}</div>
-        ${imgSrc ? `<img src="${imgSrc}" alt="Imagem da notícia" class="news-img">` : ''}
+        <img src="${imgSrc}" alt="Imagem da notícia" class="news-img">
         <p class="news-desc">${newsItem.content || ''}</p>
         ${newsItem.link ? `<a href="${newsItem.link}" target="_blank" class="subscribe-btn">Ir para o site</a>` : ''}
     `;

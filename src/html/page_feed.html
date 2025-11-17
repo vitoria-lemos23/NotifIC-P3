@@ -36,6 +36,13 @@
     <label for="descricao">Descrição do evento (Markdown permitido)</label>
     <textarea id="descricao" placeholder="Escreva a descrição do evento..."></textarea>
 
+    <label>Tags (selecione as que se aplicam)</label>
+    <div class="tags-selection">
+      <label><input type="checkbox" name="tags" value="PROJETO"> Projeto</label>
+      <label><input type="checkbox" name="tags" value="EVENTO"> Evento</label>
+      <label><input type="checkbox" name="tags" value="VAGA"> Vaga</label>
+    </div>
+
     <h3>Pré-visualização:</h3>
     <div id="preview" class="preview"></div>
 
@@ -54,7 +61,7 @@
         <!-- Local removed: use description/content to include location if needed -->
       </div>
       <div>
-        <label for="site">Link para o site oficial</label>
+        <label for="site">Link para um site relacionado a notícia</label>
         <input type="url" id="site" placeholder="https://...">
       </div>
     </div>

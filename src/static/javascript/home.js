@@ -92,9 +92,10 @@ function renderCarousel(newsData) {
   slidesWrapper.innerHTML = "";
   dotsWrapper.innerHTML = "";
 
-  // Filtra apenas os itens que TÊM uma imagem_banner e são marcados como hotNews
+  // Seleciona itens marcados como hotNews (ou com tag DESTAQUE).
+  // Mesmo que não tenham banner, exibimos um slide usando o placeholder.
   const carouselItems = newsData
-    .filter((item) => item.imagem_banner && (item.hotNews === true || (item.tags || []).includes('DESTAQUE')))
+    .filter((item) => (item.hotNews === true || (item.tags || []).includes('DESTAQUE')))
     .slice(0, 5);
 
   carouselItems.forEach((item, index) => {
@@ -114,7 +115,7 @@ function renderCarousel(newsData) {
           const targetAttrs = (item.id !== undefined && item.id !== null) ? '' : ' target="_blank"';
           return `<a href="${target}"${targetAttrs} style="text-decoration: none;">`;
         })()}
-        <img src="${item.imagem_banner}" alt="${item.title}" />
+        <img src="${item.imagem_banner || '/static/img/placeholder_banner.png'}" alt="${item.title}" />
         <div class="carousel-gradient"></div> 
         <div class="carousel-text"> 
           <h2>${item.title}</h2> 
@@ -312,8 +313,12 @@ function atualizarEstadoLogin() {
     // determina se usuário é admin e mostra/esconde o botão de admin
     try {
       const userRole = (window.APP_USER && window.APP_USER.role) || null;
-      isAdmin = (userRole === 'ADMIN');
-      if (adminBtn) adminBtn.style.display = isAdmin ? 'inline-block' : 'none';
+      const role = (userRole && String(userRole).toUpperCase()) || '';
+      // Mostrar o botão admin para usuários com papel ADMIN ou variantes de moderador
+      // Inclui 'ADMIN', 'MODERATOR', 'MOD', e a variante em português 'MODERADOR'
+      const privileged = ['ADMIN', 'MODERATOR', 'MOD', 'MODERADOR'].includes(role);
+      isAdmin = privileged; // tratamos moderadores como privilegiados para fins de UI
+      if (adminBtn) adminBtn.style.display = privileged ? 'inline-block' : 'none';
     } catch (e) {
       console.error('Erro ao determinar papel do usuário:', e);
     }
@@ -879,6 +884,12 @@ function render(tab, query = "") {
 
     card.innerHTML = `
       <span class="favorite ${isFav ? "active" : ""}">★</span>
+      ${isAdmin ? `<div class="card-admin-actions">
+          <button class="admin-edit-tags" title="Alterar tags">🏷️</button>
+          <button class="admin-toggle-hot" title="Alternar destaque">✨</button>
+          <button class="admin-set-pending" title="Voltar para pendente">⏪</button>
+          <button class="admin-delete" title="Excluir notícia">🗑️</button>
+        </div>` : ''}
       <img src="${item.img}" alt="">
       <div>
         <div class="card-header">
@@ -913,6 +924,86 @@ function render(tab, query = "") {
       // re-renderiza para atualizar estado visual
       render(tab, searchBar.value.toLowerCase());
     });
+
+    // fallback para ícone/thumbnail quando não houver imagem definida
+    if (!item.img) {
+      const imgEl = card.querySelector('img');
+      if (imgEl) imgEl.src = '/static/img/placeholder_icon.png';
+    }
+
+      // Admin/moderator actions
+      if (isAdmin && item.id !== undefined && item.id !== null) {
+        const btnEditTags = card.querySelector('.admin-edit-tags');
+        const btnToggleHot = card.querySelector('.admin-toggle-hot');
+        const btnSetPending = card.querySelector('.admin-set-pending');
+        const btnDelete = card.querySelector('.admin-delete');
+
+        if (btnEditTags) btnEditTags.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const current = (item.tags || []).join(', ');
+          const res = prompt('Informe as tags separadas por vírgula (PROJETO, EVENTO, VAGA)', current);
+          if (res === null) return;
+          const tags = res.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+          try {
+            const r = await fetch(`/admin/news/${item.id}/update-tags`, {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ tags })
+            });
+            if (!r.ok) throw new Error('Status ' + r.status);
+            await loadNews();
+          } catch (err) {
+            alert('Falha ao atualizar tags: ' + err.message);
+          }
+        });
+
+        if (btnToggleHot) btnToggleHot.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          try {
+            const r = await fetch(`/admin/news/${item.id}/set_hot`, {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ hot: !item.hotNews })
+            });
+            if (!r.ok) throw new Error('Status ' + r.status);
+            await loadNews();
+          } catch (err) {
+            alert('Falha ao alternar destaque: ' + err.message);
+          }
+        });
+
+        if (btnSetPending) btnSetPending.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (!confirm('Deseja mover esta notícia para PENDENTE?')) return;
+          try {
+            const r = await fetch(`/admin/news/${item.id}/set_pending`, {
+              method: 'POST',
+              credentials: 'same-origin'
+            });
+            if (!r.ok) throw new Error('Status ' + r.status);
+            await loadNews();
+          } catch (err) {
+            alert('Falha ao alterar status: ' + err.message);
+          }
+        });
+
+        if (btnDelete) btnDelete.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (!confirm('Confirma exclusão desta notícia? Esta operação é irreversível.')) return;
+          try {
+            const r = await fetch(`/admin/news/${item.id}/delete`, {
+              method: 'DELETE',
+              credentials: 'same-origin'
+            });
+            if (!r.ok) throw new Error('Status ' + r.status);
+            await loadNews();
+          } catch (err) {
+            alert('Falha ao excluir notícia: ' + err.message);
+          }
+        });
+      }
 
     feed.appendChild(card);
   });
