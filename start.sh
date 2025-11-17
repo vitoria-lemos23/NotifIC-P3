@@ -9,24 +9,50 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Try to find wsgi.py under the repo (limit depth to avoid long searches).
 # This is robust against Render's different working directories and duplicated paths.
-found_ws="$(find "$REPO_DIR" -maxdepth 8 -type f -name wsgi.py -print -quit 2>/dev/null || true)"
-if [ -n "$found_ws" ]; then
-  # Candidate backend dir is the directory containing wsgi.py
-  BACKEND_DIR="$(dirname "$found_ws")"
-  # Collapse accidental duplicated 'src/src' segments that can appear on Render clones
-  BACKEND_DIR="$(echo "$BACKEND_DIR" | sed 's#/src/src/#/src/#g')"
-  # Resolve symlinks/relative parts to a canonical absolute path
-  if command -v realpath >/dev/null 2>&1; then
-    BACKEND_DIR="$(realpath "$BACKEND_DIR")"
+# Deterministic candidate list: prefer known locations first
+try_dirs=(
+  "$REPO_DIR/src/backend"
+  "$REPO_DIR/src"
+  "$REPO_DIR"
+  "$REPO_DIR/../src/backend"
+)
+BACKEND_DIR=""
+for td in "${try_dirs[@]}"; do
+  if [ -d "$td" ]; then
+    # normalize
+    cand="$td"
+    if command -v realpath >/dev/null 2>&1; then
+      cand="$(realpath "$cand")"
+    fi
+    # prefer if it contains wsgi.py and app package or migrations
+    if [ -f "$cand/wsgi.py" ] && ( [ -d "$cand/app" ] || [ -d "$cand/migrations" ] || [ -f "$cand/requirements.txt" ] ); then
+      BACKEND_DIR="$cand"
+      break
+    fi
   fi
-  # If the found dir doesn't look like the backend (no `app` package), walk up until we find it
-  temp_dir="$BACKEND_DIR"
-  while [ "$temp_dir" != "/" ] && [ ! -d "$temp_dir/app" ] && [ ! -f "$temp_dir/wsgi.py" ]; do
-    temp_dir="$(dirname "$temp_dir")"
-  done
-  if [ -d "$temp_dir/app" ] || [ -f "$temp_dir/wsgi.py" ]; then
-    BACKEND_DIR="$temp_dir"
-  fi
+done
+
+# If we didn't find it, search the repo for wsgi.py but verify candidate is non-empty and contains app files
+if [ -z "$BACKEND_DIR" ]; then
+  while IFS= read -r cand; do
+    cand_norm="$cand"
+    if command -v realpath >/dev/null 2>&1; then
+      cand_norm="$(realpath "$cand_norm")"
+    fi
+    # skip obviously empty dirs
+    if [ "$(ls -A "$cand_norm" 2>/dev/null | wc -l)" -lt 2 ]; then
+      continue
+    fi
+    if [ -d "$cand_norm/app" ] || [ -d "$cand_norm/migrations" ] || [ -f "$cand_norm/requirements.txt" ] || [ -f "$cand_norm/create_db.py" ] || [ -f "$cand_norm/app.py" ]; then
+      BACKEND_DIR="$cand_norm"
+      break
+    fi
+    # fallback to first non-empty candidate
+    if [ -z "$BACKEND_DIR" ]; then
+      BACKEND_DIR="$cand_norm"
+    fi
+  done < <(find "$REPO_DIR" -maxdepth 10 -type f -name wsgi.py -printf '%h\n' 2>/dev/null || true)
+fi
 else
   # fall back to the common location
   if [ -d "$REPO_DIR/src/backend" ]; then
