@@ -63,9 +63,9 @@ PY
 
 echo "[start.sh] Migrations step finished (check above for errors)"
 
-echo "[start.sh] Starting Gunicorn (trying fully-qualified import first)"
+echo "[start.sh] Starting Gunicorn (try local wsgi first to match backend cwd)"
 # Use the same Python interpreter (from the venv) to run gunicorn so imports resolve properly
-# Try fully-qualified package import to avoid ambiguous module resolution on startup
-exec python -m gunicorn "src.backend.wsgi:app" --bind 0.0.0.0:$PORT || \
-  exec python -m gunicorn wsgi:app --bind 0.0.0.0:$PORT || \
+# Try local module `wsgi:app` first because we `cd` into the backend directory above.
+exec python -m gunicorn wsgi:app --bind 0.0.0.0:$PORT || \
+  exec python -m gunicorn "src.backend.wsgi:app" --bind 0.0.0.0:$PORT || \
   exec python -m gunicorn "app:create_app()" --bind 0.0.0.0:$PORT
