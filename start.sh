@@ -130,6 +130,22 @@ PY
 echo "[start.sh] Migrations step finished (check above for errors)"
 
 echo "[start.sh] Starting Gunicorn (try local wsgi first to match backend cwd)"
+
+# Detect Windows locally and avoid running Gunicorn (which requires fcntl on Unix)
+IS_WINDOWS=$(python - <<'PY'
+import platform
+print('1' if platform.system().lower().startswith('win') else '0')
+PY
+)
+if [ "$IS_WINDOWS" = "1" ]; then
+  echo "[start.sh] Detected Windows environment. Gunicorn requires 'fcntl' which is not available on Windows."
+  echo "[start.sh] For local testing on Windows, install Waitress and run:"
+  echo "  pip install waitress"
+  echo "  waitress-serve --port=$PORT wsgi:app"
+  echo "[start.sh] Alternatively run this script inside WSL or deploy to Render (Linux)."
+  echo "[start.sh] Attempting to continue with Gunicorn (this will likely fail on Windows)..."
+fi
+
 exec python -m gunicorn wsgi:app --bind 0.0.0.0:$PORT || \
   exec python -m gunicorn "src.backend.wsgi:app" --bind 0.0.0.0:$PORT || \
   exec python -m gunicorn "app:create_app()" --bind 0.0.0.0:$PORT
