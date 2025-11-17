@@ -1,1 +1,2 @@
+-r src/backend/requirements.txt
  -r src/backend/requirements.txt
