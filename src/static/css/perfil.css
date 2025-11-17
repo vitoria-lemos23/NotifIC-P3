@@ -161,6 +161,35 @@ body {
   border-color: #0d8cff;
 }
 
+/* Notificações: botão azul no header do perfil (mesma aparência do home) */
+.header-notifications-wrapper {
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+}
+.header-notifications-wrapper .header-icon-btn {
+  background: #304b8a; /* use header blue */
+  color: #ffffff;
+  border: 2px solid rgb(255, 255, 255);
+  box-shadow: 0 6px 14px rgba(48,75,138,0.12);
+  width: 44px;
+  height: 44px;
+  padding: 6px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.header-notifications-wrapper .header-icon-btn:hover {
+  background: #243b66;
+  border-color: #ffffff;
+}
+.header-notifications-wrapper .notification-badge {
+  right: -6px;
+  top: -6px;
+  border: 2px solid #ffffff;
+}
+
 /* side-menu styles are provided by the shared header/side CSS (home.css) or by the site-wide styles */
 /* ==========================
    CONTEÚDO DO PERFIL
@@ -194,7 +223,7 @@ body {
    INFORMAÇÕES DO PERFIL
    ========================== */
 .profile-info-section {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #7c7c7c;
   padding-bottom: 40px;
 }
 
@@ -213,7 +242,7 @@ body {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #646464;
   object-fit: cover;
   margin-bottom: 20px;
 }

@@ -169,6 +169,21 @@ header #searchBar:focus {
   background: #f8f9fa;
 }
 
+/* Estilo específico para o botão de notificações: usa o mesmo azul do header */
+.header-notifications-wrapper .header-icon-btn {
+  background: #304b8a; /* azul do header */
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 6px 14px rgba(48,75,138,0.12);
+}
+.header-notifications-wrapper .header-icon-btn .notifications-icon {
+  color: #ffffff;
+}
+.header-notifications-wrapper .header-icon-btn:hover {
+  background: #243b66;
+  border-color: #ffffff;
+}
+
 .notifications-icon {
   font-size: 20px;
 }

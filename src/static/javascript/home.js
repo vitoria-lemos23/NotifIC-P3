@@ -387,13 +387,61 @@ class NotificationSystem {
   constructor() {
     this.notifications =
       JSON.parse(localStorage.getItem("userNotifications")) || [];
+    // expõe a instância para outras páginas/scripts
+    try {
+      window.notificationSystem = this;
+    } catch (e) {
+      // ambiente restrito, ignora
+    }
+
     this.init();
+    // sincroniza alterações vindas de outras abas/janelas
+    window.addEventListener('storage', this.handleStorageEvent.bind(this));
   }
 
   init() {
     this.renderNotifications();
     this.setupEventListeners();
     this.checkForNewNotifications();
+  }
+
+  // Sincroniza notificações com o servidor se o usuário estiver autenticado
+  async syncWithServer() {
+    if (!usuarioLogado) return;
+    try {
+      const res = await fetch('/notifications?per_page=100', { credentials: 'same-origin' });
+      if (!res.ok) return;
+      const body = await res.json();
+      const serverList = Array.isArray(body.notifications) ? body.notifications : [];
+
+      // Mapear notificações do servidor para o formato local e mesclar sem duplicatas
+      const mapped = serverList.map(s => ({
+        id: s.id,
+        notification_id: s.notification_id || null,
+        type: 'update',
+        title: s.news_title || 'Atualização',
+        message: s.message || '',
+        newsId: s.news_id || s.newsId || null,
+        sent_at: s.sent_at || null,
+        timestamp: s.sent_at || new Date().toISOString(),
+        read: !!s.viewed
+      }));
+
+      // Merge: manter notificações locais que não existam no servidor e adicionar/replace as do servidor
+      const byKey = new Map();
+      mapped.forEach(n => byKey.set(String(n.id), n));
+      this.notifications.forEach(n => {
+        const key = n.id ? String(n.id) : `local-${n.timestamp}`;
+        if (!byKey.has(String(n.id))) byKey.set(key, n);
+      });
+
+      this.notifications = Array.from(byKey.values()).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+      this.saveToLocalStorage();
+      this.renderNotifications();
+      this.updateBadge();
+    } catch (e) {
+      console.error('Erro ao sincronizar notificações com o servidor:', e);
+    }
   }
 
   // Adicione esta função à classe NotificationSystem
@@ -409,6 +457,9 @@ class NotificationSystem {
 
     // Opcional: Mostrar feedback visual
     this.showClearFeedback();
+    if (usuarioLogado) {
+      fetch('/notifications/clear', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+    }
   }
 
   // Método auxiliar para mostrar feedback (opcional)
@@ -440,9 +491,9 @@ class NotificationSystem {
 
   setupEventListeners() {
     // Toggle dropdown
-    document
-      .getElementById("notificationsButton")
-      .addEventListener("click", (e) => {
+    const notifBtn = document.getElementById("notificationsButton");
+    if (notifBtn) {
+      notifBtn.addEventListener("click", (e) => {
         e.stopPropagation();
 
         // Verifica se o usuário está logado
@@ -453,22 +504,15 @@ class NotificationSystem {
 
         this.toggleDropdown();
       });
+    }
 
     // Marcar todas notificações como lidas
-    document.getElementById("markAllRead").addEventListener("click", () => {
-      this.markAllAsRead();
-    });
-
-    document.getElementById("markAllRead").addEventListener("click", () => {
-      this.markAllAsRead();
-    });
+    const markAllBtn = document.getElementById("markAllRead");
+    if (markAllBtn) markAllBtn.addEventListener("click", () => this.markAllAsRead());
 
     // Limpar todas as notificações (NOVO)
-    document
-      .getElementById("clearAllNotifications")
-      .addEventListener("click", () => {
-        this.clearAllNotifications();
-      });
+    const clearAllBtn = document.getElementById("clearAllNotifications");
+    if (clearAllBtn) clearAllBtn.addEventListener("click", () => this.clearAllNotifications());
 
     // Fechar dropdown ao clicar fora
     document.addEventListener("click", () => {
@@ -476,11 +520,20 @@ class NotificationSystem {
     });
 
     // Prevenir fechamento ao clicar dentro do dropdown
-    document
-      .getElementById("notificationsDropdown")
-      .addEventListener("click", (e) => {
-        e.stopPropagation();
-      });
+    const dropdown = document.getElementById("notificationsDropdown");
+    if (dropdown) dropdown.addEventListener("click", (e) => e.stopPropagation());
+  }
+
+  handleStorageEvent(event) {
+    if (!event || event.key !== 'userNotifications') return;
+    try {
+      const newVal = event.newValue ? JSON.parse(event.newValue) : [];
+      this.notifications = Array.isArray(newVal) ? newVal : [];
+      this.renderNotifications();
+      this.updateBadge();
+    } catch (e) {
+      console.error('Erro ao aplicar alterações de storage:', e);
+    }
   }
 
   toggleDropdown() {
@@ -524,6 +577,10 @@ class NotificationSystem {
       this.saveToLocalStorage();
       this.renderNotifications();
       this.updateBadge();
+      // sincroniza com servidor
+      if (usuarioLogado) {
+        fetch(`/notifications/${notificationId}/viewed`, { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+      }
     }
   }
 
@@ -540,6 +597,9 @@ class NotificationSystem {
       this.saveToLocalStorage();
       this.renderNotifications();
       this.updateBadge();
+      if (usuarioLogado) {
+        fetch('/notifications/mark_all_read', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+      }
     }
   }
 
@@ -615,10 +675,13 @@ class NotificationSystem {
   }
 
   saveToLocalStorage() {
-    localStorage.setItem(
-      "userNotifications",
-      JSON.stringify(this.notifications)
-    );
+    localStorage.setItem("userNotifications", JSON.stringify(this.notifications));
+    try {
+      // notifica outras listeners na mesma janela (storage não dispara na mesma janela)
+      window.dispatchEvent(new CustomEvent('notifications:updated', { detail: this.notifications }));
+    } catch (e) {
+      // ignore
+    }
   }
 
   checkForNewNotifications() {
@@ -734,6 +797,8 @@ async function verificarLogin() {
     // garantir que, mesmo quando o servidor injetou o usuário no template,
     // carregamos os favoritos do servidor para sincronizar o estado
     await loadFavoritesFromServer();
+    // sincroniza notificações do servidor
+    try { if (window.notificationSystem && typeof window.notificationSystem.syncWithServer === 'function') window.notificationSystem.syncWithServer(); } catch(e) {}
     return;
   }
 
@@ -758,6 +823,8 @@ async function fetchServerUser() {
     atualizarEstadoLogin();
     // após confirmar usuário, carregamos favoritos do servidor
     await loadFavoritesFromServer();
+    // sincroniza notificações do servidor
+    try { if (window.notificationSystem && typeof window.notificationSystem.syncWithServer === 'function') window.notificationSystem.syncWithServer(); } catch(e) {}
     return user;
   } catch (err) {
     console.error('Erro ao verificar usuário no servidor:', err);
