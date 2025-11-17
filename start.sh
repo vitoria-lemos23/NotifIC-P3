@@ -96,6 +96,35 @@ fi
 
 echo "[start.sh] Backend dir resolved to: $BACKEND_DIR"
 
+# If the selected backend dir doesn't contain expected markers, try climbing up
+# (this handles Render creating nested duplicate paths like src/src/backend/src/backend)
+climb_limit=6
+climbed=0
+curr="$BACKEND_DIR"
+while [ $climbed -lt $climb_limit ]; do
+  if [ -f "$curr/wsgi.py" ] || [ -d "$curr/app" ] || [ -d "$curr/migrations" ] || [ -f "$curr/requirements.txt" ]; then
+    # good candidate
+    BACKEND_DIR="$curr"
+    break
+  fi
+  parent="$(dirname "$curr")"
+  if [ "$parent" = "$curr" ] || [ -z "$parent" ]; then
+    break
+  fi
+  # stop if we would climb above repo root
+  if [ "$(realpath "$parent")" = "$(realpath "$REPO_DIR")" ] || [ "$(realpath "$parent")" = "$(realpath "$REPO_DIR/..")" ]; then
+    # still check parent once
+    if [ -f "$parent/wsgi.py" ] || [ -d "$parent/app" ] || [ -d "$parent/migrations" ] || [ -f "$parent/requirements.txt" ]; then
+      BACKEND_DIR="$parent"
+    fi
+    break
+  fi
+  curr="$parent"
+  climbed=$((climbed+1))
+done
+
+echo "[start.sh] Backend dir after climb-check: $BACKEND_DIR"
+
 # Ensure backend dir AND repo root are on PYTHONPATH so imports resolve for gunicorn/flask
 export PYTHONPATH="$BACKEND_DIR:$REPO_DIR:${PYTHONPATH:-}"
 
