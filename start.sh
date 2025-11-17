@@ -4,16 +4,25 @@ set -euo pipefail
 echo "[start.sh] Running render build script"
 bash render-build.sh
 
-# Determine absolute path to backend directory (handle different CWDs on Render)
+# Determine absolute path to repository and try to locate wsgi.py robustly.
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BACKEND_DIR="${REPO_DIR}/src/backend"
-if [ ! -d "$BACKEND_DIR" ]; then
-  # try one level up (in case script is executed from a nested src folder)
-  BACKEND_DIR="$(realpath "$REPO_DIR/../src/backend" 2>/dev/null || true)"
+
+# Try to find wsgi.py under the repo (limit depth to avoid long searches).
+# This is robust against Render's different working directories and duplicated paths.
+found_ws="$(find "$REPO_DIR" -maxdepth 6 -type f -name wsgi.py -print -quit 2>/dev/null || true)"
+if [ -n "$found_ws" ]; then
+  BACKEND_DIR="$(dirname "$found_ws")"
+else
+  # fall back to the common location
+  if [ -d "$REPO_DIR/src/backend" ]; then
+    BACKEND_DIR="$REPO_DIR/src/backend"
+  else
+    BACKEND_DIR="$(realpath "$REPO_DIR/../src/backend" 2>/dev/null || true)"
+  fi
 fi
 
 if [ -z "$BACKEND_DIR" ] || [ ! -d "$BACKEND_DIR" ]; then
-  echo "[start.sh] ERROR: backend directory not found (tried $REPO_DIR/src/backend and parent)." >&2
+  echo "[start.sh] ERROR: backend directory not found. Searched for wsgi.py and common paths." >&2
   exit 1
 fi
 
