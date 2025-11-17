@@ -4,67 +4,82 @@ set -euo pipefail
 echo "[start.sh] Running render build script"
 bash render-build.sh
 
-# Determine absolute path to repository and try to locate wsgi.py robustly.
+# Absolute path to repository root (script location)
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Try to find wsgi.py under the repo (limit depth to avoid long searches).
-# This is robust against Render's different working directories and duplicated paths.
-# Deterministic candidate list: prefer known locations first
-try_dirs=(
-  "$REPO_DIR/src/backend"
-  "$REPO_DIR/src"
-  "$REPO_DIR"
-  "$REPO_DIR/../src/backend"
-)
+echo "[start.sh] Repo dir: $REPO_DIR"
+
+# Build a list of candidate backend directories (prefer common locations)
+declare -a candidates
+candidates+=("$REPO_DIR/src/backend" "$REPO_DIR/backend" "$REPO_DIR/src" "$REPO_DIR")
+
+# Append directories that contain a wsgi.py under the repo (depth limited)
+while IFS= read -r p; do
+  candidates+=("$p")
+done < <(find "$REPO_DIR" -maxdepth 6 -type f -name wsgi.py -printf '%h\n' 2>/dev/null || true)
+
+# Normalize, dedupe and inspect candidates, picking the best one.
+declare -A seen
 BACKEND_DIR=""
-for td in "${try_dirs[@]}"; do
-  if [ -d "$td" ]; then
-    # normalize
-    cand="$td"
+echo "[start.sh] Candidate directories (raw):"
+for c in "${candidates[@]}"; do
+  if [ -z "$c" ]; then continue; fi
+  if [ -d "$c" ]; then
+    # normalize path
     if command -v realpath >/dev/null 2>&1; then
-      cand="$(realpath "$cand")"
+      c_norm="$(realpath "$c")"
+    else
+      c_norm="$c"
     fi
-    # prefer if it contains wsgi.py and app package or migrations
-    if [ -f "$cand/wsgi.py" ] && ( [ -d "$cand/app" ] || [ -d "$cand/migrations" ] || [ -f "$cand/requirements.txt" ] ); then
-      BACKEND_DIR="$cand"
+    if [ -n "${seen[$c_norm]:-}" ]; then
+      continue
+    fi
+    seen[$c_norm]=1
+    echo " - $c_norm"
+    # prefer directories that clearly look like the backend
+    # skip empty dirs
+    entries_count=$(ls -A "$c_norm" 2>/dev/null | wc -l || true)
+    echo "   entries: $entries_count"
+    echo "   contains: wsgi=$( [ -f \"$c_norm/wsgi.py\" ] && echo yes || echo no ), app=$( [ -d \"$c_norm/app\" ] && echo yes || echo no ), migrations=$( [ -d \"$c_norm/migrations\" ] && echo yes || echo no ), requirements=$( [ -f \"$c_norm/requirements.txt\" ] && echo yes || echo no )"
+
+    if [ "$entries_count" -eq 0 ]; then
+      echo "   skipping empty directory"
+      continue
+    fi
+
+    if [ -f "$c_norm/wsgi.py" ] && ( [ -d "$c_norm/app" ] || [ -d "$c_norm/migrations" ] || [ -f "$c_norm/requirements.txt" ] ); then
+      BACKEND_DIR="$c_norm"
+      echo "[start.sh] Selected backend dir (strong match): $BACKEND_DIR"
+      break
+    fi
+
+    # prefer any dir with app/ or migrations/ next
+    if [ -z "$BACKEND_DIR" ] && ( [ -d "$c_norm/app" ] || [ -d "$c_norm/migrations" ] ); then
+      BACKEND_DIR="$c_norm"
+      echo "[start.sh] Selected backend dir (app/migrations): $BACKEND_DIR"
+      break
+    fi
+
+    # fallback: if it contains wsgi.py alone, accept it
+    if [ -z "$BACKEND_DIR" ] && [ -f "$c_norm/wsgi.py" ]; then
+      BACKEND_DIR="$c_norm"
+      echo "[start.sh] Selected backend dir (wsgi found): $BACKEND_DIR"
       break
     fi
   fi
 done
 
-# If we didn't find it, search the repo for wsgi.py but verify candidate is non-empty and contains app files
+# Final fallback: common path
 if [ -z "$BACKEND_DIR" ]; then
-  while IFS= read -r cand; do
-    cand_norm="$cand"
-    if command -v realpath >/dev/null 2>&1; then
-      cand_norm="$(realpath "$cand_norm")"
-    fi
-    # skip obviously empty dirs
-    if [ "$(ls -A "$cand_norm" 2>/dev/null | wc -l)" -lt 2 ]; then
-      continue
-    fi
-    if [ -d "$cand_norm/app" ] || [ -d "$cand_norm/migrations" ] || [ -f "$cand_norm/requirements.txt" ] || [ -f "$cand_norm/create_db.py" ] || [ -f "$cand_norm/app.py" ]; then
-      BACKEND_DIR="$cand_norm"
-      break
-    fi
-    # fallback to first non-empty candidate
-    if [ -z "$BACKEND_DIR" ]; then
-      BACKEND_DIR="$cand_norm"
-    fi
-  done < <(find "$REPO_DIR" -maxdepth 10 -type f -name wsgi.py -printf '%h\n' 2>/dev/null || true)
-fi
-else
-  # fall back to the common location
   if [ -d "$REPO_DIR/src/backend" ]; then
     BACKEND_DIR="$REPO_DIR/src/backend"
+  elif [ -d "$REPO_DIR/backend" ]; then
+    BACKEND_DIR="$REPO_DIR/backend"
   else
-    BACKEND_DIR="$(realpath "$REPO_DIR/../src/backend" 2>/dev/null || true)"
+    echo "[start.sh] ERROR: backend directory not found after scanning candidates." >&2
+    exit 1
   fi
-fi
-
-if [ -z "$BACKEND_DIR" ] || [ ! -d "$BACKEND_DIR" ]; then
-  echo "[start.sh] ERROR: backend directory not found. Searched for wsgi.py and common paths." >&2
-  exit 1
+  echo "[start.sh] Selected backend dir (fallback): $BACKEND_DIR"
 fi
 
 echo "[start.sh] Backend dir resolved to: $BACKEND_DIR"
@@ -82,17 +97,27 @@ echo "[start.sh] Debug: listing backend dir contents:" && ls -la || true
 # Run migrations programmatically (avoid relying on Flask CLI which may fail to import)
 python - <<'PY'
 import sys, os, traceback
-print('[migrate] sys.path before insert:', sys.path[:3])
+print('[migrate] sys.path before insert:', sys.path[:5])
 sys.path.insert(0, os.getcwd())
-print('[migrate] sys.path after insert:', sys.path[:3])
+print('[migrate] sys.path after insert:', sys.path[:5])
 try:
     import importlib
-    wsgi = importlib.import_module('wsgi')
-    app = getattr(wsgi, 'app', None)
+    tried = []
+    app = None
+    # try local wsgi first, then fully-qualified src.backend.wsgi
+    for mod in ('wsgi','src.backend.wsgi','app.wsgi'):
+        try:
+            tried.append(mod)
+            wsgi = importlib.import_module(mod)
+            app = getattr(wsgi, 'app', None)
+            if app is not None:
+                print('[migrate] imported', mod)
+                break
+        except Exception as e:
+            print('[migrate] import', mod, 'failed:', type(e).__name__)
     if app is None:
-        print('[migrate] wsgi module has no attribute app')
+        print('[migrate] None of tried modules produced an app. tried:', tried)
     else:
-        print('[migrate] imported wsgi, running flask_migrate.upgrade()')
         from flask_migrate import upgrade
         with app.app_context():
             upgrade()
@@ -105,8 +130,6 @@ PY
 echo "[start.sh] Migrations step finished (check above for errors)"
 
 echo "[start.sh] Starting Gunicorn (try local wsgi first to match backend cwd)"
-# Use the same Python interpreter (from the venv) to run gunicorn so imports resolve properly
-# Try local module `wsgi:app` first because we `cd` into the backend directory above.
 exec python -m gunicorn wsgi:app --bind 0.0.0.0:$PORT || \
   exec python -m gunicorn "src.backend.wsgi:app" --bind 0.0.0.0:$PORT || \
   exec python -m gunicorn "app:create_app()" --bind 0.0.0.0:$PORT
