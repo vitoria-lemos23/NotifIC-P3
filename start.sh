@@ -28,19 +28,44 @@ fi
 
 echo "[start.sh] Backend dir resolved to: $BACKEND_DIR"
 
-# Ensure backend dir is on PYTHONPATH so 'flask --app wsgi' can import wsgi module
-export PYTHONPATH="$BACKEND_DIR:${PYTHONPATH:-}"
+# Ensure backend dir AND repo root are on PYTHONPATH so imports resolve for gunicorn/flask
+export PYTHONPATH="$BACKEND_DIR:$REPO_DIR:${PYTHONPATH:-}"
 
 echo "[start.sh] Changing to backend directory"
 cd "$BACKEND_DIR" || { echo "[start.sh] ERROR: failed to cd $BACKEND_DIR"; exit 1; }
 
 echo "[start.sh] Attempting database migrations (this may fail if DATABASE_URL not set)"
-if python -m flask --app wsgi db upgrade; then
-  echo "[start.sh] Migrations applied successfully"
-else
-  echo "[start.sh] Migrations failed or are not configured — continuing startup"
-fi
+echo "[start.sh] Debug: current dir: $(pwd)"
+echo "[start.sh] Debug: listing backend dir contents:" && ls -la || true
 
-echo "[start.sh] Starting Gunicorn (wsgi:app fallback to app:create_app())"
+# Run migrations programmatically (avoid relying on Flask CLI which may fail to import)
+python - <<'PY'
+import sys, os, traceback
+print('[migrate] sys.path before insert:', sys.path[:3])
+sys.path.insert(0, os.getcwd())
+print('[migrate] sys.path after insert:', sys.path[:3])
+try:
+    import importlib
+    wsgi = importlib.import_module('wsgi')
+    app = getattr(wsgi, 'app', None)
+    if app is None:
+        print('[migrate] wsgi module has no attribute app')
+    else:
+        print('[migrate] imported wsgi, running flask_migrate.upgrade()')
+        from flask_migrate import upgrade
+        with app.app_context():
+            upgrade()
+        print('[migrate] upgrade() completed')
+except Exception:
+    print('[migrate] Exception while importing wsgi or running migrations:')
+    traceback.print_exc()
+PY
+
+echo "[start.sh] Migrations step finished (check above for errors)"
+
+echo "[start.sh] Starting Gunicorn (trying fully-qualified import first)"
 # Use the same Python interpreter (from the venv) to run gunicorn so imports resolve properly
-exec python -m gunicorn wsgi:app --bind 0.0.0.0:$PORT || exec python -m gunicorn "app:create_app()" --bind 0.0.0.0:$PORT
+# Try fully-qualified package import to avoid ambiguous module resolution on startup
+exec python -m gunicorn "src.backend.wsgi:app" --bind 0.0.0.0:$PORT || \
+  exec python -m gunicorn wsgi:app --bind 0.0.0.0:$PORT || \
+  exec python -m gunicorn "app:create_app()" --bind 0.0.0.0:$PORT
