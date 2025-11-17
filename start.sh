@@ -9,9 +9,24 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Try to find wsgi.py under the repo (limit depth to avoid long searches).
 # This is robust against Render's different working directories and duplicated paths.
-found_ws="$(find "$REPO_DIR" -maxdepth 6 -type f -name wsgi.py -print -quit 2>/dev/null || true)"
+found_ws="$(find "$REPO_DIR" -maxdepth 8 -type f -name wsgi.py -print -quit 2>/dev/null || true)"
 if [ -n "$found_ws" ]; then
+  # Candidate backend dir is the directory containing wsgi.py
   BACKEND_DIR="$(dirname "$found_ws")"
+  # Collapse accidental duplicated 'src/src' segments that can appear on Render clones
+  BACKEND_DIR="$(echo "$BACKEND_DIR" | sed 's#/src/src/#/src/#g')"
+  # Resolve symlinks/relative parts to a canonical absolute path
+  if command -v realpath >/dev/null 2>&1; then
+    BACKEND_DIR="$(realpath "$BACKEND_DIR")"
+  fi
+  # If the found dir doesn't look like the backend (no `app` package), walk up until we find it
+  temp_dir="$BACKEND_DIR"
+  while [ "$temp_dir" != "/" ] && [ ! -d "$temp_dir/app" ] && [ ! -f "$temp_dir/wsgi.py" ]; do
+    temp_dir="$(dirname "$temp_dir")"
+  done
+  if [ -d "$temp_dir/app" ] || [ -f "$temp_dir/wsgi.py" ]; then
+    BACKEND_DIR="$temp_dir"
+  fi
 else
   # fall back to the common location
   if [ -d "$REPO_DIR/src/backend" ]; then
