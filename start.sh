@@ -21,6 +21,8 @@ done < <(find "$REPO_DIR" -maxdepth 6 -type f -name wsgi.py -printf '%h\n' 2>/de
 # Normalize, dedupe and inspect candidates, picking the best one.
 declare -A seen
 BACKEND_DIR=""
+best_candidate=""
+best_entries=-1
 echo "[start.sh] Candidate directories (raw):"
 for c in "${candidates[@]}"; do
   if [ -z "$c" ]; then continue; fi
@@ -66,20 +68,30 @@ for c in "${candidates[@]}"; do
       echo "[start.sh] Selected backend dir (wsgi found): $BACKEND_DIR"
       break
     fi
+    # track best candidate by number of entries (avoid empty nested dirs)
+    if [ "$entries_count" -gt "$best_entries" ]; then
+      best_entries="$entries_count"
+      best_candidate="$c_norm"
+    fi
   fi
 done
 
-# Final fallback: common path
+# Final fallback: choose best non-empty candidate if we didn't already pick one
 if [ -z "$BACKEND_DIR" ]; then
-  if [ -d "$REPO_DIR/src/backend" ]; then
-    BACKEND_DIR="$REPO_DIR/src/backend"
-  elif [ -d "$REPO_DIR/backend" ]; then
-    BACKEND_DIR="$REPO_DIR/backend"
+  if [ -n "$best_candidate" ]; then
+    BACKEND_DIR="$best_candidate"
+    echo "[start.sh] Selected backend dir (best_candidate by size): $BACKEND_DIR"
   else
-    echo "[start.sh] ERROR: backend directory not found after scanning candidates." >&2
-    exit 1
+    if [ -d "$REPO_DIR/src/backend" ]; then
+      BACKEND_DIR="$REPO_DIR/src/backend"
+    elif [ -d "$REPO_DIR/backend" ]; then
+      BACKEND_DIR="$REPO_DIR/backend"
+    else
+      echo "[start.sh] ERROR: backend directory not found after scanning candidates." >&2
+      exit 1
+    fi
+    echo "[start.sh] Selected backend dir (fallback): $BACKEND_DIR"
   fi
-  echo "[start.sh] Selected backend dir (fallback): $BACKEND_DIR"
 fi
 
 echo "[start.sh] Backend dir resolved to: $BACKEND_DIR"
