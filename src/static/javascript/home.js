@@ -93,7 +93,6 @@ function renderCarousel(newsData) {
   dotsWrapper.innerHTML = "";
 
   // Seleciona itens marcados como hotNews (ou com tag DESTAQUE).
-  // Mesmo que não tenham banner, exibimos um slide usando o placeholder.
   const carouselItems = newsData
     .filter((item) => (item.hotNews === true || (item.tags || []).includes('DESTAQUE')))
     .slice(0, 5);
@@ -107,6 +106,9 @@ function renderCarousel(newsData) {
       slide.classList.add("active");
     }
 
+    // Usa imagem_banner se disponível, senão img, senão placeholder
+    const slideImage = item.imagem_banner || item.img || '/static/img/placeholder_banner.png';
+
     slide.innerHTML = `
         ${(() => {
           const target = (item.id !== undefined && item.id !== null)
@@ -115,7 +117,7 @@ function renderCarousel(newsData) {
           const targetAttrs = (item.id !== undefined && item.id !== null) ? '' : ' target="_blank"';
           return `<a href="${target}"${targetAttrs} style="text-decoration: none;">`;
         })()}
-        <img src="${item.imagem_banner || '/static/img/placeholder_banner.png'}" alt="${item.title}" />
+        <img src="${slideImage}" alt="${item.title}" />
         <div class="carousel-gradient"></div> 
         <div class="carousel-text"> 
           <h2>${item.title}</h2> 
@@ -238,7 +240,6 @@ async function loadNews() {
   renderFilterMenu();
 }
 
-
 // Normaliza os objetos do JSON para o shape esperado pelo front/back
 function normalizeNewsData(raw) {
   if (!Array.isArray(raw)) return [];
@@ -263,6 +264,10 @@ function normalizeNewsData(raw) {
       status = 'PENDENTE';
     }
 
+    // Normalizar campos de imagem: usar 'image' do backend como prioridade
+    const imagePath = item.image || item.img || null;
+    const bannerPath = item.imagem_banner || imagePath || null;
+
     return {
       id: item.id,
       title: item.title,
@@ -276,8 +281,8 @@ function normalizeNewsData(raw) {
       status: status,
       tags: normalizedTags,
       link: item.link || null,
-      img: normalizeImagePath(item.img),
-      imagem_banner: normalizeImagePath(item.imagem_banner),
+      img: normalizeImagePath(imagePath),
+      imagem_banner: normalizeImagePath(bannerPath),
     };
   });
 }
@@ -286,9 +291,15 @@ function normalizeNewsData(raw) {
 function normalizeImagePath(p) {
   if (!p) return null;
   // If it's already an absolute URL, return as-is
-  if (p.startsWith('http://') || p.startsWith('https://') || p.startsWith('/')) return p;
-  // Convert relative path like ../img/... to /static/img/...
-  return p.replace(/^(\.\.\/)+img\//, '/static/img/');
+  if (p.startsWith('http://') || p.startsWith('https://')) return p;
+  // Se já começa com /static/, retorna como está
+  if (p.startsWith('/static/')) return p;
+  // Se começa com /, adiciona /static
+  if (p.startsWith('/')) return `/static${p}`;
+  // Convert relative path like ../img/... or img/... to /static/img/...
+  if (p.startsWith('../')) return p.replace(/^(\.\.\/)+/, '/static/');
+  // Se não tem prefixo, assume que é relativo a /static/
+  return `/static/${p}`;
 }
 
 // Utility: truncate a string to `n` chars and append ellipsis
@@ -895,12 +906,11 @@ async function toggleFavoriteServer(news) {
 
 // Renderizar o feed de notícias
 function render(tab, query = "") {
-  if (!feed) return; // Sai se o feed não existir
+  if (!feed) return;
   feed.innerHTML = "";
   let items;
 
   if (tab === "pessoal") {
-    // map stored favorites to the full news objects when possible
     items = favoritos.map(f => data.find(d => String(d.id) === String(f.id)) || f);
   } else if (tab === "geral") {
     items = [...data];
@@ -908,7 +918,6 @@ function render(tab, query = "") {
     items = data.filter((item) => (item.tags || []).includes("VAGA"));
   }
 
-  // filtro por busca
   if (query) {
     items = items.filter(
       (item) =>
@@ -917,7 +926,6 @@ function render(tab, query = "") {
     );
   }
 
-  // filtro por tags
   if (activeTags.length) {
     items = items.filter(
       (item) => item.tags && activeTags.every((tag) => item.tags.includes(tag))
@@ -928,12 +936,12 @@ function render(tab, query = "") {
     const card = document.createElement("div");
     card.className = "card";
 
-  const isFav = favoritos.some((f) => String(f.id) === String(item.id));
+    const isFav = favoritos.some((f) => String(f.id) === String(item.id));
 
     let statusHTML = "";
     let timerHTML = "";
 
-      if (item.tags && item.tags.includes("VAGA")) {
+    if (item.tags && item.tags.includes("VAGA")) {
       if (item.status === "ACEITA") {
         statusHTML = `<span class="status aberta">ABERTA</span>`;
         timerHTML = `<div class="timer" data-deadline="${item.end_date}"></div>`;
@@ -949,6 +957,9 @@ function render(tab, query = "") {
         .join(" ")}</div>`;
     }
 
+    // Usa img se disponível, senão placeholder
+    const cardImage = item.img || '/static/img/placeholder_icon.png';
+
     card.innerHTML = `
       <span class="favorite ${isFav ? "active" : ""}">★</span>
       ${isAdmin ? `<div class="card-admin-actions">
@@ -957,7 +968,7 @@ function render(tab, query = "") {
           <button class="admin-set-pending" title="Voltar para pendente">⏪</button>
           <button class="admin-delete" title="Excluir notícia">🗑️</button>
         </div>` : ''}
-      <img src="${item.img}" alt="">
+      <img src="${cardImage}" alt="${item.title}">
       <div>
         <div class="card-header">
           <h3>${item.title} ${statusHTML} ${tagsHTML}</h3>
@@ -965,11 +976,9 @@ function render(tab, query = "") {
         </div>
         <p>${truncate(item.content, 150)}</p>
         ${(() => {
-          // If the item exists in DB (has an id), link to internal detail page
           if (item.id !== undefined && item.id !== null) {
             return `<a href="/noticia?id=${encodeURIComponent(item.id)}">Saiba mais...</a>`;
           }
-          // Otherwise fall back to external link (if provided)
           if (item.link) {
             const isAbsolute = item.link.startsWith('http://') || item.link.startsWith('https://');
             const attrs = isAbsolute ? ' target="_blank"' : '';
@@ -985,92 +994,83 @@ function render(tab, query = "") {
         mostrarModalLogin();
         return;
       }
-
-      // usa endpoint do servidor para alternar favorito
       const res = await toggleFavoriteServer(item.id);
-      // re-renderiza para atualizar estado visual
       render(tab, searchBar.value.toLowerCase());
     });
 
-    // fallback para ícone/thumbnail quando não houver imagem definida
-    if (!item.img) {
-      const imgEl = card.querySelector('img');
-      if (imgEl) imgEl.src = '/static/img/placeholder_icon.png';
+    // Admin/moderator actions
+    if (isAdmin && item.id !== undefined && item.id !== null) {
+      const btnEditTags = card.querySelector('.admin-edit-tags');
+      const btnToggleHot = card.querySelector('.admin-toggle-hot');
+      const btnSetPending = card.querySelector('.admin-set-pending');
+      const btnDelete = card.querySelector('.admin-delete');
+
+      if (btnEditTags) btnEditTags.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const current = (item.tags || []).join(', ');
+        const res = prompt('Informe as tags separadas por vírgula (PROJETO, EVENTO, VAGA)', current);
+        if (res === null) return;
+        const tags = res.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+        try {
+          const r = await fetch(`/admin/news/${item.id}/update-tags`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tags })
+          });
+          if (!r.ok) throw new Error('Status ' + r.status);
+          await loadNews();
+        } catch (err) {
+          alert('Falha ao atualizar tags: ' + err.message);
+        }
+      });
+
+      if (btnToggleHot) btnToggleHot.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        try {
+          const r = await fetch(`/admin/news/${item.id}/set_hot`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ hot: !item.hotNews })
+          });
+          if (!r.ok) throw new Error('Status ' + r.status);
+          await loadNews();
+        } catch (err) {
+          alert('Falha ao alternar destaque: ' + err.message);
+        }
+      });
+
+      if (btnSetPending) btnSetPending.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!confirm('Deseja mover esta notícia para PENDENTE?')) return;
+        try {
+          const r = await fetch(`/admin/news/${item.id}/set_pending`, {
+            method: 'POST',
+            credentials: 'same-origin'
+          });
+          if (!r.ok) throw new Error('Status ' + r.status);
+          await loadNews();
+        } catch (err) {
+          alert('Falha ao alterar status: ' + err.message);
+        }
+      });
+
+      if (btnDelete) btnDelete.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!confirm('Confirma exclusão desta notícia? Esta operação é irreversível.')) return;
+        try {
+          const r = await fetch(`/admin/news/${item.id}/delete`, {
+            method: 'DELETE',
+            credentials: 'same-origin'
+          });
+          if (!r.ok) throw new Error('Status ' + r.status);
+          await loadNews();
+        } catch (err) {
+          alert('Falha ao excluir notícia: ' + err.message);
+        }
+      });
     }
-
-      // Admin/moderator actions
-      if (isAdmin && item.id !== undefined && item.id !== null) {
-        const btnEditTags = card.querySelector('.admin-edit-tags');
-        const btnToggleHot = card.querySelector('.admin-toggle-hot');
-        const btnSetPending = card.querySelector('.admin-set-pending');
-        const btnDelete = card.querySelector('.admin-delete');
-
-        if (btnEditTags) btnEditTags.addEventListener('click', async (e) => {
-          e.stopPropagation();
-          const current = (item.tags || []).join(', ');
-          const res = prompt('Informe as tags separadas por vírgula (PROJETO, EVENTO, VAGA)', current);
-          if (res === null) return;
-          const tags = res.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
-          try {
-            const r = await fetch(`/admin/news/${item.id}/update-tags`, {
-              method: 'POST',
-              credentials: 'same-origin',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ tags })
-            });
-            if (!r.ok) throw new Error('Status ' + r.status);
-            await loadNews();
-          } catch (err) {
-            alert('Falha ao atualizar tags: ' + err.message);
-          }
-        });
-
-        if (btnToggleHot) btnToggleHot.addEventListener('click', async (e) => {
-          e.stopPropagation();
-          try {
-            const r = await fetch(`/admin/news/${item.id}/set_hot`, {
-              method: 'POST',
-              credentials: 'same-origin',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ hot: !item.hotNews })
-            });
-            if (!r.ok) throw new Error('Status ' + r.status);
-            await loadNews();
-          } catch (err) {
-            alert('Falha ao alternar destaque: ' + err.message);
-          }
-        });
-
-        if (btnSetPending) btnSetPending.addEventListener('click', async (e) => {
-          e.stopPropagation();
-          if (!confirm('Deseja mover esta notícia para PENDENTE?')) return;
-          try {
-            const r = await fetch(`/admin/news/${item.id}/set_pending`, {
-              method: 'POST',
-              credentials: 'same-origin'
-            });
-            if (!r.ok) throw new Error('Status ' + r.status);
-            await loadNews();
-          } catch (err) {
-            alert('Falha ao alterar status: ' + err.message);
-          }
-        });
-
-        if (btnDelete) btnDelete.addEventListener('click', async (e) => {
-          e.stopPropagation();
-          if (!confirm('Confirma exclusão desta notícia? Esta operação é irreversível.')) return;
-          try {
-            const r = await fetch(`/admin/news/${item.id}/delete`, {
-              method: 'DELETE',
-              credentials: 'same-origin'
-            });
-            if (!r.ok) throw new Error('Status ' + r.status);
-            await loadNews();
-          } catch (err) {
-            alert('Falha ao excluir notícia: ' + err.message);
-          }
-        });
-      }
 
     feed.appendChild(card);
   });
