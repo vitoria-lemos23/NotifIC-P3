@@ -3,6 +3,18 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr; // Fallback se inválida
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
 async function loadNews() {
     const newsId = getQueryParam("id");
     const newsDiv = document.getElementById("news");
@@ -28,7 +40,7 @@ async function loadNews() {
 
     // Prefer banner image (from static JSON enrichment) if available
     const imgSrc = newsItem.image || '/static/img/placeholder_banner.png';
-    const metaDate = newsItem.created_at || newsItem.start_date || '';
+    const metaDate = formatDate(newsItem.created_at || newsItem.start_date || '');
 
     const externalLink = newsItem.link;
     let linkHref = '';
