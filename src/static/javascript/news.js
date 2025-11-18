@@ -30,12 +30,20 @@ async function loadNews() {
     const imgSrc = newsItem.image || '/static/img/placeholder_banner.png';
     const metaDate = newsItem.created_at || newsItem.start_date || '';
 
+    const externalLink = newsItem.link;
+    let linkHref = '';
+    if (externalLink) {
+        linkHref = externalLink.startsWith('http://') || externalLink.startsWith('https://')
+            ? externalLink
+            : `https://${externalLink}`;
+    }
+
     newsDiv.innerHTML = `
         <h2 class="news-title">${newsItem.title || 'Sem título'}</h2>
         <div class="news-meta">${metaDate}</div>
         <img src="${imgSrc}" alt="Imagem da notícia" class="news-img">
         <p class="news-desc">${newsItem.content || ''}</p>
-        ${newsItem.link ? `<a href="${newsItem.link}" target="_blank" class="subscribe-btn">Ir para o site</a>` : ''}
+        ${linkHref ? `<a href="${linkHref}" target="_blank" class="subscribe-btn">Ir para o site</a>` : ''}
     `;
     } catch (e) {
         newsDiv.innerHTML = `<p>Erro ao carregar notícia.</p>`;
