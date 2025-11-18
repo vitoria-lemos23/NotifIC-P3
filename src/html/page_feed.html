@@ -56,18 +56,15 @@
         <input type="date" id="data-fim">
       </div>
     </div>
-    <div class="form-row">
-      <div>
-        <!-- Local removed: use description/content to include location if needed -->
-      </div>
-      <div>
-        <label for="site">Link para um site relacionado a notícia</label>
-        <input type="url" id="site" placeholder="https://...">
-      </div>
-    </div>
 
+    <label for="site">Link para um site relacionado a notícia</label>
+    <input type="url" id="site" placeholder="https://...">
 
-    <button type="submit">Enviar Anúncio</button>
+    <label for="imagem-noticia">Imagem (opcional - Max 10 MB)</label>
+    <input type="file" id="imagem-noticia" name="image" accept="image/*">
+
+    <button type="submit">Enviar Notícia</button>
+
   </div>
 
   <!-- Biblioteca para Markdown -->
