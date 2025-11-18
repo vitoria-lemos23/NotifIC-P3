@@ -43,7 +43,7 @@
         <button id="notificationsButton" class="header-icon-btn" title="Notificações"
           onclick="(function(e){console.log('notificationsButton clicked'); e.stopPropagation(); try{ if(typeof notificationSystem!=='undefined' && notificationSystem && typeof notificationSystem.toggleDropdown==='function'){ notificationSystem.toggleDropdown(); } else { const dd=document.getElementById('notificationsDropdown'); if(dd) dd.classList.toggle('active'); } }catch(err){console.error(err);} })(event)">
           <span class="notifications-icon">🔔</span>
-          <span id="notificationBadge" class="notification-badge">0</span>
+          <span id="notificationBadge" class="notification-badge" style="display:none;"></span>
         </button>
         <div id="notificationsDropdown" class="notifications-dropdown">
           <div class="notifications-header">
