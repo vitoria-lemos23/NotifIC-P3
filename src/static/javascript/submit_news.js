@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const submitBtn = form.querySelector('button[type="submit"]');
   const titleInput = form.querySelector('#titulo');
-  const emailInput = form.querySelector('#email');
   const descricaoInput = form.querySelector('#descricao');
   const dataInicioInput = form.querySelector('#data-inicio');
   const dataFimInput = form.querySelector('#data-fim');
@@ -19,6 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!title || !content) {
       alert('Por favor preencha o título e a descrição do anúncio.');
+      return;
+    }
+
+    const selectedTags = Array.from(form.querySelectorAll('input[name="tags"]:checked')).map(cb => cb.value);
+    if (selectedTags.length === 0) {
+      alert('Por favor, selecione pelo menos uma tag.');
       return;
     }
 
@@ -53,11 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Submissão da notícia
-      const selectedTags = Array.from(form.querySelectorAll('input[name="tags"]:checked')).map(cb => cb.value);
       const payload = {
         title,
         content,
-        link: siteInput.value?.trim() || null,
+        link: normalizeLink(siteInput.value?.trim()) || null,
         start_date: dataInicioInput.value ? new Date(dataInicioInput.value).toISOString() : null,
         end_date: dataFimInput.value ? new Date(dataFimInput.value).toISOString() : null,
         tags: selectedTags,
@@ -93,13 +97,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Limpa o formulário
       titleInput.value = '';
-      emailInput.value = '';
       descricaoInput.value = '';
       dataInicioInput.value = '';
       dataFimInput.value = '';
       siteInput.value = '';
       if (imagemInput) imagemInput.value = '';
       form.querySelectorAll('input[name="tags"]:checked').forEach(cb => cb.checked = false);
+
+      // Limpa a pré-visualização
+      const previewElement = document.getElementById('preview');
+      if (previewElement) previewElement.innerHTML = '';
 
     } catch (err) {
       console.error('Erro ao submeter notícia:', err);
@@ -109,4 +116,18 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.textContent = 'Enviar Anúncio';
     }
   });
+
+  function normalizeLink(link) {
+    if (!link) return null;
+    link = link.trim();
+    if (link.startsWith('http://') || link.startsWith('https://')) {
+        return link;
+    } else {
+        if (!link.includes('www.')) {
+            return `https://www.${link}`;
+        } else {
+            return `https://${link}`;
+        }
+    }
+  }
 });

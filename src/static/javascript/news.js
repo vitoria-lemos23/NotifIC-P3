@@ -37,17 +37,21 @@ async function loadNews() {
     }
 
     const newsItem = await res.json();
-
-    // Prefer banner image (from static JSON enrichment) if available
     const imgSrc = newsItem.image || '/static/img/placeholder_banner.png';
     const metaDate = formatDate(newsItem.created_at || newsItem.start_date || '');
 
     const externalLink = newsItem.link;
     let linkHref = '';
     if (externalLink) {
-        linkHref = externalLink.startsWith('http://') || externalLink.startsWith('https://')
-            ? externalLink
-            : `https://${externalLink}`;
+        if (externalLink.startsWith('http://') || externalLink.startsWith('https://')) {
+            linkHref = externalLink;
+        } else {
+            if (!externalLink.includes('www.')) {
+                linkHref = `https://www.${externalLink}`;
+            } else {
+                linkHref = `https://${externalLink}`;
+            }
+        }
     }
 
     newsDiv.innerHTML = `

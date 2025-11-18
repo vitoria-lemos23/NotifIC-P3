@@ -32,10 +32,22 @@ document.addEventListener("DOMContentLoaded", async function () {
         } catch (e) { return iso; }
     }
 
+    // Função para normalizar o caminho da imagem (definida globalmente)
+    function normalizeImagePath(p, fallback = '/static/img/placeholder_icon.png') {
+        if (!p) return fallback;
+        if (p.startsWith('http://') || p.startsWith('https://')) return p;
+        if (p.startsWith('/static/')) return p;
+        if (p.startsWith('/')) return `/static${p}`;
+        return `/static/${p}`;
+    }
+
     function abrirModal(item) {
         if (!item) return;
         document.getElementById("modal-title").textContent = item.title || 'Detalhes';
-        document.getElementById("modal-img").src = item.imagem_banner || '/static/img/placeholder_banner.png';
+        // Usa item.image (campo correto do modelo) e normaliza com fallback para banner
+        const imgSrc = normalizeImagePath(item.image, '/static/img/placeholder_banner.png');
+        document.getElementById("modal-img").src = imgSrc;
+        
         // requester: show name with link to profile if author_id present
         const requesterEl = document.getElementById("modal-requester");
         requesterEl.innerHTML = '';
@@ -83,11 +95,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             card.className = 'pedido-card compact-card';
             card.dataset.id = item.id;
 
-            const imgSrc = item.imagem_banner || '/static/img/placeholder_icon.png';
-                        const authorBase = item.author_username || item.author || 'Desconhecido';
-                        const authorEsc = escapeHTML(authorBase);
-                        const author = item.author_id ? `${authorEsc} [${item.author_id}]` : authorEsc;
-                        const titleEsc = escapeHTML(item.title || 'Sem título');
+            const imgSrc = normalizeImagePath(item.image, '/static/img/placeholder_icon.png');
+            const authorBase = item.author_username || item.author || 'Desconhecido';
+            const authorEsc = escapeHTML(authorBase);
+            const author = item.author_id ? `${authorEsc} [${item.author_id}]` : authorEsc;
+            const titleEsc = escapeHTML(item.title || 'Sem título');
             const created = formatDate(item.created_at || item.createdAt || item.createdAtISO || '');
 
             card.innerHTML = `
