@@ -166,8 +166,14 @@
       </div>
     </footer>
 
+  <script src="{{ url_for('static', filename='javascript/notification.js') }}"></script>
   <script src="{{ url_for('static', filename='javascript/home.js') }}" defer></script>
   <script>
+    // Inicializa o sistema de notificações
+    if (typeof initNotificationSystem === 'function') {
+      initNotificationSystem();
+    }
+
     // Logout via POST to clear HttpOnly cookie, then redirect to login page
     document.addEventListener('DOMContentLoaded', function () {
       const logoutEls = document.querySelectorAll('.logout-link');

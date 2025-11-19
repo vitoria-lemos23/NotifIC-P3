@@ -175,11 +175,15 @@
       </div>
     </main>
 
+    <script src="{{ url_for('static', filename='javascript/notification.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/perfil.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/perfil_page.js') }}"></script>
-    <!-- Reutiliza o sistema de notificações implementado em home.js -->
-    <script src="{{ url_for('static', filename='javascript/home.js') }}" defer></script>
     <script>
+      // Inicializa o sistema de notificações
+      if (typeof initNotificationSystem === 'function') {
+        initNotificationSystem();
+      }
+
       (function initProfilePage() {
         function bindHandlers() {
           console.log('[profile] bindHandlers()');

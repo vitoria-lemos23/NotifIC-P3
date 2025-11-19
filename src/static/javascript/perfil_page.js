@@ -144,5 +144,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   populateForm(user, isOwner);
 
+  // Sincroniza notificações do servidor se usuário estiver autenticado
+  if (isOwner && typeof window !== 'undefined' && window.notificationSystem) {
+    try {
+      if (typeof window.notificationSystem.syncWithServer === 'function') {
+        await window.notificationSystem.syncWithServer();
+      }
+    } catch (e) {
+      console.error('Erro ao sincronizar notificações:', e);
+    }
+  }
+
   // No save button; profile edits are not available from this page.
 });
