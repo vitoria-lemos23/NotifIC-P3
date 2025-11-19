@@ -5,7 +5,8 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "start.sh: repo root is $REPO_DIR"
 
 # Ensure python packages installed by build are importable
-export PYTHONPATH="$REPO_DIR:$REPO_DIR/src:$PYTHONPATH"
+# Use a safe default when PYTHONPATH is not set to avoid 'unbound variable' under set -u
+export PYTHONPATH="$REPO_DIR:$REPO_DIR/src:${PYTHONPATH:-}"
 
 # Prefer backend directory if present
 BACKEND_DIR="$REPO_DIR/src/backend"
@@ -38,7 +39,8 @@ else
 fi
 
 # Start the app with Gunicorn. Render provides $PORT.
-: ${PORT:=8000}
-: ${WEB_CONCURRENCY:=4}
+# Use parameter expansion with defaults that work with 'set -u'
+PORT="${PORT:-8000}"
+WEB_CONCURRENCY="${WEB_CONCURRENCY:-4}"
 echo "start.sh: starting Gunicorn on 0.0.0.0:$PORT (workers=$WEB_CONCURRENCY)"
-exec python -m gunicorn "wsgi:app" -b 0.0.0.0:$PORT -w $WEB_CONCURRENCY --log-level=info
+exec python -m gunicorn "wsgi:app" -b 0.0.0.0:$PORT -w "$WEB_CONCURRENCY" --log-level=info
