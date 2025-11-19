@@ -62,7 +62,7 @@
         <div id="headerUsername" aria-live="polite"></div>
         <div id="profileButton">
           <span class="profile-icon">👤</span>
-          <img src="https://i.pravatar.cc/40" alt="Perfil" />
+          <img src="{{ usuario.profile_picture or 'https://i.pravatar.cc/40' }}" alt="Perfil" />
         </div>
       </div>
     </header>

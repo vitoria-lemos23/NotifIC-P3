@@ -96,7 +96,7 @@
             <div class="profile-avatar">
               <img
                 id="profile-picture"
-                src="https://i.pravatar.cc/150"
+                src="{{ usuario.profile_picture or 'https://i.pravatar.cc/150' }}"
                 alt="Foto de Perfil"
               />
               <div class="avatar-actions">
@@ -109,9 +109,6 @@
                   accept="image/*"
                   style="display: none"
                 />
-                <button id="choose-photo-btn" type="button">
-                  <i class="fas fa-upload"></i> Escolher foto
-                </button>
               </div>
             </div>
 

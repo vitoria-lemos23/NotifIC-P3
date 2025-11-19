@@ -349,6 +349,14 @@ function atualizarEstadoLogin() {
           headerUsername.style.display = 'none';
         }
       }
+
+      // Atualiza a foto do perfil no header se disponível
+      if (user && user.profile_picture) {
+        const profileImg = profileButton ? profileButton.querySelector('img') : null;
+        if (profileImg) {
+          profileImg.src = user.profile_picture;
+        }
+      }
     } catch (e) {
       console.error('Erro ao exibir nome do usuário:', e);
     }

@@ -137,6 +137,23 @@ try {
     // ignore
 }
 
+// Função para atualizar a foto de perfil no header de todas as páginas
+function updateHeaderProfilePicture(url) {
+    // Atualiza a foto no header (profileButton img)
+    const headerProfileImg = document.querySelector('#profileButton img');
+    if (headerProfileImg) {
+        headerProfileImg.src = url;
+    }
+
+    // Também atualiza qualquer outra referência à foto de perfil na página
+    const allProfileImgs = document.querySelectorAll('img[alt*="Perfil"], img[alt*="perfil"]');
+    allProfileImgs.forEach(img => {
+        if (img.id !== 'profile-picture') { // Não sobrescrever a do perfil principal
+            img.src = url;
+        }
+    });
+}
+
 // Fecha o menu ao pressionar ESC
 document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
@@ -151,68 +168,90 @@ document.addEventListener("keydown", function (event) {
 // Funções para upload de foto (se necessário)
 document.addEventListener('DOMContentLoaded', function() {
     const changePhotoBtn = document.getElementById('change-photo-btn');
-    const choosePhotoBtn = document.getElementById('choose-photo-btn');
     const photoUpload = document.getElementById('photo-upload');
     const profilePicture = document.getElementById('profile-picture');
 
-    if (changePhotoBtn && choosePhotoBtn && photoUpload && profilePicture) {
+    if (changePhotoBtn && photoUpload && profilePicture) {
         changePhotoBtn.addEventListener('click', function() {
-            // Lógica para tirar foto (implementar se necessário)
-            console.log('Tirar foto');
-        });
-
-        choosePhotoBtn.addEventListener('click', function() {
             photoUpload.click();
         });
 
-        photoUpload.addEventListener('change', function(event) {
+        photoUpload.addEventListener('change', async function(event) {
             const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    profilePicture.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
+            if (!file) return;
+
+            // Validação básica do arquivo
+            if (!file.type.startsWith('image/')) {
+                alert('Por favor, selecione um arquivo de imagem válido.');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) { // 5MB
+                alert('A imagem deve ter no máximo 5MB.');
+                return;
+            }
+
+            // Preview imediato
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profilePicture.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            // Upload para o servidor
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                const response = await fetch('/user/upload-profile-picture', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Atualiza a foto com a URL do servidor
+                    profilePicture.src = result.url;
+
+                    // Atualiza window.APP_USER se existir
+                    if (window.APP_USER) {
+                        window.APP_USER.profile_picture = result.url;
+                    }
+
+                    // Atualiza a foto no header de todas as páginas
+                    updateHeaderProfilePicture(result.url);
+
+                    alert('Foto de perfil atualizada com sucesso!');
+                } else {
+                    alert('Erro ao fazer upload: ' + result.error);
+                    // Reverte para a foto anterior se falhar
+                    if (window.APP_USER && window.APP_USER.profile_picture) {
+                        profilePicture.src = window.APP_USER.profile_picture;
+                    } else {
+                        profilePicture.src = 'https://i.pravatar.cc/150';
+                    }
+                }
+            } catch (error) {
+                console.error('Erro no upload:', error);
+                alert('Erro de conexão. Tente novamente.');
+                // Reverte para a foto anterior
+                if (window.APP_USER && window.APP_USER.profile_picture) {
+                    profilePicture.src = window.APP_USER.profile_picture;
+                } else {
+                    profilePicture.src = 'https://i.pravatar.cc/150';
+                }
             }
         });
     }
-        // Preferências de notificações: atualiza e envia para o backend
-        const preferencesList = document.querySelector('.preferences-list');
-        if (preferencesList && window.APP_USER) {
-            const preferenceItems = preferencesList.querySelectorAll('.preference-item');
-            preferenceItems.forEach(item => {
-                const label = item.querySelector('span').textContent.trim();
-                const checkbox = item.querySelector('input[type="checkbox"]');
-                // Inicializa o estado do checkbox conforme as preferências do usuário
-                checkbox.checked = window.APP_USER.notification_preferences?.includes(label);
 
-                checkbox.addEventListener('change', function () {
-                    let prefs = window.APP_USER.notification_preferences || [];
-                    if (checkbox.checked) {
-                        if (!prefs.includes(label)) prefs.push(label);
-                    } else {
-                        prefs = prefs.filter(p => p !== label);
-                    }
-                    window.APP_USER.notification_preferences = prefs;
-                    // Envia para o backend
-                    fetch('/user/update-preferences', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ notification_preferences: prefs })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (!data.success) {
-                            alert('Erro ao salvar preferências');
-                        }
-                    })
-                    .catch(() => {
-                        alert('Erro de conexão ao salvar preferências');
-                    });
-                });
-            });
-        }
-    });
+    // Carrega a foto do usuário no perfil se disponível
+    if (profilePicture && window.APP_USER && window.APP_USER.profile_picture) {
+        profilePicture.src = window.APP_USER.profile_picture;
+        updateHeaderProfilePicture(window.APP_USER.profile_picture);
+    }
+});
 
 document.addEventListener('DOMContentLoaded', function () {
     // O sistema de notificações modularizado já cuida da atualização do badge
