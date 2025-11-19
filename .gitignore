@@ -1,3 +1,4 @@
 .vscode
 .venv
 src/static/img/uploads/
+src/backend/.env
