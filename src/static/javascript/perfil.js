@@ -215,28 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 document.addEventListener('DOMContentLoaded', function () {
-    async function updateNotificationBadge() {
-        try {
-            const res = await fetch('/notifications/unread-count', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + (window.AUTH_TOKEN || '')
-                }
-            });
-            const data = await res.json();
-            const badge = document.getElementById('notificationBadge');
-            if (badge) {
-                if (data.success && data.count > 0) {
-                    badge.textContent = data.count;
-                    badge.style.display = 'inline-block';
-                } else {
-                    badge.textContent = '';
-                    badge.style.display = 'none';
-                }
-            }
-        } catch (e) {
-            // opcional: log de erro
-        }
-    }
-    updateNotificationBadge();
+    // O sistema de notificações modularizado já cuida da atualização do badge
+    // Não é necessário fazer requisições adicionais aqui
 });

@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Perfil do Usuário</title>
-  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}" />
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -40,10 +40,9 @@
 
       <!-- Botão de Notificações (posicionado à esquerda do perfil) -->
       <div class="header-notifications-wrapper">
-        <button id="notificationsButton" class="header-icon-btn" title="Notificações"
-          onclick="(function(e){console.log('notificationsButton clicked'); e.stopPropagation(); try{ if(typeof notificationSystem!=='undefined' && notificationSystem && typeof notificationSystem.toggleDropdown==='function'){ notificationSystem.toggleDropdown(); } else { const dd=document.getElementById('notificationsDropdown'); if(dd) dd.classList.toggle('active'); } }catch(err){console.error(err);} })(event)">
+        <button id="notificationsButton" class="header-icon-btn" title="Notificações">
           <span class="notifications-icon">🔔</span>
-          <span id="notificationBadge" class="notification-badge" style="display:none;"></span>
+          <span id="notificationBadge" class="notification-badge" style="display:none;">0</span>
         </button>
         <div id="notificationsDropdown" class="notifications-dropdown">
           <div class="notifications-header">
@@ -179,77 +178,81 @@
     <script src="{{ url_for('static', filename='javascript/perfil.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/perfil_page.js') }}"></script>
     <script>
-      // Inicializa o sistema de notificações
-      if (typeof initNotificationSystem === 'function') {
-        initNotificationSystem();
+      // Função para inicializar handlers e sistema de notificações
+      function initProfilePage() {
+        console.log('[profile] initProfilePage()');
+
+        // Inicializa o sistema de notificações
+        if (typeof initNotificationSystem === 'function') {
+          initNotificationSystem();
+        }
+
+        // Bind handlers para logout e notificações
+        bindHandlers();
       }
 
-      (function initProfilePage() {
-        function bindHandlers() {
-          console.log('[profile] bindHandlers()');
-          // Logout links
-          const logoutEls = document.querySelectorAll('.logout-link');
-          logoutEls.forEach(function (el) {
-            el.removeEventListener('click', logoutHandler);
-            el.addEventListener('click', logoutHandler);
-          });
+      function bindHandlers() {
+        console.log('[profile] bindHandlers()');
 
-          // Notification button handler (robust to load order)
-          const nb = document.getElementById('notificationsButton');
-          const dd = document.getElementById('notificationsDropdown');
+        // Logout links
+        const logoutEls = document.querySelectorAll('.logout-link');
+        logoutEls.forEach(function (el) {
+          el.removeEventListener('click', logoutHandler);
+          el.addEventListener('click', logoutHandler);
+        });
 
-          function notifClick(e) {
-            console.log('[profile] notifClick');
+        // Notification button handler (usa o sistema modularizado)
+        const nb = document.getElementById('notificationsButton');
+        if (nb) {
+          nb.addEventListener('click', function (e) {
+            console.log('[profile] notificationsButton clicked');
             e.stopPropagation();
             if (typeof notificationSystem !== 'undefined' && notificationSystem && typeof notificationSystem.toggleDropdown === 'function') {
-              try { notificationSystem.toggleDropdown(); } catch (err) { console.error(err); }
-            } else if (dd) {
-              dd.classList.toggle('active');
+              try {
+                notificationSystem.toggleDropdown();
+              } catch (err) {
+                console.error('notificationSystem error:', err);
+              }
+            } else {
+              // Fallback: toggle class no dropdown
+              const dd = document.getElementById('notificationsDropdown');
+              if (dd) dd.classList.toggle('active');
             }
-          }
-
-          if (nb) {
-            nb.removeEventListener('click', notifClick);
-            nb.addEventListener('click', notifClick);
-          }
-
-          // Close dropdown when clicking outside (fallback)
-          document.removeEventListener('click', docClickClose);
-          document.addEventListener('click', docClickClose);
-
-          function docClickClose(ev) {
-            const dropdown = document.getElementById('notificationsDropdown');
-            if (dropdown && dropdown.classList.contains('active')) {
-              // if click was inside dropdown or on button, ignore
-              if (ev.target.closest && (ev.target.closest('#notificationsDropdown') || ev.target.closest('#notificationsButton'))) return;
-              dropdown.classList.remove('active');
-            }
-          }
+          });
         }
 
-        function logoutHandler(e) {
-          e.preventDefault();
-          (async function() {
-            try {
-              await fetch("{{ url_for('auth_routes.logout') }}", {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/json' },
-              });
-            } catch (err) {
-              // ignore network errors
-            }
-            window.location = "{{ url_for('home_routes.home') }}";
-          })();
-        }
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (ev) {
+          const dropdown = document.getElementById('notificationsDropdown');
+          if (dropdown && dropdown.classList.contains('active')) {
+            if (ev.target.closest && (ev.target.closest('#notificationsDropdown') || ev.target.closest('#notificationsButton'))) return;
+            dropdown.classList.remove('active');
+          }
+        });
+      }
 
-        // Bind immediately if DOM already ready, otherwise wait for DOMContentLoaded
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', bindHandlers);
-        } else {
-          bindHandlers();
-        }
-      })();
+      function logoutHandler(e) {
+        e.preventDefault();
+        (async function() {
+          try {
+            await fetch("{{ url_for('auth_routes.logout') }}", {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+            });
+          } catch (err) {
+            // ignore network errors
+          }
+          window.location = "{{ url_for('home_routes.home') }}";
+        })();
+      }
+
+      // Inicializa quando o DOM estiver pronto
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initProfilePage);
+      } else {
+        initProfilePage();
+      }
     </script>
   </body>
 </html>
