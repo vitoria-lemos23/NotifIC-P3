@@ -18,6 +18,16 @@ else
   cd "$REPO_DIR"
 fi
 
+# Copy any migration fixes (placed outside submodule) into backend migrations dir
+FIX_DIR="$REPO_DIR/migrations_fixes"
+if [ -d "$FIX_DIR" ]; then
+  # determine actual backend migrations versions directory
+  TARGET_MIGRATIONS_DIR="$BACKEND_DIR/migrations/versions"
+  mkdir -p "$TARGET_MIGRATIONS_DIR"
+  echo "start.sh: copying migration fixes from $FIX_DIR to $TARGET_MIGRATIONS_DIR"
+  cp -n "$FIX_DIR"/* "$TARGET_MIGRATIONS_DIR" 2>/dev/null || true
+fi
+
 # Run DB migrations if Flask app importable
 echo "start.sh: attempting to run migrations (if available)"
 set +e

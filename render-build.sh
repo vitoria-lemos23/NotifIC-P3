@@ -26,3 +26,6 @@ fi
 echo "Using requirements file: $REQ_FILE"
 python -m pip install --upgrade pip
 python -m pip install -r "$REQ_FILE"
+
+# Ensure gunicorn is available for the start step (some requirements files omit it)
+python -m pip install gunicorn
