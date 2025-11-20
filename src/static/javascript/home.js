@@ -10,6 +10,8 @@ const sideMenuBackdrop = document.getElementById("sideMenuBackdrop");
 
 let activeTags = [];
 let currentTab = "geral";
+let currentPage = 0;
+const itemsPerPage = 20;
 // Define estado inicial de login a partir da variável server-driven `window.APP_USER`.
 // Se o servidor injetou `window.APP_USER` no template, usamos isso como fonte de verdade.
 let usuarioLogado = (typeof window !== 'undefined' && !!window.APP_USER) ? true : false;
@@ -177,40 +179,48 @@ function initializeCarousel() {
   startAutoSlide();
 }
 
-// Função para carregar as notícias
-async function loadNews() {
-  // Try to fetch accepted news from backend API first
-  try {
-    const res = await fetch('/news?status=ACEITA&per_page=50');
-    if (res.ok) {
+// Função para carregar todas as notícias aceitas
+async function loadAllNews() {
+  data = [];
+  let page = 1;
+  let hasMore = true;
+  while (hasMore) {
+    try {
+      const res = await fetch(`/news?status=ACEITA&page=${page}&per_page=100`);
+      if (!res.ok) break;
       const payload = await res.json();
-      const list = payload && Array.isArray(payload.news) ? payload.news : (payload || []);
-      data = normalizeNewsData(list);
-    } else {
-      // fallback to static JSON if backend returns error
-      console.warn('Backend /news returned', res.status, 'falling back to static JSON');
-      const fresp = await fetch('/static/json/noticias.json');
-      const raw = await fresp.json();
-      data = normalizeNewsData(raw);
+      const list = payload && Array.isArray(payload.news) ? payload.news : [];
+      data.push(...normalizeNewsData(list));
+      hasMore = page < payload.pages;
+      page++;
+      if (page > 10) break; // limite para não carregar infinitamente
+    } catch (e) {
+      console.error('Erro ao carregar página de notícias:', e);
+      break;
     }
-  } catch (e) {
-    console.warn('Failed to fetch backend news, using static JSON', e);
+  }
+  // fallback to static JSON if no data
+  if (data.length === 0) {
     try {
       const fresp = await fetch('/static/json/noticias.json');
       const raw = await fresp.json();
       data = normalizeNewsData(raw);
     } catch (ee) {
-      console.error('Erro ao carregar notícias:', ee);
-      feed.innerHTML = "<p>Erro ao carregar notícias.</p>";
-      return;
+      console.error('Erro ao carregar notícias estáticas:', ee);
     }
   }
+}
+
+// Função para carregar as notícias
+async function loadNews() {
+  await loadAllNews();
 
   // render feed and initialize carousel
   render(currentTab, searchBar.value.toLowerCase());
   renderCarousel(data);
   initializeCarousel();
   renderFilterMenu();
+  updatePaginationButtons();
 }
 
 // Normaliza os objetos do JSON para o shape esperado pelo front/back
@@ -383,11 +393,67 @@ if (filterBtn) {
   });
 }
 
-// Gerar lista de tags únicas
-function getAllTags() {
-  const allTags = new Set();
-  data.forEach((item) => item.tags?.forEach((t) => allTags.add(t)));
-  return [...allTags];
+// Evento de clique nos botões de paginação
+const prevPageBtn = document.getElementById("prevPageBtn");
+const nextPageBtn = document.getElementById("nextPageBtn");
+
+if (prevPageBtn) {
+  prevPageBtn.addEventListener("click", () => {
+    if (currentPage > 0) {
+      currentPage--;
+      render(currentTab, searchBar.value.toLowerCase());
+    }
+  });
+}
+
+if (nextPageBtn) {
+  nextPageBtn.addEventListener("click", () => {
+    const filteredItems = getFilteredItems();
+    if ((currentPage + 1) * itemsPerPage < filteredItems.length) {
+      currentPage++;
+      render(currentTab, searchBar.value.toLowerCase());
+    }
+  });
+}
+
+// Atualizar botões de paginação
+function updatePaginationButtons() {
+  const prevBtn = document.getElementById("prevPageBtn");
+  const nextBtn = document.getElementById("nextPageBtn");
+  const pageIndicator = document.getElementById("pageIndicator");
+
+  if (prevBtn) prevBtn.disabled = currentPage === 0;
+  if (nextBtn) nextBtn.disabled = (currentPage + 1) * itemsPerPage >= getFilteredItems().length;
+  if (pageIndicator) pageIndicator.textContent = `Página ${currentPage + 1}`;
+}
+
+// Obter itens filtrados atuais
+function getFilteredItems() {
+  let items;
+  if (currentTab === "pessoal") {
+    items = favoritos.map(f => data.find(d => String(d.id) === String(f.id)) || f);
+  } else if (currentTab === "geral") {
+    items = [...data];
+  } else if (currentTab === "vagas") {
+    items = data.filter((item) => (item.tags || []).includes("VAGA"));
+  }
+
+  const query = searchBar.value.toLowerCase();
+  if (query) {
+    items = items.filter(
+      (item) =>
+        item.title.toLowerCase().includes(query) ||
+        (item.content || '').toLowerCase().includes(query)
+    );
+  }
+
+  if (activeTags.length) {
+    items = items.filter(
+      (item) => item.tags && activeTags.every((tag) => item.tags.includes(tag))
+    );
+  }
+
+  return items;
 }
 
 // Renderizar o menu de filtro
@@ -415,6 +481,7 @@ function renderFilterMenu() {
         activeTags.push(tag);
         el.classList.add("active");
       }
+      currentPage = 0;
       render(currentTab, searchBar.value.toLowerCase());
     });
   });
@@ -552,6 +619,12 @@ function render(tab, query = "") {
       (item) => item.tags && activeTags.every((tag) => item.tags.includes(tag))
     );
   }
+
+  // Paginação
+  const totalItems = items.length;
+  const start = currentPage * itemsPerPage;
+  const end = start + itemsPerPage;
+  items = items.slice(start, end);
 
   items.forEach((item) => {
     const card = document.createElement("div");
@@ -737,6 +810,8 @@ function render(tab, query = "") {
     updateTimer();
     setInterval(updateTimer, 1000);
   });
+
+  updatePaginationButtons();
 }
 
 // Eventos das abas
@@ -745,6 +820,7 @@ tabs.forEach((tab) => {
     document.querySelector(".tab.active").classList.remove("active");
     tab.classList.add("active");
     currentTab = tab.dataset.tab;
+    currentPage = 0;
     render(currentTab, searchBar.value.toLowerCase());
   });
 });
@@ -752,6 +828,7 @@ tabs.forEach((tab) => {
 // Evento da barra de pesquisa
 if (searchBar) {
   searchBar.addEventListener("input", () => {
+    currentPage = 0;
     render(currentTab, searchBar.value.toLowerCase());
   });
 }

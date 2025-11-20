@@ -678,6 +678,29 @@ header {
 .feed-actions {
   display: flex;
   gap: 10px;
+  align-items: center;
+}
+
+/* Botões de paginação */
+.feed-actions button {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.feed-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.feed-actions button:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+#pageIndicator {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 10px;
 }
 
 /* Filtro e Menu Admin */
