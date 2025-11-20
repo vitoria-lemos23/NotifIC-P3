@@ -1,3 +1,30 @@
+// Estado de login e permissões
+let isAdmin = false; // Será determinado a partir do usuário autenticado
+
+const adminLink = document.getElementById('adminLink');
+// Inicialmente oculto; será mostrado quando soubermos o papel do usuário
+if (adminLink) adminLink.style.display = 'none';
+
+// Verifica se o usuário é administrador baseado no window.APP_USER
+function verificarPermissoesAdmin() {
+    if (typeof window !== 'undefined' && window.APP_USER) {
+        isAdmin = window.APP_USER.role === 'ADMIN' || window.APP_USER.role === 'MODERADOR';
+        atualizarBotaoAdmin();
+    }
+}
+
+// Atualiza a visibilidade do botão admin
+function atualizarBotaoAdmin() {
+    if (adminLink) {
+        adminLink.style.display = isAdmin ? 'block' : 'none';
+    }
+}
+
+// Verifica permissões quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', function() {
+    verificarPermissoesAdmin();
+});
+
 function toggleMenu() {
     const sideMenu = document.getElementById("sideMenu");
     const backdrop = document.getElementById("sideMenuBackdrop");

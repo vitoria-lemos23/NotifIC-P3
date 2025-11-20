@@ -76,9 +76,9 @@
         <span class="menu-title">./notif<span style="color: deepskyblue">IC</span></span>
       </header>
       <nav>
-        <a href="{{ url_for('home_routes.home') }}">Página Inicial</a>
         <a href="{{ url_for('user_routes.perfil') }}" class="active">Perfil</a>
         <a href="{{ url_for('news_routes.news_page') }}">Cadastrar Notícia</a>
+        <a href="/admin/news/pending/view" id="adminLink" style="display: none;">Tela do Administrador</a>
         <a href="#" class="logout-link">Sair</a>
       </nav>
       <footer>© 2025 ./notifIC</footer>
