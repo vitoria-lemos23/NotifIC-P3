@@ -94,15 +94,15 @@ main {
 }
 @media (max-width: 768px) {
     main {
-        margin-top: 120px;
+        margin-top: 100px;
     }
     .news-container {
-        padding: 16px 8px;
+        padding: 20px 16px;
     }
     .news-title {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
     }
     .news-desc {
-        font-size: 1rem;
+        font-size: 1.2rem;
     }
 }

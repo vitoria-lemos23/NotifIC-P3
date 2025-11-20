@@ -384,6 +384,17 @@ header {
   gap: 15px;
 }
 
+/* Esconder barra de pesquisa na página de notícia */
+.news-page .header-search-wrapper {
+  display: none;
+}
+
+/* Ajustar grid do header na página de notícia */
+.news-page header {
+  grid-template-columns: 1fr auto auto; /* Logo | Notificações | Perfil */
+  gap: 15px;
+}
+
 /* Responsividade para telas intermediárias */
 @media (max-width: 1200px) and (min-width: 769px) {
   header {
