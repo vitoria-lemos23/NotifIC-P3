@@ -50,6 +50,59 @@
   </main>
 
   <script src="{{ url_for('static', filename='javascript/admin.js') }}"></script>
+  <style>
+    /* Botão voltar ao topo */
+    #backToTopBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(48, 75, 138, 0.8);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #backToTopBtn:hover {
+      background: rgba(48, 75, 138, 1);
+      transform: scale(1.1);
+    }
+
+    #backToTopBtn.show {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+  <script>
+    // Botão voltar ao topo
+    const backToTopBtn = document.createElement('button');
+    backToTopBtn.id = 'backToTopBtn';
+    backToTopBtn.innerHTML = '↑';
+    backToTopBtn.title = 'Voltar ao topo';
+    document.body.appendChild(backToTopBtn);
+
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 200) {
+        backToTopBtn.classList.add('show');
+      } else {
+        backToTopBtn.classList.remove('show');
+      }
+    });
+  </script>
 </body>
 
 </html>

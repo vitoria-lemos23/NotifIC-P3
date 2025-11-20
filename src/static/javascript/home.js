@@ -854,3 +854,22 @@ async function initApp() {
 
 // Inicializa
 initApp();
+
+// Botão voltar ao topo
+const backToTopBtn = document.createElement('button');
+backToTopBtn.id = 'backToTopBtn';
+backToTopBtn.innerHTML = '↑';
+backToTopBtn.title = 'Voltar ao topo';
+document.body.appendChild(backToTopBtn);
+
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 200) {
+    backToTopBtn.classList.add('show');
+  } else {
+    backToTopBtn.classList.remove('show');
+  }
+});
