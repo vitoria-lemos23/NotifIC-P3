@@ -187,7 +187,7 @@ class NotificationSystem {
     this.updateBadge();
   }
 
-  markAsRead(notificationId) {
+  markAsReadAndRedirect(notificationId) {
     const notification = this.notifications.find(
       (n) => n.id === notificationId
     );
@@ -201,6 +201,10 @@ class NotificationSystem {
       if (usuarioLogado) {
         fetch(`/notifications/${notificationId}/viewed`, { method: 'POST', credentials: 'same-origin' }).catch(() => {});
       }
+    }
+    // Redirecionar para a notícia
+    if (notification && notification.newsId) {
+      window.location.href = `/noticia?id=${encodeURIComponent(notification.newsId)}`;
     }
   }
 
@@ -269,7 +273,7 @@ class NotificationSystem {
       .map(
         (notification) => `
       <div class="notification-item ${notification.read ? "read" : "unread"}" 
-           onclick="notificationSystem.markAsRead(${notification.id})">
+           onclick="notificationSystem.markAsReadAndRedirect(${notification.id})">
         ${this.getNotificationIcon(notification.type)}
         <div class="notification-content">
           <div class="notification-title">${notification.title}</div>
