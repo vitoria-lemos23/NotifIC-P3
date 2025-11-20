@@ -264,4 +264,45 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function () {
     // O sistema de notificações modularizado já cuida da atualização do badge
     // Não é necessário fazer requisições adicionais aqui
+
+    // Preferências de notificações: atualiza e envia para o backend
+    const preferencesList = document.querySelector('.preferences-list');
+    if (preferencesList && window.APP_USER) {
+        const preferenceItems = preferencesList.querySelectorAll('.preference-item');
+        preferenceItems.forEach(item => {
+            const label = item.querySelector('span').textContent.trim();
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            // Inicializa o estado do checkbox conforme as preferências do usuário
+            checkbox.checked = window.APP_USER.notification_preferences?.includes(label);
+
+            checkbox.addEventListener('change', function () {
+                let prefs = window.APP_USER.notification_preferences || [];
+                if (checkbox.checked) {
+                    if (!prefs.includes(label)) prefs.push(label);
+                } else {
+                    prefs = prefs.filter(p => p !== label);
+                }
+                window.APP_USER.notification_preferences = prefs;
+
+                // Envia para o backend
+                fetch('/user/update-preferences', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ notification_preferences: prefs })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert('Erro ao salvar preferências');
+                    }
+                })
+                .catch(() => {
+                    alert('Erro de conexão ao salvar preferências');
+                });
+            });
+        });
+    }
 });
