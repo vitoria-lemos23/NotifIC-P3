@@ -6,6 +6,7 @@ class NotificationSystem {
     this.currentPage = 1;
     this.perPage = 10;
     this.hasMore = true;
+    this.totalUnread = 0;
     // expõe a instância para outras páginas/scripts
     try {
       window.notificationSystem = this;
@@ -22,6 +23,7 @@ class NotificationSystem {
     this.renderNotifications();
     this.setupEventListeners();
     this.checkForNewNotifications();
+    this.syncWithServer();
   }
 
   // Sincroniza notificações com o servidor se o usuário estiver autenticado
@@ -61,6 +63,16 @@ class NotificationSystem {
       this.notifications.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
       this.saveToLocalStorage();
       this.renderNotifications();
+      // Buscar total de unread
+      try {
+        const unreadRes = await fetch('/notifications/unread-count', { credentials: 'same-origin' });
+        if (unreadRes.ok) {
+          const unreadData = await unreadRes.json();
+          this.totalUnread = unreadData.count || 0;
+        }
+      } catch (e) {
+        console.error('Erro ao buscar contagem de unread:', e);
+      }
       this.updateBadge();
     } catch (e) {
       console.error('Erro ao sincronizar notificações com o servidor:', e);
@@ -74,6 +86,7 @@ class NotificationSystem {
     }
 
     this.notifications = [];
+    this.totalUnread = 0;
     this.saveToLocalStorage();
     this.renderNotifications();
     this.updateBadge();
@@ -155,7 +168,19 @@ class NotificationSystem {
       const newVal = event.newValue ? JSON.parse(event.newValue) : [];
       this.notifications = Array.isArray(newVal) ? newVal : [];
       this.renderNotifications();
-      this.updateBadge();
+      // Buscar total unread após mudança
+      const usuarioLogado = (typeof window !== 'undefined' && !!window.APP_USER) ? true : false;
+      if (usuarioLogado) {
+        fetch('/notifications/unread-count', { credentials: 'same-origin' })
+          .then(res => res.ok ? res.json() : { count: 0 })
+          .then(data => {
+            this.totalUnread = data.count || 0;
+            this.updateBadge();
+          })
+          .catch(e => console.error('Erro ao buscar unread count:', e));
+      } else {
+        this.updateBadge();
+      }
     } catch (e) {
       console.error('Erro ao aplicar alterações de storage:', e);
     }
@@ -184,6 +209,7 @@ class NotificationSystem {
     };
 
     this.notifications.unshift(newNotification);
+    if (!newNotification.read) this.totalUnread++;
     this.saveToLocalStorage();
     this.renderNotifications();
     this.updateBadge();
@@ -195,6 +221,7 @@ class NotificationSystem {
     );
     if (notification && !notification.read) {
       notification.read = true;
+      this.totalUnread = Math.max(0, this.totalUnread - 1);
       this.saveToLocalStorage();
       this.renderNotifications();
       this.updateBadge();
@@ -212,14 +239,17 @@ class NotificationSystem {
 
   markAllAsRead() {
     let updated = false;
+    let unreadMarked = 0;
     this.notifications.forEach((notification) => {
       if (!notification.read) {
         notification.read = true;
         updated = true;
+        unreadMarked++;
       }
     });
 
     if (updated) {
+      this.totalUnread = Math.max(0, this.totalUnread - unreadMarked);
       this.saveToLocalStorage();
       this.renderNotifications();
       this.updateBadge();
@@ -256,13 +286,9 @@ class NotificationSystem {
     this.notifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
     const container = document.getElementById("notificationsList");
-    const badge = document.getElementById("notificationBadge");
     const footer = document.getElementById("notificationsFooter");
 
-    if (!container || !badge) return;
-
-    const unreadCount = this.notifications.filter((n) => !n.read).length;
-    badge.textContent = unreadCount > 99 ? "99+" : unreadCount.toString();
+    if (!container) return;
 
     if (this.notifications.length === 0) {
       container.innerHTML = `
@@ -273,6 +299,7 @@ class NotificationSystem {
         </div>
       `;
       if (footer) footer.innerHTML = '';
+      this.updateBadge();
       return;
     }
 
@@ -297,10 +324,11 @@ class NotificationSystem {
     if (footer) {
       footer.innerHTML = this.hasMore ? `<div class="view-all-link" onclick="notificationSystem.loadMoreNotifications()">Ver mais</div>` : '';
     }
+    this.updateBadge();
   }
 
   updateBadge() {
-    const unreadCount = this.notifications.filter((n) => !n.read).length;
+    const unreadCount = this.totalUnread;
     const badge = document.getElementById("notificationBadge");
     if (!badge) return;
 
