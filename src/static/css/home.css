@@ -322,7 +322,7 @@ header #searchBar:focus {
 }
 
 .notification-item.read {
-  opacity: 0.7;
+  /* opacity removido para manter notificações lidas visíveis */
 }
 
 .notification-icon {

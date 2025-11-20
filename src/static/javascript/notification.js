@@ -3,6 +3,9 @@ class NotificationSystem {
   constructor() {
     this.notifications =
       JSON.parse(localStorage.getItem("userNotifications")) || [];
+    this.currentPage = 1;
+    this.perPage = 10;
+    this.hasMore = true;
     // expõe a instância para outras páginas/scripts
     try {
       window.notificationSystem = this;
@@ -26,10 +29,11 @@ class NotificationSystem {
     const usuarioLogado = (typeof window !== 'undefined' && !!window.APP_USER) ? true : false;
     if (!usuarioLogado) return;
     try {
-      const res = await fetch('/notifications?per_page=100', { credentials: 'same-origin' });
+      const res = await fetch(`/notifications?page=${this.currentPage}&per_page=${this.perPage}`, { credentials: 'same-origin' });
       if (!res.ok) return;
       const body = await res.json();
       const serverList = Array.isArray(body.notifications) ? body.notifications : [];
+      this.hasMore = body.page < body.pages;
 
       // Mapear notificações do servidor para o formato local e mesclar sem duplicatas
       const mapped = serverList.map(s => ({
@@ -44,15 +48,17 @@ class NotificationSystem {
         read: !!s.viewed
       }));
 
-      // Merge: manter notificações locais que não existam no servidor e adicionar/replace as do servidor
-      const byKey = new Map();
-      mapped.forEach(n => byKey.set(String(n.id), n));
-      this.notifications.forEach(n => {
-        const key = n.id ? String(n.id) : `local-${n.timestamp}`;
-        if (!byKey.has(String(n.id))) byKey.set(key, n);
-      });
+      // Para a primeira página, substituir; para próximas, adicionar
+      if (this.currentPage === 1) {
+        this.notifications = mapped;
+      } else {
+        // Adicionar sem duplicatas
+        const existingIds = new Set(this.notifications.map(n => n.id));
+        const newOnes = mapped.filter(n => !existingIds.has(n.id));
+        this.notifications.push(...newOnes);
+      }
 
-      this.notifications = Array.from(byKey.values()).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+      this.notifications.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
       this.saveToLocalStorage();
       this.renderNotifications();
       this.updateBadge();
@@ -158,10 +164,6 @@ class NotificationSystem {
   toggleDropdown() {
     const dropdown = document.getElementById("notificationsDropdown");
     dropdown.classList.toggle("active");
-
-    if (dropdown.classList.contains("active")) {
-      this.markAllAsRead();
-    }
   }
 
   closeDropdown() {
@@ -250,8 +252,12 @@ class NotificationSystem {
   }
 
   renderNotifications() {
+    // Garantir ordenação por timestamp decrescente (mais recentes primeiro)
+    this.notifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
     const container = document.getElementById("notificationsList");
     const badge = document.getElementById("notificationBadge");
+    const footer = document.getElementById("notificationsFooter");
 
     if (!container || !badge) return;
 
@@ -266,6 +272,7 @@ class NotificationSystem {
           </div>
         </div>
       `;
+      if (footer) footer.innerHTML = '';
       return;
     }
 
@@ -286,6 +293,10 @@ class NotificationSystem {
     `
       )
       .join("");
+
+    if (footer) {
+      footer.innerHTML = this.hasMore ? `<div class="view-all-link" onclick="notificationSystem.loadMoreNotifications()">Mais antigas</div>` : '';
+    }
   }
 
   updateBadge() {
@@ -333,23 +344,10 @@ class NotificationSystem {
     });
   }
 
-  // Método para simular notificações (para teste)
-  simulateNotification() {
-    const types = ["update", "reminder", "expiry", "favorite"];
-    const messages = [
-      "Nova oportunidade disponível na sua área",
-      "Lembrete: Prazo se aproximando",
-      "Atualização importante na vaga que você favoritou",
-      "Novo conteúdo adicionado",
-      "A sua notícia favorita está quase expirando",
-    ];
-
-    this.addNotification({
-      type: types[Math.floor(Math.random() * types.length)],
-      title: "Nova notificação",
-      message: messages[Math.floor(Math.random() * messages.length)],
-      newsId: Date.now(),
-    });
+  async loadMoreNotifications() {
+    if (!this.hasMore) return;
+    this.currentPage++;
+    await this.syncWithServer();
   }
 }
 
