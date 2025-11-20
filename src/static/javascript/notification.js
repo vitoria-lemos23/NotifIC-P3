@@ -19,7 +19,6 @@ class NotificationSystem {
   }
 
   init() {
-    this.renderNotifications();
     this.setupEventListeners();
     this.checkForNewNotifications();
   }
@@ -295,7 +294,7 @@ class NotificationSystem {
       .join("");
 
     if (footer) {
-      footer.innerHTML = this.hasMore ? `<div class="view-all-link" onclick="notificationSystem.loadMoreNotifications()">Mais antigas</div>` : '';
+      footer.innerHTML = this.hasMore ? `<div class="view-all-link" onclick="notificationSystem.loadMoreNotifications()">Ver mais</div>` : '';
     }
   }
 

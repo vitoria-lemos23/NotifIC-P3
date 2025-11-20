@@ -371,6 +371,7 @@ header #searchBar:focus {
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .view-all-link:hover {
