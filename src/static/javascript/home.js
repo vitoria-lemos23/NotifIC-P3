@@ -564,8 +564,24 @@ function render(tab, query = "") {
 
     if (item.tags && item.tags.includes("VAGA")) {
       if (item.status === "ACEITA") {
-        statusHTML = `<span class="status aberta">ABERTA</span>`;
-        timerHTML = `<div class="timer" data-deadline="${item.end_date}"></div>`;
+        const now = new Date();
+        const start = item.start_date ? new Date(item.start_date) : null;
+        const end = item.end_date ? new Date(item.end_date) : null;
+        if (start && start > now) {
+          // Ainda não iniciou
+          statusHTML = `<span class="status em-breve">EM BREVE</span>`;
+          timerHTML = `<div class="timer" data-deadline="${item.start_date}" data-type="start"></div>`;
+        } else if (end && end > now) {
+          // Iniciou, ainda não acabou
+          statusHTML = `<span class="status aberta">ABERTA</span>`;
+          timerHTML = `<div class="timer" data-deadline="${item.end_date}" data-type="end"></div>`;
+        } else if (end && end <= now) {
+          // Acabou
+          statusHTML = `<span class="status fechada">FECHADA</span>`;
+        } else {
+          // Sem datas
+          statusHTML = `<span class="status aberta">ABERTA</span>`;
+        }
       } else {
         statusHTML = `<span class="status fechada">FECHADA</span>`;
       }
@@ -698,16 +714,25 @@ function render(tab, query = "") {
 
   document.querySelectorAll(".timer").forEach((el) => {
     const deadline = new Date(el.dataset.deadline);
+    const type = el.dataset.type; // "start" or "end"
     function updateTimer() {
       const diff = deadline - new Date();
       if (diff <= 0) {
-        el.innerHTML = "Expirado";
+        if (type === "start") {
+          el.innerHTML = "Iniciado";
+        } else {
+          el.innerHTML = "Expirado";
+        }
         return;
       }
       const h = Math.floor(diff / 1000 / 3600);
       const m = Math.floor(((diff / 1000) % 3600) / 60);
       const s = Math.floor((diff / 1000) % 60);
-      el.innerHTML = `Encerra em: ${h}h ${m}m ${s}s`;
+      if (type === "start") {
+        el.innerHTML = `Inicia em: ${h}h ${m}m ${s}s`;
+      } else {
+        el.innerHTML = `Encerra em: ${h}h ${m}m ${s}s`;
+      }
     }
     updateTimer();
     setInterval(updateTimer, 1000);

@@ -877,6 +877,9 @@ header {
 .fechada {
   background: red;
 }
+.em-breve {
+  background: #ff9100;
+}
 .timer {
   font-size: 0.85rem;
   font-weight: bold;
