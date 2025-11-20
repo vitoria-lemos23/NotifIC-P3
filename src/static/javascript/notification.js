@@ -19,6 +19,7 @@ class NotificationSystem {
   }
 
   init() {
+    this.renderNotifications();
     this.setupEventListeners();
     this.checkForNewNotifications();
   }
