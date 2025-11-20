@@ -82,7 +82,7 @@ function renderCarousel(newsData) {
     }
 
     // Usa imagem_banner se disponível, senão img, senão placeholder
-    const slideImage = item.imagem_banner || item.img || '/static/img/placeholder_banner.png';
+    const slideImage = item.imagem_banner || item.img || '/static/img/novo-banner-notific.png';
 
     slide.innerHTML = `
         ${(() => {

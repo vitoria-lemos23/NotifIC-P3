@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (!item) return;
         document.getElementById("modal-title").textContent = item.title || 'Detalhes';
         // Usa item.image (campo correto do modelo) e normaliza com fallback para banner
-        const imgSrc = normalizeImagePath(item.image, '/static/img/placeholder_banner.png');
+        const imgSrc = normalizeImagePath(item.image, '/static/img/novo-banner-notific.png');
         document.getElementById("modal-img").src = imgSrc;
         
         // requester: show name with link to profile if author_id present

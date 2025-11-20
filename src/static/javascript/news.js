@@ -37,7 +37,7 @@ async function loadNews() {
     }
 
     const newsItem = await res.json();
-    const imgSrc = newsItem.image || '/static/img/placeholder_banner.png';
+    const imgSrc = newsItem.image || '/static/img/novo-banner-notific.png';
     const metaDate = formatDate(newsItem.created_at || newsItem.start_date || '');
 
     const externalLink = newsItem.link;
