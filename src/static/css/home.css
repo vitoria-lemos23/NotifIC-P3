@@ -405,6 +405,11 @@ header {
     width: 320px;
     right: -50px;
   }
+
+  /* Esconde o nome do usuário em telas pequenas para dar mais espaço */
+  #headerUsername {
+    display: none !important;
+  }
 }
 
 
@@ -963,7 +968,7 @@ footer a {
      e a busca numa segunda linha inteira. Usa colunas automáticas para
      evitar que o ícone quebre linha quando o logo é largo. */
   header {
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: auto 1fr auto;
     height: auto; /* Altura automática */
     padding: 10px 12px;
     align-items: center;
@@ -986,7 +991,8 @@ footer a {
   /* Ajustes para evitar quebra/overflow dos ícones */
   .header-notifications-wrapper {
     margin-right: 4px;
-    justify-self: center;
+    justify-self: end;
+    order: 2;
   }
 
   #profileButton {
@@ -998,6 +1004,10 @@ footer a {
 
   .header-user-area {
     justify-self: end;
+    order: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 
   /* Reduz o tamanho dos botões para evitar que ocupem muita largura */
