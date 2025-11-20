@@ -247,10 +247,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Carrega a foto do usuário no perfil se disponível
-    if (profilePicture && window.APP_USER && window.APP_USER.profile_picture) {
-        profilePicture.src = window.APP_USER.profile_picture;
-        updateHeaderProfilePicture(window.APP_USER.profile_picture);
-    }
+    // Só usa `window.APP_USER` quando NÃO estivermos visualizando outro perfil via ?user_id=
+    (function() {
+        try {
+            const userIdParam = (typeof URLSearchParams !== 'undefined') ? new URLSearchParams(window.location.search).get('user_id') : null;
+            if (!userIdParam && profilePicture && window.APP_USER && window.APP_USER.profile_picture) {
+                profilePicture.src = window.APP_USER.profile_picture;
+                updateHeaderProfilePicture(window.APP_USER.profile_picture);
+            }
+        } catch (e) {
+            console.error('Erro ao ler user_id da URL para definir a foto do perfil:', e);
+        }
+    })();
 });
 
 document.addEventListener('DOMContentLoaded', function () {

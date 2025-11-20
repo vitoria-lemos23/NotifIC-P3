@@ -37,8 +37,10 @@ function populateForm(user, isOwner) {
 
   // set profile picture if available
   const profilePicture = document.getElementById('profile-picture');
-  if (profilePicture && user.profile_picture) {
-    profilePicture.src = user.profile_picture;
+  if (profilePicture) {
+    // suporte a vários nomes de campo que o backend pode fornecer
+    const src = user.profile_picture || user.profilePicture || user.avatar || user.image || user.profile_picture_url || '';
+    if (src) profilePicture.src = src;
   }
 
   // Mostrar/ocultar ações de avatar e preferências dependendo se é o dono do perfil
@@ -143,6 +145,48 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   populateForm(user, isOwner);
+
+  // Garantir que o avatar do cabeçalho mostre a foto do usuário logado
+  try {
+    (async function setHeaderAvatar() {
+      try {
+        let loggedUser = null;
+        if (typeof window !== 'undefined' && window.APP_USER) {
+          loggedUser = window.APP_USER;
+        } else {
+          // Se estamos vendo outro perfil (userIdParam), e não temos APP_USER,
+          // tentamos buscar /me para obter os dados do usuário autenticado.
+          if (userIdParam) {
+            try {
+              loggedUser = await fetchMe();
+            } catch (e) {
+              loggedUser = null;
+            }
+          } else {
+            // quando não há userIdParam, `user` já representa o usuário logado
+            loggedUser = user;
+          }
+        }
+
+        if (loggedUser && loggedUser.profile_picture) {
+          if (typeof window !== 'undefined' && typeof window.updateHeaderProfilePicture === 'function') {
+            try {
+              window.updateHeaderProfilePicture(loggedUser.profile_picture);
+            } catch (err) {
+              console.warn('updateHeaderProfilePicture falhou:', err);
+            }
+          } else {
+            const headerImg = document.querySelector('#profileButton img');
+            if (headerImg) headerImg.src = loggedUser.profile_picture;
+          }
+        }
+      } catch (e) {
+        console.error('Erro ao definir avatar do cabeçalho:', e);
+      }
+    })();
+  } catch (e) {
+    // não crítico
+  }
 
   // Sincroniza notificações do servidor se usuário estiver autenticado
   if (isOwner && typeof window !== 'undefined' && window.notificationSystem) {

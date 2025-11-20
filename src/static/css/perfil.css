@@ -167,6 +167,11 @@ body {
   display: flex;
   align-items: center;
 }
+
+/* ensure absolutely-positioned badge positions relative to wrapper like on home */
+.header-notifications-wrapper {
+  position: relative;
+}
 .header-notifications-wrapper .header-icon-btn {
   background: #304b8a; /* use header blue */
   color: #ffffff;
@@ -184,9 +189,20 @@ body {
   background: #243b66;
   border-color: #ffffff;
 }
-.header-notifications-wrapper .notification-badge {
-  right: -6px;
-  top: -6px;
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 2px solid #ffffff;
 }
 
