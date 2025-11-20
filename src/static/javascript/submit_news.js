@@ -9,6 +9,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const dataFimInput = form.querySelector('#data-fim');
   const siteInput = form.querySelector('#site');
   const imagemInput = form.querySelector('#imagem-noticia');
+  const charCount = document.getElementById('char-count');
+
+  // Contador de caracteres para descrição
+  if (descricaoInput && charCount) {
+    const updateCharCount = () => {
+      const count = descricaoInput.value.length;
+      charCount.textContent = `${count}/1200`;
+      if (count > 1100) {
+        charCount.style.color = 'red';
+      } else if (count >= 900) {
+        charCount.style.color = 'orange';
+      } else {
+        charCount.style.color = 'green';
+      }
+      charCount.style.fontSize = '16px';
+    };
+    descricaoInput.addEventListener('input', updateCharCount);
+    updateCharCount(); // Inicial
+  }
+
+  // Mudança de cor para título
+  if (titleInput) {
+    const updateTitleColor = () => {
+      // Removido: mudança de cor da borda
+    };
+    titleInput.addEventListener('input', updateTitleColor);
+    updateTitleColor(); // Inicial
+  }
 
   submitBtn.addEventListener('click', async (e) => {
     e.preventDefault();

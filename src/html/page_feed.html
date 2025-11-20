@@ -28,10 +28,13 @@
     <!-- Institution field removed: not part of News model -->
 
     <label for="titulo">Título</label>
-    <input type="text" id="titulo" placeholder="Título do evento">
+    <input type="text" id="titulo" placeholder="Título do evento" maxlength="85">
 
     <label for="descricao">Descrição do evento (Markdown permitido)</label>
-    <textarea id="descricao" placeholder="Escreva a descrição do evento..."></textarea>
+    <div class="textarea-container">
+        <textarea id="descricao" placeholder="Escreva a descrição do evento..." maxlength="1200"></textarea>
+        <div id="char-count">0/1200</div>
+    </div>
     
     <h3>Pré-visualização:</h3>
     <div id="preview" class="preview"></div>
