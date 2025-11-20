@@ -798,11 +798,12 @@ header {
   background: #fff;
   margin-bottom: 20px;
   border-radius: 10px;
-  padding: 15px;
+  padding: 20px;
   display: flex;
-  gap: 15px;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  gap: 20px;
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.08);
   position: relative;
+  overflow: hidden; /* prevent content from overflowing card bounds */
 }
 /* Admin action buttons overlay (top-right of card) */
 .card-admin-actions {
@@ -824,10 +825,15 @@ header {
 }
 .card-admin-actions button:hover { background: rgba(0,0,0,0.8); }
 .card img {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
+  /* Desktop: larger thumbnail on the left */
+  width: 180px;
+  height: 140px;
+  object-fit: cover;
   border-radius: 8px;
+  flex-shrink: 0;
+}
+.card h3 {
+  font-size: 1.15rem;
 }
 .card h3 {
   margin: 0 0 10px;
@@ -855,14 +861,30 @@ header {
 }
 .card p {
   margin: 0 0 10px;
+  font-size: 1rem;
+  line-height: 1.5;
+  /* Limit paragraphs to a couple of lines and hide the rest */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2; /* default: show 2 lines */
 }
+
+/* Ensure long unbroken strings don't overflow the card - break or wrap as needed */
+.card p, .card .card-caption {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+
 .card a {
   background: #0d8cff;
   color: #fff;
   padding: 8px 12px;
   text-decoration: none;
   border-radius: 5px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 .favorite {
   position: absolute;
@@ -988,24 +1010,77 @@ footer a {
   /* Ajusta o carrossel */
   .carousel-container {
     aspect-ratio: 4 / 3;
-    min-height: 250px;
+    min-height: 240px;
   }
   .carousel-text h2 {
     font-size: 1.5rem;
   }
   .carousel-text p {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
-  /* Ajusta o card */
+  /* Ajusta o card: empilha conteúdo e reduz espaçamentos */
   .card {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+    padding: 12px;
+    gap: 10px;
   }
+
+  /* Mobile: keep image, but limit its visual footprint on smaller screens
+     — center a smaller thumbnail instead of making it full-width. */
+  .card img {
+    width: auto;
+    max-width: 160px; /* smaller thumbnail on phones/tablets */
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 0 auto 8px auto; /* center the smaller thumbnail */
+    display: block;
+  }
+
+  .card h3 { font-size: 1.05rem; }
+  .card p { font-size: 0.95rem; -webkit-line-clamp: 3; }
+
+  /* Torna os botões de ação do admin mais acessíveis no mobile
+     - remove posicionamento absoluto e os centraliza acima da imagem */
+  .card-admin-actions {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    z-index: 2;
+  }
+  .card-admin-actions button {
+    padding: 8px 12px;
+    font-size: 15px;
+    border-radius: 10px;
+  }
+
+  /* Feed e guias mais compactos */
+  .feed { padding: 12px; }
+  .tabs { font-size: 0.95rem; }
 
   /* Ajusta o rodapé */
   footer {
     grid-template-columns: 1fr;
   }
+}
+
+/* Very small screens tweaks */
+@media (max-width: 420px) {
+  header { padding: 8px 10px; }
+  #logo-img { height: 28px; }
+  .header-search-wrapper { padding-top: 8px; }
+  .tabs { font-size: 0.88rem; }
+  .card { padding: 10px; }
+  .card-media img { width: auto; max-width: 120px; height: auto; }
+  .card h3 { font-size: 1rem; }
+  .card p { -webkit-line-clamp: 3; }
+  .card-admin-actions button { padding: 8px 10px; font-size: 14px; }
+  .side-menu { width: 92%; }
 }
 
