@@ -487,6 +487,11 @@ function renderFilterMenu() {
   });
 }
 
+// Função para obter todas as tags disponíveis
+function getAllTags() {
+  return ['PROJETO', 'EVENTO', 'VAGA'];
+}
+
 // Simular verificação de login
 async function verificarLogin() {
   // Se o servidor já injetou a variável window.APP_USER (render-time), usamos isso
