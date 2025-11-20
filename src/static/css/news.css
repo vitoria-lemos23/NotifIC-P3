@@ -5,6 +5,10 @@ body {
     color: #222;
 }
 
+main {
+    margin-top: 80px;
+}
+
 .home-icon{
     height: 40px;
     width: 40px;
@@ -89,6 +93,9 @@ body {
     /*padding: 8px 15px;*/
 }
 @media (max-width: 768px) {
+    main {
+        margin-top: 120px;
+    }
     .news-container {
         padding: 16px 8px;
     }

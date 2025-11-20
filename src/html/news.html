@@ -5,16 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>./NotifIC - Notícia</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/news.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo-notific.svg') }}" />
   </head>
   <body>
+    <header>
+      <div class="header-logo">
+        <a href="{{ url_for('home_routes.home') }}">
+          <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="Logo NotifIC" id="logo-img" />
+        </a>
+      </div>
+      <div class="header-search-wrapper">
+        <svg
+          class="search-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <input type="text" id="searchBar" placeholder="Buscar notícias..." />
+      </div>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-      <a href="{{ url_for('home_routes.home') }}">
-        <img src="{{ url_for('static', filename='img/notific.svg') }}" alt="logo do notific" class="logo-ic">
-      </a>
-    </nav>
+      <!-- Botão de Notificações -->
+      <div class="header-notifications-wrapper">
+        <button
+          id="notificationsButton"
+          class="header-icon-btn"
+          title="Notificações"
+        >
+          <span class="notifications-icon">🔔</span>
+          <span id="notificationBadge" class="notification-badge">0</span>
+        </button>
+        <div id="notificationsDropdown" class="notifications-dropdown">
+          <div class="notifications-header">
+            <h3>Notificações</h3>
+            <div class="notification-actions">
+              <button id="markAllRead">Marcar como lidas</button>
+              <button id="clearAllNotifications">Limpar todas</button>
+            </div>
+          </div>
+          <div id="notificationsList" class="notifications-list">
+            <!-- Notificações serão inseridas aqui via JavaScript -->
+          </div>
+          <div id="notificationsFooter" class="notifications-footer">
+            <!-- Footer será preenchido via JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Agrupa nome do usuário e ícone de perfil para posicionamento correto -->
+      <div class="header-user-area">
+        <div id="headerUsername" aria-live="polite"></div>
+        <div id="profileButton">
+          <span class="profile-icon">👤</span>
+          <img src="{{ usuario.profile_picture or 'https://i.pravatar.cc/40' }}" alt="Perfil" />
+        </div>
+      </div>
+    </header>
+
+    <aside class="side-menu" id="sideMenu">
+      <header>
+        <button class="close-btn" onclick="toggleMenu()">→</button>
+        <span class="menu-title"
+          >./notif<span style="color: deepskyblue">IC</span></span
+        >
+      </header>
+      <nav>
+        <a href="{{ url_for('user_routes.perfil') }}">Perfil</a>
+        <a href="{{ url_for('news_routes.news_page') }}">Cadastrar Notícia</a>
+        <!-- Link de administrador: visível apenas para administradores -->
+        <a href="/admin/news/pending/view" id="adminLink" style="display: none">Tela do Administrador</a>
+        <a href="#" class="logout-link">Sair</a>
+      </nav>
+      <footer>© 2025 ./notifIC</footer>
+    </aside>
+
+    <div
+      class="side-menu-backdrop"
+      id="sideMenuBackdrop"
+      onclick="toggleMenu()"
+    ></div>
 
     <main>
       <div class="news-container" id="news">
@@ -22,6 +97,127 @@
       </div>
     </main>
 
-    <script src="{{ url_for('static', filename='javascript/news.js') }}"></script>
+  <script src="{{ url_for('static', filename='javascript/notification.js') }}"></script>
+  <script src="{{ url_for('static', filename='javascript/news.js') }}" defer></script>
+  <script>
+    // Inicializa o sistema de notificações
+    if (typeof initNotificationSystem === 'function') {
+      initNotificationSystem();
+    }
+
+    // Logout via POST to clear HttpOnly cookie, then redirect to login page
+    document.addEventListener('DOMContentLoaded', function () {
+      const logoutEls = document.querySelectorAll('.logout-link');
+      logoutEls.forEach(function (el) {
+          el.addEventListener('click', async function (e) {
+          e.preventDefault();
+          try {
+            await fetch("{{ url_for('auth_routes.logout') }}", {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+            });
+          } catch (err) {
+            // ignore network errors, still redirect
+          }
+          // Redirect to home page after logout (instead of login page)
+          window.location = "{{ url_for('home_routes.home') }}";
+        });
+      });
+    });
+
+    // Função para abrir/fechar menu lateral
+    function toggleMenu() {
+      const sideMenu = document.getElementById("sideMenu");
+      const sideMenuBackdrop = document.getElementById("sideMenuBackdrop");
+      if (!sideMenu || !sideMenuBackdrop) return;
+      sideMenu.classList.toggle("active");
+      sideMenuBackdrop.classList.toggle("active");
+      document.body.style.overflow = sideMenu.classList.contains("active")
+        ? "hidden"
+        : "";
+    }
+
+    // Evento de clique no botão de perfil
+    const profileButton = document.getElementById("profileButton");
+    if (profileButton) {
+      profileButton.addEventListener("click", () => {
+        const usuarioLogado = (typeof window !== 'undefined' && !!window.APP_USER) ? true : false;
+        if (usuarioLogado) {
+          toggleMenu();
+        } else {
+          window.location.href = "/login";
+        }
+      });
+    }
+
+    // Verificar login e atualizar estado
+    async function verificarLogin() {
+      if (typeof window !== 'undefined' && window.APP_USER) {
+        atualizarEstadoLogin();
+        try { if (window.notificationSystem && typeof window.notificationSystem.syncWithServer === 'function') window.notificationSystem.syncWithServer(); } catch(e) {}
+        return;
+      }
+      await fetchServerUser();
+    }
+
+    async function fetchServerUser() {
+      try {
+        const res = await fetch('/auth/me', { credentials: 'same-origin' });
+        if (!res.ok) {
+          atualizarEstadoLogin();
+          return null;
+        }
+        const user = await res.json();
+        window.APP_USER = user;
+        atualizarEstadoLogin();
+        try { if (window.notificationSystem && typeof window.notificationSystem.syncWithServer === 'function') window.notificationSystem.syncWithServer(); } catch(e) {}
+        return user;
+      } catch (err) {
+        console.error('Erro ao verificar usuário no servidor:', err);
+        atualizarEstadoLogin();
+        return null;
+      }
+    }
+
+    function atualizarEstadoLogin() {
+      if (!profileButton) return;
+      const menuTitle = document.querySelector("#sideMenu .menu-title");
+      const usuarioLogado = (typeof window !== 'undefined' && !!window.APP_USER) ? true : false;
+
+      if (usuarioLogado) {
+        profileButton.classList.add("logged");
+        profileButton.classList.remove("not-logged");
+        if (menuTitle) menuTitle.textContent = "./notifIC";
+        const user = window.APP_USER || null;
+        if (user && user.profile_picture) {
+          const profileImg = profileButton ? profileButton.querySelector('img') : null;
+          if (profileImg) {
+            profileImg.src = user.profile_picture;
+          }
+        }
+        // Mostrar link de admin se for admin/moderador
+        const adminLink = document.getElementById('adminLink');
+        try {
+          const userRole = (user && user.role) || null;
+          const role = (userRole && String(userRole).toUpperCase()) || '';
+          const privileged = ['ADMIN', 'MODERATOR', 'MOD', 'MODERADOR'].includes(role);
+          if (adminLink) adminLink.style.display = privileged ? 'block' : 'none';
+        } catch (e) {
+          console.error('Erro ao determinar papel do usuário:', e);
+          if (adminLink) adminLink.style.display = 'none';
+        }
+      } else {
+        profileButton.classList.remove("logged");
+        profileButton.classList.add("not-logged");
+        if (menuTitle) menuTitle.textContent = "Login";
+        const adminLink = document.getElementById('adminLink');
+        if (adminLink) adminLink.style.display = 'none';
+      }
+    }
+
+    // Inicializar
+    verificarLogin();
+  </script>
   </body>
 </html>
