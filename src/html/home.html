@@ -109,6 +109,8 @@
       <nav>
         <a href="{{ url_for('user_routes.perfil') }}">Perfil</a>
         <a href="{{ url_for('news_routes.news_page') }}">Cadastrar Notícia</a>
+        <!-- Link de administrador: visível apenas para administradores -->
+        <a href="/admin/news/pending/view" id="adminLink" style="display: none">Tela do Administrador</a>
         <a href="#" class="logout-link">Sair</a>
       </nav>
       <footer>© 2025 ./notifIC</footer>
@@ -132,13 +134,11 @@
         <button id="filterBtn" title="Filtrar">
           <span class="filter-icon">≡</span>
         </button>
-        <button id="adminBtn" title="Admin" style="display: none">⚙️</button>
       </div>
     </div>
     <p class="feed-subtitle">Notícias e oportunidades</p>
 
     <div id="filterMenu" class="filter-menu"></div>
-    <div id="adminMenu" class="filter-menu"></div>
 
     <section class="feed" id="feed"></section>
 

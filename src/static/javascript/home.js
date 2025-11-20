@@ -16,38 +16,12 @@ let usuarioLogado = (typeof window !== 'undefined' && !!window.APP_USER) ? true 
 let data = [];
 let isAdmin = false; // Será determinado a partir do usuário autenticado
 
-const adminBtn = document.getElementById("adminBtn");
-const adminMenu = document.getElementById("adminMenu");
+const adminLink = document.getElementById('adminLink');
+// Inicialmente oculto; será mostrado quando soubermos o papel do usuário
+if (adminLink) adminLink.style.display = 'none';
 
-// Inicialmente oculta o botão admin; será mostrado quando soubermos o papel do usuário
-if (adminBtn) adminBtn.style.display = 'none';
-
-// Menu de admin
-adminBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  filterMenu.classList.remove("active");
-  adminMenu.classList.toggle("active");
-
-  if (adminMenu.classList.contains("active")) {
-    adminMenu.innerHTML = `
-        <h3>Opções Admin</h3>
-        <button onclick="mostrarModalLogin()">Tela de requerimento de Login</button>
-        <button onclick="alternarEstadoLogin()">Alternar Login</button>
-        <button onclick="Painel()">Tela do Administrador</button>
-        <button onclick="fecharMenus()">Fechar</button>
-    `;
-    // Posiciona o menu próximo ao botão admin
-    const adminBtnRect = adminBtn.getBoundingClientRect();
-    adminMenu.style.top = `${adminBtnRect.bottom + window.scrollY}px`;
-    adminMenu.style.right = `${window.innerWidth - adminBtnRect.right}px`;
-  }
-});
-
-// Fechar menus ao clicar fora
+// Fechar menus ao clicar fora (somente menu de filtro)
 document.addEventListener("click", (e) => {
-  if (adminMenu && !adminMenu.contains(e.target) && e.target !== adminBtn) {
-    adminMenu.classList.remove("active");
-  }
   if (filterMenu && !filterMenu.contains(e.target) && e.target !== filterBtn) {
     filterMenu.classList.remove("active");
   }
@@ -55,7 +29,6 @@ document.addEventListener("click", (e) => {
 
 // Função para fechar todos os menus
 function fecharMenus() {
-  adminMenu.classList.remove("active");
   filterMenu.classList.remove("active");
 }
 
@@ -329,7 +302,7 @@ function atualizarEstadoLogin() {
         // Inclui 'ADMIN', 'MODERATOR', 'MOD', e a variante em português 'MODERADOR'
         const privileged = ['ADMIN', 'MODERATOR', 'MOD', 'MODERADOR'].includes(role);
         isAdmin = privileged; // tratamos moderadores como privilegiados para fins de UI
-        if (adminBtn) adminBtn.style.display = privileged ? 'inline-block' : 'none';
+        if (adminLink) adminLink.style.display = privileged ? 'block' : 'none';
       } catch (e) {
         console.error('Erro ao determinar papel do usuário:', e);
       }
