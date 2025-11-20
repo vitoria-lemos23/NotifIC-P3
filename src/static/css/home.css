@@ -806,12 +806,11 @@ header {
 }
 /* Admin action buttons overlay (top-right of card) */
 .card-admin-actions {
-  position: absolute;
-  top: 8px;
-  right: 8px;
+  position: static;
   display: flex;
-  gap: 6px;
-  z-index: 5;
+  gap: 8px;
+  margin: 6px 0 10px 0;
+  align-items: center;
 }
 .card-admin-actions button {
   background: rgba(0,0,0,0.6);
@@ -828,6 +827,16 @@ header {
   height: 80px;
   object-fit: contain;
   border-radius: 8px;
+}
+/* New left/right column for card layout */
+.card-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+}
+.card-right {
+  flex: 1;
 }
 .card h3 {
   margin: 0 0 10px;
