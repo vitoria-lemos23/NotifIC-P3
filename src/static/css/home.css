@@ -383,6 +383,24 @@ header {
   gap: 15px;
 }
 
+/* Responsividade para telas intermediárias */
+@media (max-width: 1200px) and (min-width: 769px) {
+  header {
+    grid-template-columns: 1fr 2fr auto auto; /* Logo | Busca | Notificações | Perfil */
+    gap: 15px;
+  }
+  
+  .header-notifications-wrapper {
+    min-width: 50px;
+    justify-self: end;
+  }
+  
+  .header-user-area {
+    min-width: 50px;
+    justify-self: end;
+  }
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
   header {

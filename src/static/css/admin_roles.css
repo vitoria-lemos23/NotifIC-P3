@@ -50,6 +50,29 @@ body {
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* Media queries para navbar mobile */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 8px 15px;
+  }
+
+  .navbar-title {
+    font-size: 1.2rem;
+    position: static;
+    transform: none;
+    order: 2;
+    flex: 1;
+    text-align: center;
+    margin: 0 10px;
+  }
+
+  .nav-back-link {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+    order: 3;
+  }
+}
+
 /* === CONTEÚDO PRINCIPAL === */
 .conteudo-principal {
   margin-top: 100px;
@@ -63,6 +86,19 @@ body {
   margin-bottom: 40px;
 }
 
+/* Media queries para mobile */
+@media (max-width: 768px) {
+  .conteudo-principal {
+    padding: 20px 15px;
+  }
+
+  .titulo-principal {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+}
+
 /* === CARD DE USUÁRIO (Reutilizado) === */
 .pedido-card {
   display: flex;
@@ -70,7 +106,7 @@ body {
   background: #fff;
   border-radius: 10px;
   border: 1px solid #ddd;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
@@ -135,20 +171,36 @@ body {
   padding-bottom: 10px;
   margin-top: 40px;
   margin-bottom: 20px;
+  text-align: left;
+}
+
+/* Media queries para seção de gestão mobile */
+@media (max-width: 768px) {
+  .secao-gestao {
+    margin: 0 15px 30px 15px;
+  }
+
+  .subtitulo-gestao {
+    font-size: 1.5rem;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    text-align: left;
+  }
 }
 
 /* Container para os cards em grid */
 .lista-cards-container {
   display: grid;
-  /* Layout em grid responsivo */
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+  padding: 0 24px;
+  justify-items: start;
 }
 
 /* Ajustes nos cards para o modo de lista */
 .lista-cards-container .pedido-card {
   width: 100%;
-  max-width: none;
+  max-width: 500px;
   margin: 0;
   text-align: left;
 }
@@ -156,6 +208,18 @@ body {
 .lista-cards-container .pedido-acoes {
   justify-content: flex-end;
   margin-top: 15px;
+}
+
+/* Media queries para cards mobile */
+@media (max-width: 768px) {
+  .lista-cards-container {
+    padding: 0 10px;
+    gap: 20px;
+  }
+
+  .lista-cards-container .pedido-card {
+    padding: 15px;
+  }
 }
 
 /* === ADIÇÕES PARA A BUSCA === */
@@ -199,6 +263,32 @@ body {
   background-color: #25386b;
 }
 
+/* Media queries para busca mobile */
+@media (max-width: 768px) {
+  .secao-busca {
+    padding: 15px;
+    margin: 0 15px 30px 15px;
+    max-width: none;
+  }
+
+  .busca-container {
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  #campoBusca {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #btnBuscar {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+}
+
 /* Card de Resultado da Busca */
 .resultado-usuario {
   background: #fafafa;
@@ -234,15 +324,42 @@ body {
     padding: 8px 12px;
 }
 
+/* Media queries para resultado da busca mobile */
+@media (max-width: 768px) {
+  .resultado-usuario {
+    padding: 15px;
+    margin: 15px 15px;
+    max-width: none;
+  }
+
+  #acoesBusca {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #acoesBusca button {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+}
+
 .btn-acao-admin { background-color: #dc3545; color: white; } /* Vermelho */
 .btn-acao-mod { background-color: #007bff; color: white; } /* Azul */
 .btn-acao-user { background-color: #6c757d; color: white; } /* Cinza */
-.btn-acao-pendente { background-color: #ffc107; color: #333; } /* Amarelo */
 
 /* Separa as seções de Busca e Lista */
 .secao-listas {
   margin-top: 50px;
   padding-top: 30px;
   border-top: 2px solid #ddd;
+}
+
+/* Media queries para seção de listas mobile */
+@media (max-width: 768px) {
+  .secao-listas {
+    margin-top: 30px;
+    padding-top: 20px;
+  }
 }
 

@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- 2. SELETORES DA SEÇÃO DE LISTAS ---
   const adminContainer = document.getElementById("lista-admins-container");
   const modContainer = document.getElementById("lista-moderadores-container");
-  const pendenteContainer = document.getElementById("lista-pendentes-container");
 
   // ===============================================
   // LÓGICA DA BUSCA (PARTE 1)
@@ -93,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.id === 'btnSetAdmin') alterarCargo('ADMIN');
     if (e.target.id === 'btnSetMod') alterarCargo('MODERADOR');
     if (e.target.id === 'btnSetUser') alterarCargo('USUARIO');
-    if (e.target.id === 'btnSetPendente') alterarCargo('PENDENTE_MOD');
   });
 
   // ===============================================
@@ -143,7 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function carregarListas() {
     popularLista('/admin/api/lista_admins', adminContainer);
     popularLista('/admin/api/lista_moderadores', modContainer);
-    popularLista('/admin/api/lista_pendentes', pendenteContainer);
   }
 
   // --- INICIALIZAÇÃO ---
