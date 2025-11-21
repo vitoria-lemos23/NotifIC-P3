@@ -61,6 +61,37 @@ async function loadNews() {
         <p class="news-desc">${newsItem.content || ''}</p>
         ${linkHref ? `<a href="${linkHref}" target="_blank" class="subscribe-btn">Ir para o site</a>` : ''}
     `;
+
+    // Adiciona o botão de voltar, mas coloca no <main> (antes do container)
+    try {
+        if (!document.querySelector('.inline-back-btn')) {
+            const backBtn = document.createElement('button');
+            backBtn.className = 'inline-back-btn';
+            backBtn.type = 'button';
+            backBtn.setAttribute('aria-label', 'Voltar');
+            backBtn.title = 'Voltar';
+            backBtn.innerHTML = '←';
+            backBtn.addEventListener('click', function () {
+                if (typeof window !== 'undefined' && window.HOME_URL) {
+                    window.location.href = window.HOME_URL;
+                } else if (document.referrer) {
+                    window.history.back();
+                } else {
+                    window.location.href = '/';
+                }
+            });
+
+            const mainEl = document.querySelector('main') || document.body;
+            const container = document.getElementById('news');
+            if (mainEl && container && mainEl.contains(container)) {
+                mainEl.insertBefore(backBtn, container);
+            } else {
+                (mainEl || document.body).appendChild(backBtn);
+            }
+        }
+    } catch (e) {
+        console.error('Falha ao inserir botão de voltar:', e);
+    }
     } catch (e) {
         newsDiv.innerHTML = `<p>Erro ao carregar notícia.</p>`;
         console.error('Erro ao carregar notícia:', e);

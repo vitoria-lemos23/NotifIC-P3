@@ -7,6 +7,7 @@ body {
 
 main {
     margin-top: 80px;
+    position: relative;
 }
 
 .home-icon{
@@ -51,6 +52,11 @@ main {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+/* Permite posicionar elementos absolutos relativos ao card */
+.news-container {
+    position: relative;
 }
 .news-img {
     width: 100%;
@@ -105,4 +111,36 @@ main {
     .news-desc {
         font-size: 1.2rem;
     }
+}
+
+/* Botão circular inline dentro do card (voltar) */
+.inline-back-btn {
+    position: fixed;
+    /* float over the page near the left edge of the centered card */
+    top: 72px;
+    /* mais à esquerda em relação à tela (próximo à borda) */
+    left: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: #2f4b8a;
+    color: #fff;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    cursor: pointer;
+    z-index: 3000;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+    opacity: 80%;
+}
+.inline-back-btn:hover{
+    transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+    /* no mobile, posicionar abaixo do header para não obstruir */
+    .inline-back-btn { top: 88px; left: 12px; width:44px; height:44px; }
 }
