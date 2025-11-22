@@ -1,3 +1,5 @@
 .vscode
 .venv
 src/static/img/uploads/
+__pycache__/
+.env

@@ -299,8 +299,10 @@ const headerUsername = document.getElementById('headerUsername');
 function atualizarEstadoLogin() {
   if (!profileButton) return;
   const menuTitle = document.querySelector("#sideMenu .menu-title");
+  const notificationsWrapper = document.querySelector('.header-notifications-wrapper');
 
   if (usuarioLogado) {
+    if (notificationsWrapper) notificationsWrapper.style.display = 'block';
     profileButton.classList.add("logged");
     profileButton.classList.remove("not-logged");
     if (menuTitle) menuTitle.textContent = "./notifIC";
@@ -344,6 +346,7 @@ function atualizarEstadoLogin() {
       console.error('Erro ao exibir nome do usuário:', e);
     }
   } else {
+    if (notificationsWrapper) notificationsWrapper.style.display = 'none';
     profileButton.classList.remove("logged");
     profileButton.classList.add("not-logged");
     if (menuTitle) menuTitle.textContent = "Login";
@@ -629,9 +632,19 @@ function render(tab, query = "") {
   const totalItems = items.length;
   const start = currentPage * itemsPerPage;
   const end = start + itemsPerPage;
-  items = items.slice(start, end);
+  const paginatedItems = items.slice(start, end);
 
-  items.forEach((item) => {
+  if (paginatedItems.length === 0) {
+    let message = "Nenhuma notícia encontrada.";
+    if (activeTags.length > 0) {
+      message = `Nenhuma notícia encontrada para o(s) filtro(s): ${activeTags.join(", ")}`;
+    }
+    feed.innerHTML = `<p style="text-align: center;">${message}</p>`;
+    updatePaginationButtons();
+    return;
+  }
+
+  paginatedItems.forEach((item) => {
     const card = document.createElement("div");
     card.className = "card";
 
