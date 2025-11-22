@@ -1,0 +1,31 @@
+services:
+  - name: notific-backend
+    type: web
+    env: python
+    region: oregon
+    branch: fullstack
+    plan: starter
+    root: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 4 -b 0.0.0.0:$PORT app:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: 'False'
+      - key: SECRET_KEY
+        value: REPLACE_ME_SECRET_KEY
+      - key: DATABASE_URL
+        value: REPLACE_ME_DATABASE_URL
+      - key: MAIL_SERVER
+        value: REPLACE_ME_MAIL_SERVER
+      - key: MAIL_PORT
+        value: '587'
+      - key: MAIL_USERNAME
+        value: REPLACE_ME_MAIL_USERNAME
+      - key: MAIL_PASSWORD
+        value: REPLACE_ME_MAIL_PASSWORD
+      - key: MAIL_USE_TLS
+        value: 'True'
+      - key: DEV_SHOW_RESET_LINK
+        value: '0'
