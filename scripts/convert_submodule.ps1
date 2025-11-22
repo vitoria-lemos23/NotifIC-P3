@@ -74,10 +74,14 @@ try {
     $branch = git rev-parse --abbrev-ref HEAD
     $msg = "Convert $SubmodulePath submodule into normal directory"
     Write-Host 'Committing changes...'
-    git commit -m "$msg"
-
-    Write-Host 'Pushing to origin/' $branch
-    git push origin $branch
+    $commitOutput = & git commit -m "$msg" 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host $commitOutput
+        Write-Host 'Nothing to commit or commit failed (see output above).' -ForegroundColor Yellow
+    } else {
+        Write-Host 'Pushing to origin/' $branch
+        & git push origin $branch
+    }
 
     Write-Host 'Conversion complete. Keep the backup at:' $backup 'until you verify everything.' -ForegroundColor Green
 } catch {
