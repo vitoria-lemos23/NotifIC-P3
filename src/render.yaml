@@ -5,9 +5,9 @@ services:
     region: oregon
     branch: fullstack
     plan: starter
-    root: .
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: gunicorn -w 4 -b 0.0.0.0:$PORT backend.app:app
+    root: src/backend
+    buildCommand: python -m pip install -r requirements.txt
+    startCommand: gunicorn -w 4 -b 0.0.0.0:$PORT app:app
     envVars:
       - key: FLASK_ENV
         value: production
